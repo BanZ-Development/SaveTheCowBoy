@@ -2,7 +2,11 @@
 https://www.bootbarn.com/
 
 
+
 # Main Ideas
+
+You can find designs on Figma
+Back End Planning on Github
 
 # Required Features
 
@@ -35,3 +39,23 @@ Want's Earthy colors.
 - Shopify (Website Shop)
 - Name Cheap (Domain Holder)
 - MongoDB (Database)
+- MailChimp (Email Newsletter)
+- Paypal (API for Subscriptions)
+
+# Cost Estimate
+
+- Heroku (Website Host) 
+- Shopify (Website Shop)
+- Name Cheap (Domain Holder)
+- MongoDB (Database)
+- MailChimp (Email Newsletter)
+- Paypal (API for Subscriptions)
+
+# Subcription types
+
+Day Worker $10.00
+Ranch Cowboy $25.00
+Jigger Boss $50.00
+Top Hand $100.00
+Cow Boss $250.00
+Cattle Baron $500.00
