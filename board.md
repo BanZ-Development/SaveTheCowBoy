@@ -11,6 +11,7 @@ Back End Planning on Github
 ## Required Features
 
 - Donations
+- Subscriptions
 - Logins
 - Forums
 - Cowboy Stories
