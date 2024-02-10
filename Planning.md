@@ -9,7 +9,7 @@ https://www.bootbarn.com/
 
 # Main Ideas
 
-You can find designs on Figma
+You can find designs on Figma and
 Back End Planning on Github
 
 ## Required Features
@@ -107,3 +107,4 @@ $967.49 Yearly
 - [ ] Admin Dashboard
 - [ ] Reading Plans
 - [ ] Notifications
+- [ ] Integrate MailChimp (Lucky)
