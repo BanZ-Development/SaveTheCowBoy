@@ -108,3 +108,22 @@ $967.49 Yearly
 - [ ] Reading Plans
 - [ ] Notifications
 - [ ] Integrate MailChimp (Lucky)
+
+# Security
+
+- Role Based System with APIs
+- make input limits
+- make sure whats being typed into web application is from a human typed keyboard
+- Dont let posts delete
+- Only gets can do that ^
+- Read on how to secure rest endpoints
+- Add Login framework
+- Add log entries for apis
+- Logs will show where hackers are hitting that you dont know about
+- LOGS ARE IMPORTANT
+- Whisper Application on Heroku
+- 
+
+
+
+- Member Management Page
