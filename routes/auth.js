@@ -12,21 +12,11 @@ router.post('/login', passport.authenticate('local'), (req, res) => {
 	});
 });
 
-async function Authenticate(authAPI) {
-	return new Promise(function (resolve) {
-		setTimeout(() => {
-			resolve(authAPI);
-		}, 100);
-	});
-}
-
 router.post('/signup', async (req, res) => {
-	Authenticate(validate.register(req, res)).then((result) => (typeof result === 'object' && result !== null ? Failed(result) : Passed()));
+	validate.Authenticate(validate.register(req, res), Passed, Failed);
 
 	async function Passed() {
-		let username = req.body.username;
-		let password = req.body.password;
-		let email = req.body.email;
+		const { username, password, email } = req.body;
 		const { hash, salt } = hasher.returnHashAndSalt(password);
 		const result = await User.create({
 			meta: {
@@ -34,7 +24,8 @@ router.post('/signup', async (req, res) => {
 				password: hash,
 				email: email,
 				salt: salt
-			}
+			},
+			admin: false
 		});
 		res.send({
 			status: true,
@@ -49,6 +40,16 @@ router.post('/signup', async (req, res) => {
 			errors: result
 		});
 	}
+});
+
+router.get('/logout', function (req, res) {
+	req.session.destroy(function (err) {
+		res.send({
+			status: true,
+			message: 'Successfully logged out'
+		});
+		res.redirect('/'); //Inside a callback… bulletproof!
+	});
 });
 
 module.exports = router;

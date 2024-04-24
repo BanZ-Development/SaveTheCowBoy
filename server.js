@@ -8,7 +8,9 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 
 const authRoute = require('./routes/auth');
-const userRoute = require('./routes/index');
+const indexRoute = require('./routes/index');
+const adminRoute = require('./routes/admin');
+
 require('dotenv').config();
 const app = express();
 const port = 5000;
@@ -19,8 +21,13 @@ const limiter = rateLimit({
 	max: 1000
 });
 
+mongoose.connection.once('open', () => {
+	console.log('Connected to MongoDB');
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(
 	session({
 		secret: 'ASDFGHJKL',
@@ -40,11 +47,6 @@ app.use((req, res, next) => {
 	next();
 });
 
-app.use((req, res, next) => {
-	console.log(store);
-	next();
-});
-
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -58,7 +60,8 @@ app.use(async (req, res, next) => {
 });
 
 app.use('/api/auth', authRoute);
-app.use('/api/user', userRoute);
+app.use('/api/index', indexRoute);
+app.use('/api/admin', adminRoute);
 
 app.get('/', async (req, res) => {
 	res.sendFile('index.html', { root: __dirname + '/public/pages/' });
