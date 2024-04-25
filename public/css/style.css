@@ -5,7 +5,7 @@ html {
 
 body {
     margin: 0px;
-    background-color: #f2f2f2;
+    background-color: #1a1a1a;
 }
 
 nav {
@@ -26,6 +26,10 @@ nav {
     margin-inline: 5px;
 }
 
+.nav-link:hover {
+    color: #c9c9c9;
+}
+
 .nav-links {
     display: inline-block;
     margin-left: auto;
@@ -35,4 +39,77 @@ nav {
 .navLogo > img {
     display: block;
     height: 100px;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+    height: 90vh;
+    background-color: #fff0;
+}
+
+.main-content > div > img {
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    filter: blur(5px) brightness(0.3);
+    object-fit: cover;
+    object-position: center;
+}
+
+.slide {
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+}
+
+.main-contentText {
+    color: #fff;
+    margin-left: 40px;
+}
+
+.main-contentText > h1 {
+    font-size: 60px;
+    font-family: arial;
+}
+
+.progress {
+    display: block;
+    background-color: #33333396;
+    width: 100%;
+    height: 20px;
+    position: absolute;
+    bottom: 0;
+}
+
+.progressIn {
+    display: block;
+    background-color: #fff;
+    width: 0%;
+    height: 20px;
+    box-shadow: rgba(255, 255, 255, 0.24) 0px 5px 15px;
+}
+
+.btnLink {
+    border: none;
+    background-color: #fff;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-block: 15px;
+    font-size: 18px;
+    margin-inline: 5px;
+    border: solid 1px #fff0;
+}
+
+.btnLink:hover {
+    transition: ease all 0.3s;
+    background-color: #007c95;
+    color: #fff;
 }
