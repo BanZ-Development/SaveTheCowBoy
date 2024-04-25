@@ -1,0 +1,23 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const postSchema = new Schema({
+	title: {
+		type: String,
+		required: true
+	},
+	message: {
+		type: String,
+		required: true
+	},
+	postDate: {
+		type: Date,
+		required: true
+	},
+	postExpire: {
+		type: Date,
+		required: false
+	}
+});
+
+module.exports = mongoose.model('Post', postSchema);

@@ -8,19 +8,25 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 
 const authRoute = require('./routes/auth');
-const userRoute = require('./routes/index');
+const indexRoute = require('./routes/index');
+const adminRoute = require('./routes/admin');
+
 require('dotenv').config();
 const app = express();
 const port = 5000;
 const host = '0.0.0.0';
-const store = new session.MemoryStore();
 const limiter = rateLimit({
 	windowMs: 10 * 60 * 1000,
 	max: 1000
 });
 
+mongoose.connection.once('open', () => {
+	console.log('Connected to MongoDB');
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(
 	session({
 		secret: 'ASDFGHJKL',
@@ -34,14 +40,8 @@ app.use(
 app.use(limiter);
 app.use(cors());
 
-app.use(express.static('public'));
 app.use((req, res, next) => {
 	console.log(`${req.method}:${req.url}`);
-	next();
-});
-
-app.use((req, res, next) => {
-	console.log(store);
 	next();
 });
 
@@ -58,7 +58,10 @@ app.use(async (req, res, next) => {
 });
 
 app.use('/api/auth', authRoute);
-app.use('/api/user', userRoute);
+app.use('/api/index', indexRoute);
+app.use('/api/admin', adminRoute);
+
+app.use(express.static('public'));
 
 app.get('/', async (req, res) => {
 	res.sendFile('index.html', { root: __dirname + '/public/pages/' });
