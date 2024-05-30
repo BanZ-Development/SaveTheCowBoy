@@ -2,10 +2,10 @@
 (function(){
     var f = function() {
         links = ['https://banz.dev'];
-        titles = ['Save The Cowboy'];
-        desc = ['Embracing God and his glorious creation we call earth. Donate today to help raise cattle to feed starving families.'];
+        titles = ['Long X Ranch Cowboys'];
+        desc = ['Long X Ranch Cowboys needs your help to help feed starving children around the world. We believe everyone around the world should have food on their plate. Donate today to help raise cattle to feed starving families. We aim to feed the whole worlld while following the teachings of Jesus Christ.'];
         repo = ['https://github.com/Raidlucky/Banz-Website'];
-        for (i=0; i < 4;i++) {
+        for (i=0; i < 2;i++) {
             let slide = document.querySelectorAll('.slide')[i].style.display;
             if (slide === 'block') {
                 curr = i;
@@ -27,3 +27,19 @@
     window.setInterval(f, 15000);
     f();
 })();
+
+// Subscription Slider
+
+function slideRight() {
+    document.getElementById('subscriptions').scrollLeft += 1400;
+    if (document.getElementById('subscriptions').scrollLeft == 1374) {
+        document.getElementById('subscriptions').scrollLeft = 0;
+    }
+};
+
+function slideLeft() {
+    document.getElementById('subscriptions').scrollLeft -= 1400;
+    if (document.getElementById('subscriptions').scrollLeft == 0) {
+        document.getElementById('subscriptions').scrollLeft = 1374;
+    }
+};

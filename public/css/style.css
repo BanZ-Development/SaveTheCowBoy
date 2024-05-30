@@ -1,3 +1,10 @@
+:root {
+    --slate-gray: #6d8a96ff;
+    --dark-goldenrod: #a98743ff;
+    --bistre: #2b2118ff;
+    --white-smoke: #f2f2f2ff;
+    --rich-black: #101419ff;
+}
 
 html {
     scroll-behavior: smooth;
@@ -9,11 +16,14 @@ body {
 }
 
 nav {
-    background-color: #1a1a1a;
+    background-color: rgba(0, 0, 0, 0.521);
     color: #fff;
     height: 100px;
     display: flex;
     flex-direction: row;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
 }
 
 .nav-link {
@@ -23,7 +33,9 @@ nav {
     font-size: 20px;
     font-family: 'Roboto';
     line-height: 100px;
-    margin-inline: 5px;
+    margin-inline: 1vw;
+    cursor: pointer;
+    z-index: 2;
 }
 
 .nav-link:hover {
@@ -45,6 +57,7 @@ nav {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     width: 100%;
     position: relative;
     height: 90vh;
@@ -75,6 +88,7 @@ nav {
 .main-contentText > h1 {
     font-size: 60px;
     font-family: arial;
+    text-align: center;
 }
 
 .progress {
@@ -84,6 +98,7 @@ nav {
     height: 20px;
     position: absolute;
     bottom: 0;
+    border-bottom: 1px solid #ccc;
 }
 
 .progressIn {
@@ -112,4 +127,122 @@ nav {
     transition: ease all 0.3s;
     background-color: #007c95;
     color: #fff;
+}
+
+.subscriptionSection {
+    height: 90vh;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.subscriptionSection > h1 {
+    margin-block: 110px;
+    color: #2B2118;
+    font-family: 'Montserrat';
+    font-size: 45px;
+}
+
+.subscriptions {
+    display: flex;
+    flex-direction: row;
+    width: 1350px;
+    align-items: center;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    height: 650px;
+}
+
+.subscription {
+    display: flex;
+    flex-direction: column;
+    width: 374px;
+    height: 550px;
+    color: #2B2118;
+    font-family: 'Montserrat';
+    background-color: #f2f2f2;
+    margin-inline: 40px;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    position: relative;
+    transition: ease all 0.3s;
+    flex-shrink: 0;
+}
+
+.subscription:hover {
+    transform: scale(1.1);
+    background-color: #2B2118;
+    color: #fff;
+}
+
+.subscription:hover > .subBtn {
+    color: #2B2118;
+    background-color: #fff;
+}
+
+.subBtn {
+    background-color: #2B2118;
+    border-radius: 4px;
+    border: none;
+    height: 45px;
+    font-family: 'Montserrat';
+    color: #fff;
+    font-size: 16px;
+    width: 80%;
+    margin-inline: auto;
+    cursor: pointer;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+
+}
+
+.subscription > h2 {
+    text-align: center;
+    width: 100%;
+}
+
+.subscription > h1 {
+    display: flex;
+    flex-direction: row;
+    margin-inline: auto;
+}
+
+.subscription > h1 > p {
+    margin-block: 0px;
+    font-size: 23px;
+    line-height: 2;
+}
+
+.subOption {
+    display: flex;
+    flex-direction: row;
+    margin-inline: auto;
+    width: 80%;
+}
+
+.subOption > i {
+    height: 40px;
+    line-height: 3;
+    margin-right: 10px;
+}
+
+.subscriptionSlider {
+    display: flex;
+    flex-direction: row;
+}
+
+.subscriptionSlider > button {
+    border: none;
+    color: var(--rich-black);
+    background-color: #fff0;
+    cursor: pointer;
+}
+
+.subscriptionSlider > button > i {
+    font-size: 45px;
+    color: var(--bistre);
 }
