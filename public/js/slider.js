@@ -3,7 +3,7 @@
     var f = function() {
         links = ['https://banz.dev'];
         titles = ['Long X Ranch Cowboys'];
-        desc = ['Long X Ranch Cowboys needs your help to help feed starving children around the world. We believe everyone around the world should have food on their plate. Donate today to help raise cattle to feed starving families. We aim to feed the whole worlld while following the teachings of Jesus Christ.'];
+        desc = ['Long X Ranch Cowboys needs your help to help feed starving children around the world. We believe everyone around the world should have food on their plate. Donate today to help raise cattle to feed starving families. We aim to feed the whole world while following the teachings of Jesus Christ.'];
         repo = ['https://github.com/Raidlucky/Banz-Website'];
         for (i=0; i < 2;i++) {
             let slide = document.querySelectorAll('.slide')[i].style.display;
