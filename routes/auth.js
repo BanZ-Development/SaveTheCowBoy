@@ -17,8 +17,9 @@ router.post('/signup', async (req, res) => {
 
 	async function Passed() {
 		const { username, password, email } = req.body;
-		const { hash, salt } = hasher.returnHashAndSalt(password);
-		const result = await User.create({
+		const { hash, salt } = await hasher.returnHashAndSalt(password);
+
+		await User.create({
 			meta: {
 				username: username,
 				password: hash,

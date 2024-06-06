@@ -24,18 +24,18 @@ async function Authenticate(authAPI) {
 
 exports.register = async (req, res) => {
 	const result = register(req.body);
-	console.log('Result: \n' + result);
+	console.log('Register Validated:' + result);
 	return result;
 };
 
 exports.login = async (req) => {
 	const result = login(req.body);
-	console.log('Result: \n' + result);
+	console.log('Login Validated: ' + result);
 	return result;
 };
 
 exports.post = async (req, res) => {
 	const result = post(req.body);
-	console.log('Result: \n' + result);
+	console.log('Post Validated: ' + result);
 	return result;
 };

@@ -1,14 +1,12 @@
-function signup() {
+function login() {
 	let email = document.querySelector('#email').value;
-	let username = document.querySelector('#username').value;
 	let password = document.querySelector('#password').value;
 
 	const data = new FormData();
 	data.append('email', email);
-	data.append('username', username);
 	data.append('password', password);
 
-	fetch('api/auth/signup', {
+	fetch('api/auth/login', {
 		method: 'post',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
@@ -21,4 +19,4 @@ function signup() {
 		});
 }
 
-document.querySelector('#signupButton').addEventListener('click', signup);
+document.querySelector('#loginButton').addEventListener('click', login);

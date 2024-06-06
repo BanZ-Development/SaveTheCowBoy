@@ -27,7 +27,7 @@ passport.use(
 		},
 		async (email, password, done) => {
 			try {
-				if (!email || !password) {
+				if (!email || password == '') {
 					done(new Error('Missing credentials.'), null);
 				}
 				const query = User.where({
@@ -35,11 +35,12 @@ passport.use(
 				});
 				const user = await query.findOne();
 				if (!user) throw new Error('User not found');
-				const isValid = hasher.compareHash(password, user);
+				const isValid = await hasher.compareHash(password, user);
 				if (isValid) {
 					console.log('Auth successful');
 					done(null, user);
 				} else {
+					console.log('Wrong password');
 					done(null, null);
 				}
 			} catch (err) {

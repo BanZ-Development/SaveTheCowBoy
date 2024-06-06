@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 
 exports.compareHash = async (password, user) => {
 	const newHash = bcrypt.hashSync(password, user.meta.salt);
-	return newHash === user.meta.hash;
+	return newHash === user.meta.password;
 };
 
 exports.returnHashAndSalt = async (password) => {
