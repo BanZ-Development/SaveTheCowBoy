@@ -14,7 +14,7 @@
     <script src="../js/anime.min.js"></script>
     <script type="module" src="../js/signup.js"></script>
 </head>
-<body>
+<body style="background-color: #fcfcfc;">
     <nav>
         <a class="navLogo" href="/">
             <img src="../images/webLogo.png" alt="">
@@ -36,20 +36,26 @@
         </div>
     </nav>
     <div class="signupDiv">
-        <div class="signupDivSec">
-            <img class="signupImg" src="../images/ColoradoCountry2.jpg" alt="">
+        <div style="background-image: url(../images/ColoradoCountry2.jpg); background-position: center; background-size: cover; justify-content: center; align-items: center;" class="signupDivSec">
+            <div class="imgSignDesc">
+                <img style="height: 20%;margin-block: 20px; margin-inline: auto;" src="../images/webLogo.png" alt="">
+                <span style="background-color: #fff;" class="spacerLine"></span>
+                <p style="font-size: 20px;">Join our community of Christians just like you! Help us grow</p>
+                <h1 style="font-weight: 400;">Already have an account?</h1>
+                <a class="btnLink" style="color: #333; font-size: 25px; text-decoration: none; width: 50%;" href="login.html">Login</a>
+            </div>
         </div>
-        <div style="padding: 20px; justify-content: center;" class="signupDivSec">
-            <h1>Signup</h1>
+        <div style="padding-inline: 20px; justify-content: center;" class="signupDivSec">
+            <h1 style="font-size: 35px; font-weight: 600; margin-block: 10px;">Signup</h1>
+            <h1 style="font-size: 40px; font-weight: 600; margin-top: 10px; margin-bottom: 100px;">Create a new account</h1>
             <p>Username</p>
-            <input class="signupInput" type="text" id="username">
+            <input placeholder="Enter Username" class="signupInput" type="text" id="username">
             <p>Email</p>
-            <input class="signupInput" type="email" id="email">
+            <input placeholder="Enter Email" class="signupInput" type="email" id="email">
             <p>Password</p>
-            <input class="signupInput" type="password" id="password">
-            <button id="signupButton" style="margin-top: 40px; width: 50%; height: 50px; font-family: 'Montserrat'; font-weight: 600; margin-inline: auto;" class="btnLink">Signup</button>
+            <input placeholder="Enter Password" class="signupInput" type="password" id="password">
+            <button onclick="Continue()" style="background-color: #2B2118; height: 52px; color: #fff; width: 70%; margin-inline: auto; margin-top: 100px; font-size: 25px; font-family: 'Montserrat';" id="signupButton" class="btnLink">Continue</button>
         </div>
-        
     </div>
 </body>
 </html>

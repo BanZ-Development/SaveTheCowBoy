@@ -22,3 +22,12 @@ function signup() {
 }
 
 document.querySelector('#signupButton').addEventListener('click', signup);
+
+
+function Continue() {
+	Anime({
+		targets: '.signupDivSec',
+		opacity: 0,
+		easing: 'easeInOutExpo'
+	});
+}
