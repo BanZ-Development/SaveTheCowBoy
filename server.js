@@ -20,10 +20,6 @@ const limiter = rateLimit({
 	max: 1000
 });
 
-mongoose.connection.once('open', () => {
-	console.log('Connected to MongoDB');
-});
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
@@ -53,8 +49,17 @@ app.use(async (req, res, next) => {
 		await mongoose.connect(process.env.MONGODB_URI, {}).then();
 		next();
 	} catch (err) {
+		console.log('Hello!');
 		console.error(err);
 	}
+});
+
+mongoose.connection.once('error', () => {
+	console.log('Failed to connect to MongoDB');
+});
+
+mongoose.connection.once('open', () => {
+	console.log('Connected to MongoDB');
 });
 
 app.use('/api/auth', authRoute);
