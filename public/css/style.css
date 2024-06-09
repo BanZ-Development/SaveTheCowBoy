@@ -417,3 +417,28 @@ nav {
     border-radius: 6px;
     background-color: #ccc;
 }
+
+.subscriptionPick {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    color: #333;
+    border: none;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 5px;
+    margin-inline: auto;
+    background-color: #fff;
+    font-family: 'Montserrat';
+    cursor: pointer;
+    margin-block: 15px;
+    transition: ease all 0.3s;
+}
+
+.subscriptionPick:hover {
+    transform: scale(1.05);
+}
+
+.subscriptionPick > div > h1 {
+    margin-left: 20px;
+    line-height: 46px;
+}

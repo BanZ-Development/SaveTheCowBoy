@@ -14,7 +14,7 @@
     <script src="../js/anime.min.js"></script>
     <script type="module" src="../js/login.js"></script>
 </head>
-<body>
+<body style="background-color: #fcfcfc;">
     <nav>
         <a class="navLogo" href="/">
             <img src="../images/webLogo.png" alt="">
@@ -36,16 +36,23 @@
         </div>
     </nav>
     <div class="signupDiv">
-        <div class="signupDivSec">
-            <img class="signupImg" src="../images/ColoradoCountry2.jpg" alt="">
+        <div style="background-image: url(../images/ColoradoCountry2.jpg); background-position: center; background-size: cover; justify-content: center; align-items: center;" class="signupDivSec">
+            <div class="imgSignDesc">
+                <img style="height: 20%;margin-block: 20px; margin-inline: auto;" src="../images/webLogo.png" alt="">
+                <span style="background-color: #fff;" class="spacerLine"></span>
+                <p style="font-size: 20px;">Join our community of Christians just like you! Help us grow</p>
+                <h1 style="font-weight: 400;">Don't have an account?</h1>
+                <a class="btnLink" style="color: #333; font-size: 25px; text-decoration: none; width: 50%;" href="signup">Signup</a>
+            </div>
         </div>
         <div style="padding: 20px; justify-content: center;" class="signupDivSec">
-            <h1>Login</h1>
-            <p>Email</p>
-            <input class="signupInput" type="email" id="email">
+            <h1 style="font-size: 35px; margin-bottom: 100px;">Login</h1>
+            <p>Username</p>
+            <input placeholder="Enter Username" class="signupInput" type="email" id="email">
             <p>Password</p>
-            <input class="signupInput" type="password" id="password">
-            <button id="loginButton" style="margin-top: 40px; width: 50%; height: 50px; font-family: 'Montserrat'; font-weight: 600; margin-inline: auto;" class="btnLink">Login</button>
+            <input placeholder="Enter Password" class="signupInput" type="password" id="password">
+            <a style="width: 70%; margin-inline: auto; margin-block: 20px;" href="">Forgot Password or Email?</a>
+            <button style="background-color: #2B2118; height: 52px; color: #fff; width: 70%; margin-inline: auto; margin-top: 80px; font-size: 25px; font-family: 'Montserrat';" id="loginButton" class="btnLink">Login</button>
         </div>
     </div>
 </body>
