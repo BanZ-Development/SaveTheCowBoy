@@ -335,6 +335,7 @@ nav {
     right: 200px;
     width: 200px;
     top: 100px;
+    border: solid 1px #f2f2f2;
 }
 
 .dropLink {
@@ -374,6 +375,7 @@ nav {
     font-size: 20px;
     color: #333;
     background-color: #f3f3f3;
+    text-indent: 10px;
 }
 
 .signupDivSec {
@@ -432,13 +434,35 @@ nav {
     cursor: pointer;
     margin-block: 15px;
     transition: ease all 0.3s;
+    border: solid 1px #fff0;
 }
 
 .subscriptionPick:hover {
     transform: scale(1.05);
 }
 
+.subscriptionPick:hover > div {
+    display: flex !important;
+}
+
 .subscriptionPick > div > h1 {
     margin-left: 20px;
     line-height: 46px;
+}
+
+.subscriptionDesc {
+    flex-direction: column;
+    padding-bottom: 10px;
+}
+
+.subscriptionDesc > .subOption {
+    margin-left: 20px;
+}
+
+.subscriptionDesc > .subOption > i {
+    line-height: 1.9;
+}
+
+.subscriptionDesc > .subOption > i {
+   color: #5285ff;
 }
