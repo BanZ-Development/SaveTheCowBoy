@@ -1,4 +1,4 @@
-function login() {
+async function login() {
 	let email = document.querySelector('#email').value;
 	let password = document.querySelector('#password').value;
 
@@ -6,7 +6,7 @@ function login() {
 	data.append('email', email);
 	data.append('password', password);
 
-	fetch('api/auth/login', {
+	await fetch('api/auth/login', {
 		method: 'post',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
@@ -16,6 +16,12 @@ function login() {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
+			if (data != undefined && data.status) {
+				console.log('Logged in!');
+				window.location.replace('/');
+			} else {
+				console.log('Incorrect email or password!');
+			}
 		});
 }
 

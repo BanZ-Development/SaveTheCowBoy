@@ -4,6 +4,7 @@ const User = require('../model/User');
 const hasher = require('../controllers/hasher');
 
 passport.serializeUser((user, done) => {
+	console.log('Serializing: ' + user.id);
 	console.log(user);
 	done(null, user.id);
 });

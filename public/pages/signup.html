@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="../js/anime.min.js"></script>
     <script type="module" src="../js/signup.js"></script>
+    <script type="module" src="../js/main.js"></script>
 </head>
 <body style="background-color: #fcfcfc;">
     <nav>
@@ -32,7 +33,7 @@
             </div>
         </div>
             <a href="" class="nav-link">Pricing</a>
-            <a href="signup" class="nav-link">Sign Up</a>
+            <a id="navProfile" href="checkout" class="nav-link">Sign Up</a>
         </div>
     </nav>
     <div class="signupDiv">
@@ -54,12 +55,13 @@
             <input placeholder="Enter Email" class="signupInput" type="email" id="email">
             <p>Password</p>
             <input placeholder="Enter Password" class="signupInput" type="password" id="password">
-            <button id="continueBtn" onclick="Continue()" style="background-color: #2B2118; height: 52px; color: #fff; width: 70%; margin-inline: auto; margin-top: 100px; font-size: 25px; font-family: 'Montserrat';" class="btnLink">Continue</button>
+            <a style="width: 70%; margin-inline: auto; margin-block: 20px;" href="/login">Already have an account?</a>
+            <button id="continueBtn" style="background-color: #2B2118; height: 52px; color: #fff; width: 70%; margin-inline: auto; margin-top: 100px; font-size: 25px; font-family: 'Montserrat';" class="btnLink">Continue</button>
             
         </div>
         <div style="display: none; flex-direction: column; padding-inline: 20px; justify-content: center;" id="signup2" class="signupDivSec">
             <h1 style="font-size: 35px;">Choose a subscription</h1>
-            <button onclick="selectSubscription(0)" class="subscriptionPick">
+            <button id="subscriptionPick" data-selected="false" onclick="selectSubscription(0)"class="subscriptionPick">
                 <div style="display: flex; flex-direction: row;">
                     <h1 style="margin-inline: 20px;">Day Worker</h1>
                     <h1 style="display: flex;flex-direction: row;margin-left: auto;align-items: center; margin-right: 10px;">$9.<p style="margin-block: 0px;font-size: 23px;line-height: 2;">99</p></h1>
@@ -76,7 +78,7 @@
                     </div>
                 </div>
             </button>
-            <button onclick="selectSubscription(1)" class="subscriptionPick">
+            <button id="subscriptionPick"data-selected="false" onclick="selectSubscription(1)" class="subscriptionPick">
                 <div style="display: flex; flex-direction: row;">
                     <h1 style="margin-inline: 20px;">Ranch Cowboy</h1>
                     <h1 style="display: flex;flex-direction: row;margin-left: auto;align-items: center; margin-right: 10px;">$24.<p style="margin-block: 0px;font-size: 23px;line-height: 2;">99</p></h1>
@@ -93,7 +95,7 @@
                     </div>
                 </div>
             </button>
-            <button onclick="selectSubscription(2)" class="subscriptionPick">
+            <button id="subscriptionPick" data-selected="false" onclick="selectSubscription(2)"class="subscriptionPick">
                 <div style="display: flex; flex-direction: row;">
                     <h1 style="margin-inline: 20px;">Jigger Boss</h1>
                     <h1 style="display: flex;flex-direction: row;margin-left: auto;align-items: center; margin-right: 10px;">$49.<p style="margin-block: 0px;font-size: 23px;line-height: 2;">99</p></h1>
@@ -110,7 +112,7 @@
                     </div>
                 </div>
             </button>
-            <button onclick="selectSubscription(3)" class="subscriptionPick">
+            <button id="subscriptionPick"data-selected="false" onclick="selectSubscription(3)"class="subscriptionPick">
                 <div style="display: flex; flex-direction: row;">
                     <h1 style="margin-inline: 20px;">Top Hand</h1>
                     <h1 style="display: flex;flex-direction: row;margin-left: auto;align-items: center; margin-right: 10px;">$99.<p style="margin-block: 0px;font-size: 23px;line-height: 2;">99</p></h1>
@@ -127,7 +129,7 @@
                     </div>
                 </div>
             </button>
-            <button onclick="selectSubscription(4)" class="subscriptionPick">
+            <button id="subscriptionPick" data-selected="false" onclick="selectSubscription(4)"class="subscriptionPick">
                 <div style="display: flex; flex-direction: row;">
                     <h1 style="margin-inline: 20px;">Cow Boss</h1>
                     <h1 style="display: flex;flex-direction: row;margin-left: auto;align-items: center; margin-right: 10px;">$249.<p style="margin-block: 0px;font-size: 23px;line-height: 2;">99</p></h1>
@@ -144,7 +146,7 @@
                     </div>
                 </div>
             </button>
-            <button onclick="selectSubscription(5)" class="subscriptionPick">
+            <button id="subscriptionPick" data-selected="false" onclick="selectSubscription(5)"class="subscriptionPick">
                 <div style="display: flex; flex-direction: row;">
                     <h1 style="margin-inline: 20px;">Cattle Baron</h1>
                     <h1 style="display: flex;flex-direction: row;margin-left: auto;align-items: center; margin-right: 10px;">$499.<p style="margin-block: 0px;font-size: 23px;line-height: 2;">99</p></h1>
@@ -161,7 +163,7 @@
                     </div>
                 </div>
             </button>
-            <button style="background-color: #2B2118; height: 52px; color: #fff; width: 70%; margin-inline: auto; margin-top: 100px; font-size: 25px; font-family: 'Montserrat';" id="signupButton" class="btnLink">Signup</button> <!--NEW SIGNUP BUTTOn-->
+            <button style="background-color: #2B2118; height: 52px; color: #fff; width: 70%; margin-inline: auto; margin-top: 100px; font-size: 25px; font-family: 'Montserrat';" id="checkoutBtn" class="btnLink">Check out</button> <!--NEW SIGNUP BUTTOn-->
         </div>
     </div>
     <script>
@@ -174,27 +176,16 @@
             document.getElementById("continueBtn").click();
         }}); 
 
-        function Continue() {
-            anime({
-                targets: '#signup1',
-                opacity: 0,
-                easing: 'easeInOutExpo',
-                duration: 1000
-            });
-            setTimeout(function() {
-                document.getElementById('signup1').style.display = 'none'
-                document.getElementById('signup2').style.display = 'flex'
-            }, 1000);
-        }
-
         function selectSubscription(sub) {
             let selectedSubscription = document.querySelectorAll('.subscriptionPick')[sub];
             for (i=0; i < 6; i++) {
                 document.querySelectorAll('.subscriptionPick')[i].style = '';
                 document.querySelectorAll('.subscriptionDesc')[i].style = 'display: none;';
+                document.querySelectorAll('.subscriptionDesc')[i].setAttribute('data-selected','false');
             }
             selectedSubscription.style = 'border: 1px solid #539eff; box-shadow: rgba(41, 41, 253, 0.2) 0px 7px 29px 0px; transform: scale(1.05);';
             document.querySelectorAll('.subscriptionDesc')[sub].style = 'display: flex;';
+            document.querySelectorAll('.subscriptionDesc')[sub].setAttribute('data-selected','true');
         }
     </script>
 </body>
