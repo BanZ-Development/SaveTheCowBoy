@@ -524,3 +524,54 @@ nav {
 .navProfileDropLink:hover {
     background-color: #ccc; 
 }
+
+.settings {
+    display: flex;
+    flex-direction: row;
+    padding-top: 100px;
+    height: calc(100% - 100px);
+}
+
+.settingSidebar {
+    padding-top: 30px;
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    height: calc(100% - 30px);
+    align-items: center;
+}
+
+.settingSidebarBtn {
+    border: none;
+    height: 50px;
+    width: 70%;
+    padding-inline: 15px;
+    margin-block: 10px;
+    font-family: 'Roboto';
+    font-size: 20px;
+    border-radius: 5px;
+    background-color: #fff0;
+    color: #474747;
+    transition: all ease 0.3s;
+    cursor: pointer;
+    text-align: left;
+}
+
+.settingSidebarBtn > i {
+    margin-inline: 10px;
+}
+
+.settingSidebarBtn:hover {
+    background-color: #2B2118;
+    color: #fff;
+}
+
+.settingMainContent {
+    display: flex;
+    flex-direction: column;
+    background-color: #1e1e1e;
+    width: 80%;
+    height: 100%;
+    color: #fff;
+    padding-inline: 30px;
+}

@@ -1,10 +1,10 @@
 
 (function(){
     var f = function() {
-        links = ['https://banz.dev'];
+        links = ['signup']; // join community
         titles = ['Long X Ranch Cowboys'];
         desc = ['Long X Ranch Cowboys needs your help to help feed starving children around the world. We believe everyone around the world should have food on their plate. Donate today to help raise cattle to feed starving families. We aim to feed the whole world while following the teachings of Jesus Christ.'];
-        repo = ['https://github.com/Raidlucky/Banz-Website'];
+        repo = ['']; // donate
         for (i=0; i < 2;i++) {
             let slide = document.querySelectorAll('.slide')[i].style.display;
             if (slide === 'block') {
@@ -22,7 +22,6 @@
         anime({targets: ".slide",opacity: [0, 1],duration: 500,easing: 'linear'});
         document.querySelector('.progressIn').style.width = '0%';
         anime({targets: '.progressIn',duration: '15000',width: ['0%', '100%'],easing: 'linear'});
-        console.log('Switched Slide')
     };
     window.setInterval(f, 15000);
     f();
