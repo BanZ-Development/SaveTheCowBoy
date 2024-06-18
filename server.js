@@ -9,6 +9,7 @@ const authRoute = require('./routes/auth');
 const indexRoute = require('./routes/index');
 const adminRoute = require('./routes/admin');
 const checkoutRoute = require('./routes/checkout');
+const forumRoute = require('./routes/forum');
 const User = require('./model/User');
 const passport = require('passport');
 
@@ -77,6 +78,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/index', indexRoute);
 app.use('/api/admin', adminRoute);
 app.use('/api/checkout', checkoutRoute);
+app.use('/api/forum', forumRoute);
 
 app.get('/', async (req, res) => {
 	res.sendFile('index.html', { root: __dirname + '/public/pages/' });

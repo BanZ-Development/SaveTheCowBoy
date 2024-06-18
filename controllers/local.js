@@ -13,7 +13,6 @@ passport.deserializeUser(async (id, done) => {
 	console.log('Deserializing: ' + id);
 	try {
 		const user = await User.findById(id);
-		if (!user) throw new Error('User not found');
 		done(null, user);
 	} catch (err) {
 		console.log(err);
@@ -27,6 +26,8 @@ passport.use(
 			usernameField: 'email'
 		},
 		async (email, password, done) => {
+			console.log(email);
+
 			try {
 				if (!email || password == '') {
 					done(new Error('Missing credentials.'), null);
@@ -35,7 +36,6 @@ passport.use(
 					'meta.email': email
 				});
 				const user = await query.findOne();
-				if (!user) throw new Error('User not found');
 				const isValid = await hasher.compareHash(password, user);
 				if (isValid) {
 					console.log('Auth successful');

@@ -8,7 +8,7 @@ router.get('/getPosts', async (req, res) => {
 	const posts = await Post.find({});
 	console.log(posts);
 	res.send({
-		result: true,
+		status: true,
 		message: 'Posts have been sent',
 		posts: posts
 	});

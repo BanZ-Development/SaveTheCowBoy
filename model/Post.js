@@ -10,13 +10,17 @@ const postSchema = new Schema({
 		type: String,
 		required: true
 	},
+	uID: {
+		type: String,
+		required: true
+	},
+	username: {
+		type: String,
+		required: true
+	},
 	postDate: {
 		type: Date,
 		required: true
-	},
-	postExpire: {
-		type: Date,
-		required: false
 	}
 });
 
