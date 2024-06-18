@@ -12,6 +12,21 @@ router.post('/login', passport.authenticate('local'), (req, res) => {
 	});
 });
 
+router.post('/isLoggedIn', (req, res) => {
+	if (req.user) {
+		res.send({
+			status: true,
+			message: 'User is logged in',
+			username: req.user.meta.username
+		});
+	} else {
+		res.send({
+			status: false,
+			message: 'User is not logged in'
+		});
+	}
+});
+
 router.post('/signup', async (req, res) => {
 	validate.Authenticate(validate.register(req, res), Passed, Failed);
 
@@ -47,9 +62,8 @@ router.get('/logout', function (req, res) {
 	req.session.destroy(function (err) {
 		res.send({
 			status: true,
-			message: 'Successfully logged out'
+			message: 'User logged out.'
 		});
-		res.redirect('/'); //Inside a callback… bulletproof!
 	});
 });
 
