@@ -1,7 +1,7 @@
 const User = require('../model/User');
 const register = require('../validators/register');
 const login = require('../validators/login');
-const post = require('../validators/post');
+const news = require('../validators/news');
 
 exports.Authenticate = async (authAPI, Passed, Failed) => {
 	const result = await Promise.resolve(
@@ -34,8 +34,8 @@ exports.login = async (req) => {
 	return result;
 };
 
-exports.post = async (req, res) => {
-	const result = post(req.body);
+exports.news = async (req, res) => {
+	const result = news(req.body);
 	console.log('Post Validated: ' + result);
 	return result;
 };

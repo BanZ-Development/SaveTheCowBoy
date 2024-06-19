@@ -64,5 +64,6 @@ function startCheckout() {
 		});
 }
 
-document.querySelector('#continueBtn').addEventListener('click', continueClick);
+console.log('hello');
 document.querySelector('#checkoutBtn').addEventListener('click', startCheckout);
+document.querySelector('#continueBtn').addEventListener('click', continueClick);

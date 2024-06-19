@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const postSchema = new Schema({
+const newsSchema = new Schema({
 	title: {
 		type: String,
 		required: true
@@ -22,10 +22,10 @@ const postSchema = new Schema({
 		type: Date,
 		required: true
 	},
-	votes: {
-		type: Number,
+	expireDate: {
+		type: Date,
 		required: false
 	}
 });
 
-module.exports = mongoose.model('Post', postSchema);
+module.exports = mongoose.model('News', newsSchema);
