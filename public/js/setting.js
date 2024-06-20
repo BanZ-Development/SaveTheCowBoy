@@ -7,3 +7,16 @@ function switchSetting(sub) {
     document.querySelectorAll('#settingsType')[sub].style = 'display: flex;';
 
 }
+
+var loadFile = function (event) {
+    var image = document.getElementById("imagePreview");
+    image.src = URL.createObjectURL(event.target.files[0]);
+};
+
+function changeUsername() {
+    document.getElementById('username').removeAttribute('disabled')
+}
+
+function ChangePassword() {
+
+}

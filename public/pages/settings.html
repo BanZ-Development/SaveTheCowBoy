@@ -11,7 +11,6 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="../js/anime.min.js"></script>
-    <script src="../js/slider.js"></script>
     <script src="../js/setting.js"></script>
     <script type="module" src="../js/navbar.js"></script>
 </head>
@@ -25,23 +24,78 @@
             <button onclick="switchSetting(4)" class="settingSidebarBtn"><i class="fa-solid fa-bell"></i> Notifications</button>
         </div>
         <div class="settingMainContent">
-            <div id="settingsType" class="accountSettings">
-                <h1>Account Settings</h1>
+            <div id="settingsType" class="settingSection">
+                <div class="settingColumn">
+                    <h1>Account Settings</h1>
+                    <span class="line"></span>
+                    <div class="avatar-upload">
+                        <div class="avatar-edit">
+                            <input type='file' onchange="loadFile(event)" id="imageUpload" accept=".png, .jpg, .jpeg" />
+                            <label for="imageUpload"></label>
+                        </div>
+                        <div class="avatar-preview">
+                            <img style="border-radius: 50%; object-fit: cover; object-position: center; width: 192px; height: 192px;" id="imagePreview" src='../images/default-pfp.jpeg'>
+                        </div>
+                    </div>
+                    <h2>Username</h2>
+                    <input id='username' placeholder="Username" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="text" disabled>
+                    <button onclick="changeUsername()" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px; "><i class="fa-solid fa-pencil"></i> Change Username</button>
+                    <h2>password</h2>
+                    <input id="password" placeholder="Password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
+                    <button onclick="changePassword()" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;"><i class="fa-solid fa-pencil"></i> Change Password</button>
+                </div>
             </div>
             <div style="display: none;" id="settingsType" class="settingSection">
-                <h1>Subscription Settings</h1>
+                <div style="width: 85%; margin-inline: auto;">
+                    <h1>Subscription Settings</h1>
+                    <span class="line"></span>
+                    <div style="margin-left: 10px;" class="">
+                        <h2>Current Subscription</h2>
+                        <div style="margin-inline: 0px;" class="subscription">
+                            <h2>Day Worker</h2>
+                            <h1>$9.<p>99</p></h1>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                        </div>
+                        <button style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;" class="btnLink"><i class="fa-solid fa-ban"></i> Cancel Subscription</button>
+                    </div>
+                </div>
             </div>
             <div style="display: none;" id="settingsType" class="settingSection">
-                <h1>Appearence Settings</h1>
+                <div style="width: 85%; margin-inline: auto;">
+                    <h1>Appearence Settings</h1>
+                    <span class="line"></span>
+                </div>
             </div>
             <div style="display: none;" id="settingsType" class="settingSection">
-                <h1>Security Settings</h1>
+                <div style="width: 85%; margin-inline: auto;">
+                    <h1>Security Settings</h1>
+                    <span class="line"></span>
+                </div>
             </div>
             <div style="display: none;" id="settingsType" class="settingSection">
-                <h1>Notification Settings</h1>
+                <div style="width: 85%; margin-inline: auto;">
+                    <h1>Notification Settings</h1>
+                    <span class="line"></span>
+                </div>
             </div>
         </div>
     </div>
+
+    <style>
+        .subscription:hover {
+            transform: scale(1);
+            color: #2B2118;
+            background-color: #f2f2f2;
+        }
+    </style>
 
     </body>
     </html>

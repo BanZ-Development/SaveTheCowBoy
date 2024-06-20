@@ -63,11 +63,18 @@ function createPostElement(post) {
 	let date = new Date(postDate);
 	console.log(postDate);
 	div.innerHTML = `
-	<div id=${_id}>
-	<h3><a href="/forum?id=${_id}">${title}</a></h3>
+	<span class="line"></span>
+	<div class="forumPost" id=${_id}>
+	<a class="forumUser" href="/profile?uid=${uID}">${username}</a>
+	<div class="forumTitle">
+		<h3><a href="/forum?id=${_id}">${title}</a></h3>
+		<p>${date.toDateString()}</p>
+	</div>
+	
+	
 	<p>${message}</p>
-	<a href="/profile?uid=${uID}">${username}</a>
-	<p>${date.toDateString()}</p>
+	
+	
 	</div>
 	`;
 	document.querySelector('#posts').appendChild(div);
@@ -105,3 +112,18 @@ function createPost() {
 
 loadPosts();
 document.querySelector('#postButton').addEventListener('click', createPost);
+
+
+document.querySelector('#showPopup').addEventListener('click', popupPost);
+
+document.querySelector('#makePost').addEventListener('click', closePost);
+
+function popupPost() {
+	document.getElementById('makePost').style = "display: flex !important;";
+	document.getElementById('postInformation').style = "display: flex !important;";
+}
+
+function closePost() {
+	document.getElementById('makePost').style = "display: none !important;";
+	document.getElementById('postInformation').style = "display: none !important;";
+}

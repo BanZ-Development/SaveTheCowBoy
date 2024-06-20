@@ -14,16 +14,28 @@
     <script type="module" src="../js/forum.js"></script>
 </head>
 <body>
-    <br>
-    <br>
-    <br>
-    <p>Create a forum post</p>
-    <input id="title" placeholder="Enter title"type="text">
-    <input id="message" placeholder="Enter text"type="text">
-    <button id="postButton">Post</button>
-    <div id="posts">
-
+    <div class="forumSection">
+        <div style="display: flex; flex-direction: row;">
+            <h1 style="color: #fff;">Save the Cowboy Forums</h1>
+            <button id="showPopup" style="margin-left: auto; padding-block: 0px; height: 40px;" class="btnLink" href=""><i style="margin-inline: 5px;" class="fa-regular fa-square-plus"></i> Create Post</button>
+        </div>
+        <div>
+            <div id="makePost" style="display: none;" class="popupPost"></div>
+            <div style="display: none;" id="postInformation" class="postInformation">
+                <h1 style="color: #333; width: 94%; margin-inline: auto;">Create Post</h1>
+                <input style="width: 95%; margin-block: 20px; font-family: 'Roboto';" class="signupInput" id="title" placeholder="Enter title"type="text">
+                <textarea class="postText" id="message" placeholder="Enter text"type="text"></textarea>
+                <button style="background-color: #f3f3f3; height: 40px; padding-block: 0px; font-family: 'Roboto';" class="btnLink" id="postButton">Post</button>
+            </div>
+        </div>
+        <div id="posts"></div>
+        </div>
     </div>
+    <style>
+        .line {
+            margin-block: 3.5px;
+        }
+    </style>
 </body>
 <script src="../js/navbar.js"></script>
 </html>
