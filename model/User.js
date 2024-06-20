@@ -23,6 +23,21 @@ const userSchema = new Schema({
 	admin: {
 		type: Boolean,
 		required: true
+	},
+	subscription: {
+		tier: {
+			rank: Number,
+			id: String
+		},
+		sessionID: {
+			type: String
+		},
+		isSubscribed: {
+			type: Boolean
+		},
+		customer: {
+			type: String
+		}
 	}
 });
 

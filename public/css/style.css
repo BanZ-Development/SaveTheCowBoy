@@ -736,4 +736,5 @@ nav {
     margin-inline: auto;
     height: 60%;
     color: #333;
+    white-space: pre-wrap;
   }

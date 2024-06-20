@@ -72,7 +72,7 @@ function createPostElement(post) {
 	</div>
 	
 	
-	<p>${message}</p>
+	<p style="white-space:pre;">${message}</p>
 	
 	
 	</div>
@@ -113,17 +113,16 @@ function createPost() {
 loadPosts();
 document.querySelector('#postButton').addEventListener('click', createPost);
 
-
 document.querySelector('#showPopup').addEventListener('click', popupPost);
 
 document.querySelector('#makePost').addEventListener('click', closePost);
 
 function popupPost() {
-	document.getElementById('makePost').style = "display: flex !important;";
-	document.getElementById('postInformation').style = "display: flex !important;";
+	document.getElementById('makePost').style = 'display: flex !important;';
+	document.getElementById('postInformation').style = 'display: flex !important;';
 }
 
 function closePost() {
-	document.getElementById('makePost').style = "display: none !important;";
-	document.getElementById('postInformation').style = "display: none !important;";
+	document.getElementById('makePost').style = 'display: none !important;';
+	document.getElementById('postInformation').style = 'display: none !important;';
 }

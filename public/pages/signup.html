@@ -29,7 +29,7 @@
             <h1 style="font-size: 35px; font-weight: 600; margin-block: 10px;">Signup</h1>
             <h1 style="font-size: 40px; font-weight: 600; margin-top: 10px; margin-bottom: 100px;">Create a new account</h1>
             <p>Username</p>
-            <input placeholder="Enter Username" class="signupInput" type="text" id="username">
+            <input placeholder="Enter Username" class="signupInput" type="text" id="usernameInput">
             <p>Email</p>
             <input placeholder="Enter Email" class="signupInput" type="email" id="email">
             <p>Password</p>
@@ -147,13 +147,7 @@
     </div>
     <script>
 
-        let input = document.getElementById("password");
-
-        input.addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            document.getElementById("continueBtn").click();
-        }}); 
+        
 
         function selectSubscription(sub) {
             let selectedSubscription = document.querySelectorAll('.subscriptionPick')[sub];

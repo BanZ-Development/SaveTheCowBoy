@@ -10,14 +10,21 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-	console.log('Deserializing: ' + id);
-	try {
-		const user = await User.findById(id);
-		done(null, user);
-	} catch (err) {
-		console.log(err);
-		done(err, null);
-	}
+	const queryOptions = { timeout: true, maxTimeMS: 10000 }; // Set maxTimeMS to 10 seconds
+
+	User.findOne({ _id: id }, null, queryOptions)
+		.then((user) => {
+			if (user) {
+				console.log('User found:', user);
+				done(null, user);
+			} else {
+				console.log('User not found');
+				done(err, null);
+			}
+		})
+		.catch((error) => {
+			console.error('Error finding user:', error);
+		});
 });
 
 passport.use(
@@ -35,6 +42,7 @@ passport.use(
 				const query = User.where({
 					'meta.email': email
 				});
+				console.log(query);
 				const user = await query.findOne();
 				const isValid = await hasher.compareHash(password, user);
 				if (isValid) {
@@ -45,7 +53,7 @@ passport.use(
 					done(null, null);
 				}
 			} catch (err) {
-				done(err, null);
+				done(null, null);
 			}
 		}
 	)

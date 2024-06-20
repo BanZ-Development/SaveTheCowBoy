@@ -5,7 +5,7 @@ const validate = require('../controllers/validate');
 const passport = require('passport');
 require('../controllers/local');
 
-router.post('/login', passport.authenticate('local'), (req, res) => {
+router.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), (req, res) => {
 	res.send({
 		status: true,
 		message: 'Logged in'
@@ -28,6 +28,7 @@ router.post('/isLoggedIn', (req, res) => {
 });
 
 router.post('/signup', async (req, res) => {
+	console.log(req.body);
 	validate.Authenticate(validate.register(req, res), Passed, Failed);
 
 	async function Passed() {
@@ -42,16 +43,26 @@ router.post('/signup', async (req, res) => {
 				salt: salt
 			},
 			admin: false
-		});
-		res.send({
-			status: true,
-			message: 'User created'
-		});
+		})
+			.then((user) => {
+				console.log(user._id);
+				res.send({
+					status: true,
+					message: 'User created',
+					id: user._id
+				});
+			})
+			.catch((error) => {
+				res.send({
+					status: false,
+					error: error
+				});
+			});
 	}
 
 	function Failed(result) {
 		res.send({
-			status: true,
+			status: false,
 			message: 'Input validation failed',
 			errors: result
 		});
