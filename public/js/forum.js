@@ -61,7 +61,6 @@ function createPostElement(post) {
 	const { _id, title, message, username, postDate, uID } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
-	console.log(postDate);
 	div.innerHTML = `
 	<span class="line"></span>
 	<div class="forumPost" id=${_id}>

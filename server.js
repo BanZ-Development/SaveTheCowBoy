@@ -12,6 +12,7 @@ const checkoutRoute = require('./routes/checkout');
 const forumRoute = require('./routes/forum');
 const User = require('./model/User');
 const passport = require('passport');
+const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 const app = express();
@@ -22,25 +23,59 @@ const limiter = rateLimit({
 	max: 1000
 });
 
+app.use(async (req, res, next) => {
+	try {
+		await mongoose.connect(process.env.MONGODB_URI, {});
+	} catch (err) {
+		console.log('Hello!');
+		console.error(err);
+	}
+	next();
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
+app.use(cookieParser());
 app.use(
 	session({
-		secret: 'ASDFGHJKL',
+		secret: process.env.SESSION_SECRET,
 		resave: false,
-		saveUninitialized: false,
+		saveUninitialized: true,
 		store: MongoStore.create({
-			mongoUrl: process.env.MONGODB_URI
-		})
+			mongoUrl: process.env.MONGODB_URI,
+			ttl: 14 * 24 * 60 * 60, // 14 days
+			autoRemove: 'native'
+		}),
+		cookie: {
+			path: '/',
+			maxAge: 3600000, // 1 hour
+			httpOnly: false,
+			secure: false // TODO: Update this on production
+		}
 	})
 );
+
+app.use((req, res, next) => {
+	req.session.save((err) => {
+		if (err) {
+			console.error('Session save error:', err);
+		}
+		next();
+	});
+});
+
 app.use(limiter);
 app.use(cors());
 app.use(express.static('public'));
 
 app.use((req, res, next) => {
 	console.log(`${req.method}:${req.url}`);
+	next();
+});
+
+app.use((req, res, next) => {
+	console.log(`Session: ${req.session.id}`);
 	next();
 });
 
@@ -54,16 +89,6 @@ app.use(async (req, res, next) => {
 		next();
 		app.use(passport.session());
 	}
-});
-
-app.use(async (req, res, next) => {
-	try {
-		await mongoose.connect(process.env.MONGODB_URI, {});
-	} catch (err) {
-		console.log('Hello!');
-		console.error(err);
-	}
-	next();
 });
 
 mongoose.connection.once('error', () => {

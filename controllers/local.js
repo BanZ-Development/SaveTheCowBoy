@@ -10,21 +10,21 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-	const queryOptions = { timeout: true, maxTimeMS: 10000 }; // Set maxTimeMS to 10 seconds
+	console.log('Deserializing: ' + id);
 
-	User.findOne({ _id: id }, null, queryOptions)
-		.then((user) => {
-			if (user) {
-				console.log('User found:', user);
-				done(null, user);
-			} else {
-				console.log('User not found');
-				done(err, null);
-			}
-		})
-		.catch((error) => {
-			console.error('Error finding user:', error);
-		});
+	try {
+		const user = await User.findById(id).exec();
+		if (user) {
+			console.log('User found:', user);
+			done(null, user);
+		} else {
+			console.log('User not found');
+			done(null, null);
+		}
+	} catch (error) {
+		console.error('Error finding user:', error);
+		done(error, null);
+	}
 });
 
 passport.use(
