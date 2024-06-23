@@ -96,6 +96,14 @@ nav {
     text-align: center;
 }
 
+.main-contentText > p {
+    margin-inline: auto;
+    width: 40%;
+    font-family: 'Roboto';
+    font-size: 20px;
+    text-align: center;
+}
+
 .progress {
     display: block;
     background-color: #33333396;
@@ -139,7 +147,7 @@ nav {
 }
 
 .subscriptionSection {
-    height: 90vh;
+    height: 1100px;
     background-color: #fff;
     display: flex;
     flex-direction: column;
@@ -513,9 +521,10 @@ nav {
 }
 
 .navProfileDropLink {
-    height: 45px;
-    line-height: 45px;
-    padding: 10px;
+    display: block;
+    height: 57px;
+    line-height: 57px;
+    padding-inline: 8px;
     color: #333;
     text-decoration: none;
     font-family: 'Roboto';
@@ -523,12 +532,12 @@ nav {
 }
 
 .navProfileDropLink > i {
-    line-height: 45px;
+    line-height: 57px;
     margin-inline: 5px;
 }
 
 .navProfileDropLink:hover {
-    background-color: #ccc; 
+    background-color: #e2e2e2; 
 }
 
 .settings {
@@ -669,6 +678,11 @@ nav {
     border-radius: 5px;
   }
 
+  .forumPost > p {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+  }
+
   .forumTitle > h3 > a {
     font-size: 1.6vw;
     color: #fff !important;
@@ -748,4 +762,8 @@ nav {
   #posts {
     display: flex;
     flex-direction: column-reverse;
+  }
+
+  @media only screen and (max-width: 394px) {
+
   }
