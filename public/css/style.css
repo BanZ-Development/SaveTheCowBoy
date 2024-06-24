@@ -10,12 +10,15 @@ html {
     scroll-behavior: smooth;
     font-family: 'Montserrat';
     height: 100%;
+    
 }
 
 body {
+    padding: 0px;
     margin: 0px;
     background-color: #1a1a1a;
     height: 100%;
+    overflow-x: hidden;
 }
 
 nav {
@@ -67,6 +70,7 @@ nav {
     position: relative;
     height: 90vh;
     background-color: #fff0;
+    overflow: hidden;
 }
 
 .main-content > div > img {
@@ -764,6 +768,110 @@ nav {
     flex-direction: column-reverse;
   }
 
-  @media only screen and (max-width: 394px) {
+  .forumBtns {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
 
+  }
+
+  .iconBtn {
+    display: block;
+    background-color: #fff0;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    margin-inline: 5px;
+  }
+
+  @media only screen and (max-width: 1478px) {
+
+    .subscriptionSection {
+        height: fit-content;
+        padding-block: 100px;
+    }
+
+    .subscriptionSlider {
+        width: 100%;
+    }
+
+    .subscriptionSlider > button {
+        display: none;
+    }
+
+    .subscriptions {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        height: fit-content !important;
+        padding-block: 50px;
+        row-gap: 40px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .subscription {
+        width: 24vw;
+    }
+
+    .aboutSectionPortion > h1 {
+        font-size: 1.8vw !important;
+    }
+
+    .aboutSectionPortion > h2 {
+        font-size: 1.6vw !important;
+    }
+
+    .aboutSectionPortion > p {
+        font-size: 1.3vw !important;
+    }
+
+    .aboutImg {
+        height: 40vh;
+    }
+
+    .aboutGridImg {
+        grid-template-columns: auto auto;
+        height: fit-content;
+        padding-block: 20px;
+        width: 85%;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .carouselImg {
+        width: 30vw;
+        height: 30vh;
+    }
+
+    .aboutSection {
+        height: 70vh;
+    }
+
+  }
+
+  @media only screen and (max-width: 1060px) {
+    .subscription {
+        font-size: 1.4vw;
+        height: 45vh;
+    }
+  }
+
+  @media only screen and (max-width: 856px) {
+
+    .main-contentText > p {
+        width: 60%;
+    }
+
+    .subscriptions {
+        grid-template-columns: auto auto;
+    }
+
+    .subscription {
+        width: 32vw;
+    }
+
+    .subscription > h1 > p {
+        line-height: 1.2;
+    }
   }

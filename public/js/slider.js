@@ -3,7 +3,7 @@
     var f = function() {
         links = ['signup']; // join community
         titles = ['Long X Ranch Cowboys'];
-        desc = ['Long X Ranch Cowboys needs your help to help feed starving children around the world. We believe everyone around the world should have food on their plate. Donate today to help raise cattle to feed starving families. We aim to feed the whole world while following the teachings of Jesus Christ.'];
+        desc = ['Long X Ranch Cowboys needs your help to help feed starving families around the world. We believe everyone around the world should have food on their plate. Donate today to help raise cattle to feed starving families. We aim to feed the whole world while following the teachings of Jesus Christ.'];
         repo = ['']; // donate
         for (i=0; i < 2;i++) {
             let slide = document.querySelectorAll('.slide')[i].style.display;
