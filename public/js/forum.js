@@ -57,6 +57,14 @@ function returnID() {
 	return id;
 }
 
+function likePost() {
+		console.log('Button clicked');
+		const buttons = document.querySelectorAll('#likeBtn');
+		buttons.forEach((button, index) => {
+		console.log(index); // Logs the index of each button
+	});
+}
+
 function createPostElement(post) {
 	const { _id, title, message, username, postDate, uID } = post;
 	let div = document.createElement('div');
@@ -72,11 +80,15 @@ function createPostElement(post) {
 	
 	
 	<p style="white-space:pre;">${message}</p>
-	
-	
+	<div class="forumBtns">
+		<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
+		<button class="iconBtn"><i class="fa-regular fa-flag"></i></button>
+	</div>
 	</div>
 	`;
 	document.querySelector('#posts').appendChild(div);
+	
+		document.querySelector('#likeBtn').addEventListener('click', likePost); // this is null retard jacklton
 }
 
 function createPost() {
@@ -116,6 +128,7 @@ document.querySelector('#showPopup').addEventListener('click', popupPost);
 
 document.querySelector('#makePost').addEventListener('click', closePost);
 
+
 function popupPost() {
 	document.getElementById('makePost').style = 'display: flex !important;';
 	document.getElementById('postInformation').style = 'display: flex !important;';
@@ -125,3 +138,6 @@ function closePost() {
 	document.getElementById('makePost').style = 'display: none !important;';
 	document.getElementById('postInformation').style = 'display: none !important;';
 }
+
+
+  
