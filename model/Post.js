@@ -22,7 +22,8 @@ const postSchema = new Schema({
 		type: Date,
 		required: true
 	},
-	votes: {
+	likes: [String],
+	reports: {
 		type: Number,
 		required: false
 	}

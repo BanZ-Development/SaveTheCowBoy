@@ -8,7 +8,8 @@ router.get('/loadPosts', async function (req, res) {
 			res.send({
 				status: true,
 				message: `${posts.length} Posts loaded`,
-				posts: posts
+				posts: posts,
+				currentUserID: req.user.id
 			});
 		}
 	} catch (error) {
@@ -67,6 +68,47 @@ router.post('/post', async function (req, res) {
 		res.send({
 			status: false,
 			message: 'Please make sure all the fields are filled in'
+		});
+	}
+});
+
+router.post('/likePost', async function (req, res) {
+	try {
+		const { postID } = req.body;
+		let post = await Post.findById(postID);
+		let user = req.user;
+		if (post && user) {
+			try {
+				if (post.likes.includes(user.id)) {
+					post.likes.pull(user.id);
+					await post.save();
+					res.send({
+						status: true,
+						type: 'unlike',
+						likes: post.likes.length
+					});
+				} else {
+					post.likes.push(user.id);
+					await post.save();
+					res.send({
+						status: true,
+						type: 'like',
+						likes: post.likes.length
+					});
+				}
+			} catch (error) {
+				console.log(error);
+				res.send({
+					status: false,
+					error: error.message
+				});
+			}
+		}
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: false,
+			message: 'No post found with that ID'
 		});
 	}
 });
