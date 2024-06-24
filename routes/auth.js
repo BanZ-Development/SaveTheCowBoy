@@ -3,6 +3,7 @@ const User = require('../model/User');
 const hasher = require('../controllers/hasher');
 const validate = require('../controllers/validate');
 const passport = require('passport');
+const crypto = require('crypto');
 require('../controllers/local');
 
 router.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), (req, res) => {
@@ -76,6 +77,79 @@ router.get('/logout', function (req, res) {
 			message: 'User logged out.'
 		});
 	});
+});
+
+router.post('/check-unique-username', async (req, res) => {
+	const { username } = req.body;
+	let status = true;
+	let message = 'User has a unique username.';
+	try {
+		const query = User.where({
+			'meta.username': username
+		});
+		const user = await query.findOne();
+		if (user) {
+			status = false;
+			message = 'Please choose a unique username!';
+		}
+	} catch (e) {}
+
+	res.send({
+		status: status,
+		message: message
+	});
+});
+
+router.post('/check-unique-email', async (req, res) => {
+	const { email } = req.body;
+	let status = true;
+	let message = 'User has a unique email.';
+	try {
+		const query = User.where({
+			'meta.email': email
+		});
+		const user = await query.findOne();
+		if (user) {
+			status = false;
+			message = 'Please choose a unique email!';
+		}
+	} catch (e) {}
+
+	res.send({
+		status: status,
+		message: message
+	});
+});
+
+router.post('/forgot-password', async (req, res) => {
+	const { email } = req.body;
+	const token = crypto.randomBytes(20).toString('hex');
+	const update = {
+		forgotPassword: {
+			token: token,
+			expirationDate: Date.now() + 3600000
+		}
+	};
+
+	try {
+		const query = User.where({
+			'meta.email': email
+		});
+		const user = await query.findOne();
+		if (user) {
+			user.updateOne(update).then(async () => {
+				//send email
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'No user found with that email'
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.send({ status: false });
+	}
 });
 
 module.exports = router;

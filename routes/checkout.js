@@ -1,9 +1,6 @@
 require('dotenv').config();
 const router = require('express').Router();
 const User = require('../model/User');
-const passport = require('passport');
-require('../controllers/local');
-
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 router.post('/create-checkout-session', async (req, res) => {
@@ -11,8 +8,8 @@ router.post('/create-checkout-session', async (req, res) => {
 	try {
 		const uid = req.body.uid;
 		const session = await stripe.checkout.sessions.create({
-			success_url: `http://localhost:5000/success?uid=${uid}`,
-			cancel_url: 'http://localhost:5000/signup',
+			success_url: `${process.env.URL}/success?uid=${uid}`,
+			cancel_url: `${process.env.URL}/signup`,
 			line_items: [
 				{
 					price: process.env.STRIPE_DAY_WORKER,
@@ -73,7 +70,6 @@ router.post('/stripe-session', async (req, res) => {
 	User.findOne(filter)
 		.then(async (user) => {
 			if (user) {
-				console.log('User found:', user);
 				//check if already subscribed
 				if (!user.subscription.sessionID || user.subscription.isSubscribed) {
 					res.send({ status: false });
@@ -81,29 +77,31 @@ router.post('/stripe-session', async (req, res) => {
 				} else {
 					try {
 						const session = await stripe.checkout.sessions.retrieve(user.subscription.sessionID);
+						console.log(session);
+						const subscription = await stripe.subscriptions.retrieve(session.subscription);
+						const currentPeriodEnd = subscription.current_period_end; // Unix timestamp
+						const date = new Date(currentPeriodEnd * 1000); // Convert to JavaScr
+						console.log(date);
 						const update = {
 							subscription: {
 								isSubscribed: true,
 								tier: {
 									id: session.subscription
 								},
-								customer: session.customer
+								customer: session.customer,
+								renewalDate: date
 							}
 						};
 						if (session && session.status === 'complete') {
 							User.findOneAndUpdate(filter, update)
 								.then((user) => {
-									try {
-										//login
-									} catch (err) {
-										console.log(err);
-									}
 									res.send({
 										status: true,
 										message: 'Payment succeeded.'
 									});
 								})
 								.catch((error) => {
+									console.log(error);
 									res.send({
 										status: false,
 										error: error
@@ -129,6 +127,40 @@ router.post('/stripe-session', async (req, res) => {
 			console.error('Error finding user:', error);
 			res.send({ status: false });
 		});
+});
+
+router.post('/cancel-subscription', async (req, res) => {
+	const id = req.user.id;
+	const subscriptionID = req.user.subscription.tier.id;
+	const update = {
+		subscription: {
+			tier: null,
+			sessionID: null,
+			isSubscribed: false,
+			customer: null
+		}
+	};
+	if (req.user.subscription.isSubscribed && subscriptionID) {
+		try {
+			const subscription = await stripe.subscriptions.update(subscriptionID, { cancel_at_period_end: true }).then(() => {
+				res.send({
+					status: true,
+					message: 'Subscription cancelled successfully'
+				});
+			});
+		} catch (error) {
+			console.log(error);
+			res.send({
+				status: false,
+				error: error.message
+			});
+		}
+	} else {
+		res.send({
+			status: false,
+			message: 'Subscription required to cancel'
+		});
+	}
 });
 
 module.exports = router;

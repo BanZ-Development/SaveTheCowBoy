@@ -12,7 +12,7 @@ async function signupAndReturnUserID(user) {
 				.then((data) => {
 					resolve(data.id);
 				});
-		}, 1000);
+		}, 700);
 	}).catch((error) => {
 		reject(error);
 	});
@@ -89,7 +89,43 @@ function startCheckout(id) {
 		});
 }
 
+function usernameCheck() {
+	let username = document.querySelector('#usernameInput').value;
+	const data = new FormData();
+	data.append('username', username);
+	fetch('api/auth/check-unique-username', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+		});
+}
+
+function emailCheck() {
+	let email = document.querySelector('#email').value;
+	const data = new FormData();
+	data.append('email', email);
+	fetch('api/auth/check-unique-email', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+		});
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#continueBtn').addEventListener('click', continueClick);
 	document.querySelector('#checkoutBtn').addEventListener('click', checkoutClick);
+	document.querySelector('#usernameInput').addEventListener('blur', usernameCheck);
+	document.querySelector('#email').addEventListener('blur', emailCheck);
 });

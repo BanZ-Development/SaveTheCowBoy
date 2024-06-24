@@ -13,6 +13,7 @@ const forumRoute = require('./routes/forum');
 const User = require('./model/User');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
+const subscription = require('./controllers/subscription');
 
 require('dotenv').config();
 const app = express();
@@ -89,6 +90,15 @@ app.use(async (req, res, next) => {
 		next();
 		app.use(passport.session());
 	}
+});
+
+app.use((req, res, next) => {
+	if (req.user) {
+		try {
+			subscription.checkIfExpired(req.user.subscription);
+		} catch (error) {}
+	}
+	next();
 });
 
 mongoose.connection.once('error', () => {

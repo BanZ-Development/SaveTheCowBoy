@@ -37,7 +37,12 @@ const userSchema = new Schema({
 		},
 		customer: {
 			type: String
-		}
+		},
+		renewalDate: Date
+	},
+	forgotPassword: {
+		token: String,
+		expirationDate: Date
 	}
 });
 

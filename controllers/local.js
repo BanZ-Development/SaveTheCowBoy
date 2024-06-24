@@ -5,17 +5,14 @@ const hasher = require('../controllers/hasher');
 
 passport.serializeUser((user, done) => {
 	console.log('Serializing: ' + user.id);
-	console.log(user);
 	done(null, user.id);
 });
 
 passport.deserializeUser(async (id, done) => {
 	console.log('Deserializing: ' + id);
-
 	try {
 		const user = await User.findById(id).exec();
 		if (user) {
-			console.log('User found:', user);
 			done(null, user);
 		} else {
 			console.log('User not found');
