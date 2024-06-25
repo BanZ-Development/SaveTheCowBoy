@@ -783,6 +783,31 @@ nav {
     cursor: pointer;
     font-size: 20px;
     margin-inline: 5px;
+    font-size: 20px;
+  }
+
+  @media only screen and (max-width: 1610px) {
+    .imgSignDesc > p {
+        margin-inline: 5px;
+        text-align: center;
+        width: 80%;
+    }
+
+    .imgSignDesc > h1 {
+        margin-inline: 5px;
+        text-align: center;
+        width: 80%;
+        font-size: 24px;
+    }
+
+    .signupDivSec > h1 {
+        font-size: 30px !important;
+    }
+
+    .imgSignDesc > img {
+        height: 17% !important;
+    }
+
   }
 
   @media only screen and (max-width: 1478px) {
@@ -874,4 +899,25 @@ nav {
     .subscription > h1 > p {
         line-height: 1.2;
     }
+
+    .signupDivSec {
+        display: none;
+    }
+
+    #signup1 {
+        display: flex;
+        width: 100%;
+    }
+
+    .signupDivSec > h1 {
+        text-align: center;
+        font-size: 22px;
+        margin-block: 10px;
+        margin-bottom: 40px !important;
+    }
+
+    #continueBtn {
+        margin-top: 30px !important;
+    }
+
   }
