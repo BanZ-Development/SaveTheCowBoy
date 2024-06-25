@@ -18,7 +18,8 @@ router.post('/isLoggedIn', (req, res) => {
 		res.send({
 			status: true,
 			message: 'User is logged in',
-			username: req.user.meta.username
+			username: req.user.meta.username,
+			uid: req.user.id
 		});
 	} else {
 		res.send({
@@ -150,6 +151,21 @@ router.post('/forgot-password', async (req, res) => {
 		console.log(error);
 		res.send({ status: false });
 	}
+});
+
+router.post('/profile', async (req, res) => {
+	const { uid } = req.body;
+	const user = await User.findById(uid);
+	const profile = {
+		username: user.meta.username,
+		uid: user.id,
+		posts: null,
+		isSubscribed: user.subscription.isSubscribed
+	};
+	res.send({
+		status: true,
+		profile: profile
+	});
 });
 
 module.exports = router;

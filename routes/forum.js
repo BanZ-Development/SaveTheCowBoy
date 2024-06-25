@@ -27,7 +27,8 @@ router.post('/loadPost', async function (req, res) {
 			res.send({
 				status: true,
 				message: '1 post loaded',
-				post: post
+				post: post,
+				currentUserID: req.user.id
 			});
 		}
 	} catch (error) {

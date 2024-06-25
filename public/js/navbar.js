@@ -26,7 +26,7 @@ function load() {
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
             <div class="navProfileDrop">
-                <a href="profile" class="navProfileDropLink"><i class="fa-solid fa-user"></i> Profile</a>
+                <a id="profile" class="navProfileDropLink"><i class="fa-solid fa-user"></i> Profile</a>
                 <a href="settings" class="navProfileDropLink"><i class="fa-solid fa-gear"></i> Settings</a>
                 <a href="subscription" class="navProfileDropLink"><i class="fa-solid fa-credit-card"></i> Subscription</a>
                 <a id="logoutBtn" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
@@ -53,6 +53,7 @@ function checkLogin() {
 				document.querySelector('#signupNav').style = 'display: none; !important';
 				document.querySelector('#navProfile').style = 'display: flex;';
 				document.querySelector('#logoutBtn').style = 'display: flex; !important';
+				document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
 			} else {
 				document.querySelector('#signupNav').innerHTML = 'Sign Up';
 				document.querySelector('.navDrop').style = 'right: 200px;';

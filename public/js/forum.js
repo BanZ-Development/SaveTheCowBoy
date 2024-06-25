@@ -35,8 +35,7 @@ async function loadPosts() {
 			.then((data) => {
 				console.log(data);
 				if (data.status) {
-					console.log('success');
-					createPostElement(data.post);
+					loadSinglePost(data.post, data.currentUserID);
 				} else {
 					console.log('error!');
 				}
@@ -60,12 +59,12 @@ function likePost() {
 	let element = event.target;
 	if (element.nodeName != 'I') element = element.querySelector('i');
 	const root = element.closest('#post');
+	const button = root.querySelector('#likeBtn');
 	const title = root.querySelector('#title');
 	const postID = title.href.split('?id=')[1];
 	const counter = root.querySelector('#likeCounter');
 	const data = new FormData();
 	data.append('postID', postID);
-	console.log(element.outerHTML);
 	try {
 		if (element.outerHTML == '<i class="fa-regular fa-heart"></i>') {
 			//liking
@@ -76,6 +75,7 @@ function likePost() {
 			element.outerHTML = '<i class="fa-regular fa-heart"></i>';
 			counter.innerHTML--;
 		}
+		button.enabled = false;
 	} catch (error) {
 		console.log(error);
 	}
@@ -88,16 +88,17 @@ function likePost() {
 	})
 		.then((res) => res.json())
 		.then((data) => {
-			console.log(data);
 			if (data.type == 'like') {
 				element.outerHTML = '<i class="fa-solid fa-heart"></i>';
 			} else if (data.type == 'unlike') {
 				element.outerHTML = '<i class="fa-regular fa-heart"></i>';
 			}
 			counter.innerHTML = data.likes;
+			button.enabled = true;
 		})
 		.catch((err) => {
 			console.log(err);
+			button.enabled = true;
 		});
 }
 
@@ -125,7 +126,40 @@ function createPostElement(post, currentUserID) {
 		</div>
 		`;
 	let isLiked = likes.includes(currentUserID);
-	console.log(isLiked);
+	if (isLiked) {
+		div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
+	}
+
+	document.querySelector('#posts').appendChild(div);
+	document.querySelectorAll('#likeBtn').forEach((btn) => {
+		btn.addEventListener('click', likePost);
+	});
+}
+
+function loadSinglePost(post, currentUserID) {
+	const { _id, title, message, username, postDate, uID, likes } = post;
+	let div = document.createElement('div');
+	let date = new Date(postDate);
+	div.innerHTML = `<div id="post">
+		<span class="line"></span>
+		<div class="forumPost" id=${_id}>
+		<a class="forumUser" href="/profile?uid=${uID}">${username}</a>
+		<div class="forumTitle">
+			<h3><a id="title" href="/forum?id=${_id}">${title}</a></h3>
+			<p>${date.toDateString()}</p>
+		</div>
+		
+		
+		<p style="white-space:pre;">${message}</p>
+		<div class="forumBtns">
+			<p id="likeCounter">${likes.length}</p>
+			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
+			<button class="iconBtn"><i class="fa-regular fa-flag"></i></button>
+		</div>
+		</div>
+		</div>
+		`;
+	let isLiked = likes.includes(currentUserID);
 	if (isLiked) {
 		div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
 	}
@@ -158,6 +192,9 @@ function createPost() {
 				console.log('success');
 				window.location.replace(`/forum?id=${data.id}`);
 			} else {
+				if (data.message == 'Please make sure all the fields are filled in') {
+					//red border around
+				}
 				console.log('error!');
 			}
 		})
