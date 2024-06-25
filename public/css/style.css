@@ -697,6 +697,10 @@ nav {
     background-color: #22222269;
   }
 
+  .comment:hover {
+    background-color: #22222269;
+  }
+
   .forumTitle {
     display: flex;
     flex-direction: row;

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const commentSchema = require('../model/Comment');
 
 const postSchema = new Schema({
 	title: {
@@ -26,7 +27,8 @@ const postSchema = new Schema({
 	reports: {
 		type: Number,
 		required: false
-	}
+	},
+	comments: [Object]
 });
 
 module.exports = mongoose.model('Post', postSchema);

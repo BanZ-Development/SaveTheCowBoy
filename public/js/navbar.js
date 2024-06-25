@@ -1,3 +1,7 @@
+const SafeHTML = (html) => {
+	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+};
+
 function load() {
 	let nav = document.createElement('nav');
 	nav.innerHTML = `<nav>
@@ -48,7 +52,7 @@ function checkLogin() {
 		.then((data) => {
 			console.log(data);
 			if (data.status) {
-				document.querySelector('#username').innerHTML = data.username;
+				document.querySelector('#username').innerHTML = SafeHTML(data.username);
 				document.querySelector('.navDrop').style = 'right: 275px;';
 				document.querySelector('#signupNav').style = 'display: none; !important';
 				document.querySelector('#navProfile').style = 'display: flex;';

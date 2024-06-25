@@ -1,9 +1,11 @@
 const router = require('express').Router();
 const Post = require('../model/Post');
+const Comment = require('../model/Comment');
 
-router.get('/loadPosts', async function (req, res) {
+router.post('/loadPosts', async function (req, res) {
+	const { loadedPosts } = req.body;
 	try {
-		let posts = await Post.find();
+		let posts = await Post.find().skip(loadedPosts).limit(10);
 		if (posts) {
 			res.send({
 				status: true,
@@ -110,6 +112,44 @@ router.post('/likePost', async function (req, res) {
 		res.send({
 			status: false,
 			message: 'No post found with that ID'
+		});
+	}
+});
+
+router.post('/comment', async (req, res) => {
+	try {
+		const { content, postID } = req.body;
+		let post = await Post.findById(postID);
+		let user = req.user;
+
+		if (post && user) {
+			try {
+				const newComment = new Comment({
+					content: content,
+					author: user.meta.username,
+					authorID: user.id
+				});
+				post.comments.push(newComment);
+				await post.save();
+				res.send({
+					status: true,
+					message: 'Comment posted!',
+					postID: postID,
+					commentID: newComment.id
+				});
+			} catch (error) {
+				console.log(error);
+				res.send({
+					status: false,
+					error: error.message
+				});
+			}
+		}
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: false,
+			error: error.message
 		});
 	}
 });

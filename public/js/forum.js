@@ -1,21 +1,31 @@
+const SafeHTML = (html) => {
+	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+};
+
 async function loadPosts() {
 	const id = returnID();
+	let loadedPosts = 0;
+	loadedPosts = document.querySelectorAll('#post').length;
+	const data = new FormData();
+	data.append('loadedPosts', loadedPosts);
 	if (!id) {
 		fetch('api/forum/loadPosts', {
-			method: 'get',
+			method: 'post',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded'
-			}
+			},
+			body: new URLSearchParams(data)
 		})
 			.then((res) => res.json())
 			.then((data) => {
 				if (data.status) {
 					console.log(data);
+					loadCreatePostButton();
 					data.posts.forEach((post) => {
 						createPostElement(post, data.currentUserID);
 					});
 				} else {
-					console.log('error!');
+					console.log(data);
 				}
 			})
 			.catch((err) => {
@@ -103,23 +113,25 @@ function likePost() {
 }
 
 function createPostElement(post, currentUserID) {
-	const { _id, title, message, username, postDate, uID, likes } = post;
+	const { _id, title, message, username, postDate, uID, likes, comments } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
 	div.innerHTML = `<div id="post">
 		<span class="line"></span>
 		<div class="forumPost" id=${_id}>
-		<a class="forumUser" href="/profile?uid=${uID}">${username}</a>
+		<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
 		<div class="forumTitle">
-			<h3><a id="title" href="/forum?id=${_id}">${title}</a></h3>
+			<h3><a id="title" href="/forum?id=${_id}">${SafeHTML(title)}</a></h3>
 			<p>${date.toDateString()}</p>
 		</div>
 		
 		
-		<p style="white-space:pre;">${message}</p>
+		<p style="white-space:pre;">${SafeHTML(message)}</p>
 		<div class="forumBtns">
 			<p id="likeCounter">${likes.length}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
+			<p id="commentCounter">0</p>
+			<button id="commentIcon" class="iconBtn"><i class="fa-regular fa-comment"></i></button>
 			<button class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 		</div>
 		</div>
@@ -130,31 +142,40 @@ function createPostElement(post, currentUserID) {
 		div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
 	}
 
+	div.querySelector('#commentIcon').addEventListener('click', openPostComments);
+	div.querySelector('#likeBtn').addEventListener('click', likePost);
 	document.querySelector('#posts').appendChild(div);
-	document.querySelectorAll('#likeBtn').forEach((btn) => {
-		btn.addEventListener('click', likePost);
-	});
 }
 
 function loadSinglePost(post, currentUserID) {
-	const { _id, title, message, username, postDate, uID, likes } = post;
+	const { _id, title, message, username, postDate, uID, likes, comments } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
 	div.innerHTML = `<div id="post">
 		<span class="line"></span>
 		<div class="forumPost" id=${_id}>
-		<a class="forumUser" href="/profile?uid=${uID}">${username}</a>
+		<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
 		<div class="forumTitle">
-			<h3><a id="title" href="/forum?id=${_id}">${title}</a></h3>
+			<h3><a id="title" href="/forum?id=${_id}">${SafeHTML(title)}</a></h3>
 			<p>${date.toDateString()}</p>
 		</div>
 		
 		
-		<p style="white-space:pre;">${message}</p>
+		<p style="white-space:pre;">${SafeHTML(message)}</p>
 		<div class="forumBtns">
 			<p id="likeCounter">${likes.length}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
+			<p id="commentCounter">0</p>
+			<button id="commentIcon" class="iconBtn"><i class="fa-regular fa-comment"></i></button>
 			<button class="iconBtn"><i class="fa-regular fa-flag"></i></button>
+		</div>
+		</div>
+		<div id="commentSection" class="commentSection">
+			<h2 class="forumTitle">Comments</h2>
+			<textarea class="postText" id="comment" placeholder="Add a comment..." type="text"></textarea>
+			<button id="commentBtn" class="btnLink">Comment</button>
+			<div id="commentsList" class="commentsList">
+			</div>
 		</div>
 		</div>
 		</div>
@@ -163,10 +184,12 @@ function loadSinglePost(post, currentUserID) {
 	if (isLiked) {
 		div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
 	}
-
+	div.querySelector('#commentIcon').addEventListener('click', goToCommentSection);
+	div.querySelector('#likeBtn').addEventListener('click', likePost);
+	div.querySelector('#commentBtn').addEventListener('click', comment);
 	document.querySelector('#posts').appendChild(div);
-	document.querySelectorAll('#likeBtn').forEach((btn) => {
-		btn.addEventListener('click', likePost);
+	comments.forEach((comment) => {
+		loadComment(comment);
 	});
 }
 
@@ -203,12 +226,69 @@ function createPost() {
 		});
 }
 
+function comment() {
+	let content = document.querySelector('#comment').value;
+	let button = event.target;
+	let postID = button.closest('#post').querySelector('.forumPost').id;
+	console.log('Post ID: ' + postID);
+
+	const data = new FormData();
+	data.append('content', content);
+	data.append('postID', postID);
+
+	fetch('api/forum/comment', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			location.reload();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+}
+
+function loadComment(comment) {
+	const { _id, author, authorID, content, postDate, comments, likes } = comment;
+	let date = new Date(postDate);
+	console.log(comment);
+	let div = document.createElement('div');
+	div.innerHTML = `
+	<div class="comment" id=${_id}>
+		<a class="forumUser" href="/profile?uid=${authorID}">${SafeHTML(author)}</a>
+		<p style="white-space:pre;">${SafeHTML(content)}</p>
+		<div class="forumBtns">
+			<p>${date.toDateString()}</p>
+			<p id="likeCounter"> 0</p>
+			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
+			<button class="iconBtn"><i class="fa-regular fa-flag"></i></button>
+		</div>
+	</div>`;
+	document.querySelector('#commentsList').appendChild(div);
+	if (window.location.hash) {
+		const id = window.location.hash.substring(1);
+		if (id == 'commentSection') goToCommentSection();
+	}
+}
+
 loadPosts();
-document.querySelector('#postButton').addEventListener('click', createPost);
 
-document.querySelector('#showPopup').addEventListener('click', popupPost);
-
-document.querySelector('#makePost').addEventListener('click', closePost);
+function loadCreatePostButton() {
+	let button = document.createElement('button');
+	button.style.cssText = 'margin-left: auto; padding-block: 0px; height: 40px;';
+	button.id = 'showPopup';
+	button.className = 'btnLink';
+	button.innerHTML = '<i style="margin-inline: 5px;" class="fa-regular fa-square-plus"></i> Create Post';
+	document.querySelector('#forumHeader').appendChild(button);
+	document.querySelector('#postButton').addEventListener('click', createPost);
+	document.querySelector('#showPopup').addEventListener('click', popupPost);
+	document.querySelector('#makePost').addEventListener('click', closePost);
+}
 
 function popupPost() {
 	document.getElementById('makePost').style = 'display: flex !important;';
@@ -218,4 +298,18 @@ function popupPost() {
 function closePost() {
 	document.getElementById('makePost').style = 'display: none !important;';
 	document.getElementById('postInformation').style = 'display: none !important;';
+}
+
+function openPostComments() {
+	console.log('open comments');
+	let button = event.target;
+	let postID = button.closest('.forumPost').id;
+	location.href = `forum?id=${SafeHTML(postID)}#commentSection`;
+}
+
+function goToCommentSection() {
+	const element = document.getElementById('commentSection');
+	if (element) {
+		element.scrollIntoView({ behavior: 'smooth' });
+	}
 }
