@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Image = require('../model/Image');
 
 const userSchema = new Schema({
 	meta: {
@@ -18,7 +19,8 @@ const userSchema = new Schema({
 		salt: {
 			type: String,
 			required: true
-		}
+		},
+		pfp: Object
 	},
 	admin: {
 		type: Boolean,

@@ -1,13 +1,12 @@
 const router = require('express').Router();
 const Post = require('../model/Post');
+const User = require('../model/User');
 const Comment = require('../model/Comment');
 
 router.post('/loadPosts', async function (req, res) {
 	const { loadedPosts } = req.body;
-	console.log(loadedPosts);
 	try {
 		const count = await Post.countDocuments();
-		console.log(count);
 		const difference = count - loadedPosts - 10;
 		let posts = await Post.find().skip(difference).limit(10);
 		if (posts) {
@@ -151,6 +150,38 @@ router.post('/comment', async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		res.send({
+			status: false,
+			error: error.message
+		});
+	}
+});
+
+router.post('/report', async (req, res) => {
+	try {
+		const { reason, message, postID } = req.body;
+		const uid = req.user.id;
+
+		await Report.create({
+			reason: reason,
+			message: message,
+			postID: postID,
+			reporterID: uid
+		})
+			.then((report) => {
+				console.log(report._id);
+				res.send({
+					status: true,
+					message: 'Report sent'
+				});
+			})
+			.catch((error) => {
+				res.send({
+					status: false,
+					error: error
+				});
+			});
+	} catch (error) {
 		res.send({
 			status: false,
 			error: error.message

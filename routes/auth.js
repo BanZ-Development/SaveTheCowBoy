@@ -153,19 +153,4 @@ router.post('/forgot-password', async (req, res) => {
 	}
 });
 
-router.post('/profile', async (req, res) => {
-	const { uid } = req.body;
-	const user = await User.findById(uid);
-	const profile = {
-		username: user.meta.username,
-		uid: user.id,
-		posts: null,
-		isSubscribed: user.subscription.isSubscribed
-	};
-	res.send({
-		status: true,
-		profile: profile
-	});
-});
-
 module.exports = router;

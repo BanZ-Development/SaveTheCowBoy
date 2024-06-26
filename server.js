@@ -10,6 +10,7 @@ const indexRoute = require('./routes/index');
 const adminRoute = require('./routes/admin');
 const checkoutRoute = require('./routes/checkout');
 const forumRoute = require('./routes/forum');
+const profileRoute = require('./routes/profile');
 const User = require('./model/User');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
@@ -20,13 +21,18 @@ const app = express();
 const port = 5000;
 const host = '0.0.0.0';
 const limiter = rateLimit({
-	windowMs: 10 * 60 * 1000,
-	max: 1000
+	windowMs: 1 * 60 * 1000,
+	max: 50
 });
+
+const options = {
+	serverSelectionTimeoutMS: 5000, // Optional: Timeout for server selection
+	socketTimeoutMS: 30000 // Adjust socketTimeoutMS based on your needs
+};
 
 app.use(async (req, res, next) => {
 	try {
-		await mongoose.connect(process.env.MONGODB_URI, {});
+		await mongoose.connect(process.env.MONGODB_URI, options);
 	} catch (err) {
 		console.log('Hello!');
 		console.error(err);
@@ -34,8 +40,8 @@ app.use(async (req, res, next) => {
 	next();
 });
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true, limit: `${process.env.FILE_SIZE_LIMIT}` }));
+app.use(bodyParser.json({ limit: `${process.env.FILE_SIZE_LIMIT}` }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -66,9 +72,9 @@ app.use((req, res, next) => {
 	});
 });
 
-app.use(limiter);
 app.use(cors());
 app.use(express.static('public'));
+app.use(limiter);
 
 app.use((req, res, next) => {
 	console.log(`${req.method}:${req.url}`);
@@ -114,6 +120,7 @@ app.use('/api/index', indexRoute);
 app.use('/api/admin', adminRoute);
 app.use('/api/checkout', checkoutRoute);
 app.use('/api/forum', forumRoute);
+app.use('/api/profile', profileRoute);
 
 app.get('/', async (req, res) => {
 	res.sendFile('index.html', { root: __dirname + '/public/pages/' });

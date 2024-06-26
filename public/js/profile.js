@@ -8,7 +8,7 @@ function loadProfile() {
 
 	const data = new FormData();
 	data.append('uid', uid);
-	fetch('api/auth/profile', {
+	fetch('api/profile/load', {
 		method: 'post',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'

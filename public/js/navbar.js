@@ -26,7 +26,7 @@ function load() {
         <div href="" style="display: none;"  id="navProfile" class="navProfile">
             <div class="navProfileUser">    
                 <p style="margin-inline: 10px;" id="username">Lucky</p>
-                <img src="images/default-pfp.jpeg" alt="">
+                <img id="pfp" src="images/default-pfp.jpeg" alt="">
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
             <div class="navProfileDrop">
@@ -49,8 +49,7 @@ function checkLogin() {
 		}
 	})
 		.then((res) => res.json())
-		.then((data) => {
-			console.log(data);
+		.then(async (data) => {
 			if (data.status) {
 				document.querySelector('#username').innerHTML = SafeHTML(data.username);
 				document.querySelector('.navDrop').style = 'right: 275px;';
@@ -58,6 +57,7 @@ function checkLogin() {
 				document.querySelector('#navProfile').style = 'display: flex;';
 				document.querySelector('#logoutBtn').style = 'display: flex; !important';
 				document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
+				//document.querySelector('#pfp').src = await returnPfp();
 			} else {
 				document.querySelector('#signupNav').innerHTML = 'Sign Up';
 				document.querySelector('.navDrop').style = 'right: 200px;';
@@ -71,3 +71,21 @@ function checkLogin() {
 
 load();
 checkLogin();
+
+async function returnPfp() {
+	fetch('api/profile/getPfp', {
+		method: 'get',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			const { imageSrc } = data;
+			return imageSrc;
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+}

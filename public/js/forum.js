@@ -130,7 +130,7 @@ function createPostElement(post, currentUserID) {
 		<div class="forumBtns">
 			<p id="likeCounter">${likes.length}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
-			<p id="commentCounter">0</p>
+			<p id="commentCounter">${comments.length}</p>
 			<button id="commentIcon" class="iconBtn"><i class="fa-regular fa-comment"></i></button>
 			<button class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 		</div>
