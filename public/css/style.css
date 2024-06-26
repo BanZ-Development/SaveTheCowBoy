@@ -34,6 +34,10 @@ nav {
     z-index: 3;
 }
 
+#responsiveNavIcon {
+    display: none;
+}
+
 .nav-link {
     color: #fff;
     text-decoration: none;
@@ -44,6 +48,16 @@ nav {
     margin-inline: 1vw;
     cursor: pointer;
     z-index: 2;
+}
+
+.navIcon {
+    display: none;
+    border: none;
+    background-color: #fff0;
+    color: #fff;
+    font-size: 28px;
+    margin-inline: 22px;
+    cursor: pointer;
 }
 
 .nav-link:hover, .navLinkDrop:hover {
@@ -91,7 +105,6 @@ nav {
 
 .main-contentText {
     color: #fff;
-    margin-left: 40px;
 }
 
 .main-contentText > h1 {
@@ -880,16 +893,125 @@ nav {
   }
 
   @media only screen and (max-width: 1060px) {
+
+    #pfp {
+        order: 1;
+        height: 45px;
+        width: 45px;
+    }
+
+    #username {
+        order: 2;
+    }
+
+    #responsiveNavIcon {
+        display: inline-block;
+    }
+
     .subscription {
         font-size: 1.4vw;
         height: 45vh;
+    }
+
+    .nav-link {
+        padding-left: 8px;
+        height: 57px;
+        line-height: 57px;
+        font-size: 17px;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .nav-links {
+        position: fixed;
+        height: 100vh !important;
+        width: 70%;
+        left: 0px;
+        flex-direction: column;
+        background-color: var(--rich-black);
+        z-index: 4;
+        margin-right: 0px;
+    }
+
+    .navProfileUser {
+        border-block: solid 1px #333;
+    }
+
+    .navProfileUser > i {
+        display: none;
+    }
+
+    #navProfile {
+        flex-direction: column;
+        margin-right: 0px;
+    }
+
+    .navProfileDrop {
+        display: flex;
+        position: static;
+        background-color: var(--rich-black);
+        width: 100%;
+        border: none;
+    }
+
+    .navProfileDropLink {
+        color: #fff;
+    }
+
+    .navLinkDrop {
+        height: unset;
+    }
+
+    .navLinkDrop > p {
+        display: none;
+    }
+
+    .navLinkDrop > i {
+        display: none;
+    }
+
+    .navDrop {
+        display: flex;
+        position: static;
+        width: 100%;
+        background-color: var(--rich-black);
+        border: none;
+        margin-bottom: 40px;
+    }
+
+    .dropLink {
+        color: #fff;
+        height: 57px;
+        line-height: 57px;
+        font-size: 17px;
+    }
+
+    .dropLink:hover {
+        background-color: #fff0;
+        color: #c9c9c9;
+    }
+
+    .navIcon {
+        display: block;
+        margin-left: auto;
     }
   }
 
   @media only screen and (max-width: 856px) {
 
+    .main-contentText > h1 {
+        font-size: 6.8vw;
+    }
+
     .main-contentText > p {
-        width: 60%;
+        width: 80%;
+        font-size: 4.2vw;
+    }
+
+    .btnLink {
+        transform: scale(0.9);
     }
 
     .subscriptions {
@@ -922,6 +1044,39 @@ nav {
 
     #continueBtn {
         margin-top: 30px !important;
+    }
+
+    .navLogo > img {
+        width: 60%;
+        height: 60%;
+        line-height: 100px;
+    }
+
+    .navLogo {
+        margin-block: auto;
+    }
+
+    #moreInfoBtn {
+        display: none !important;
+    }
+
+    .progress {
+        height: 10px;
+    }
+
+    .progressIn {
+        height: 10px;
+    }
+
+    .subscriptionSection > h1 {
+        text-align: center;
+        font-size: 6.8vw;
+    }
+
+    .dropLink:hover {
+        background-color: #5285ff !important;
+        border-radius: 5px !important;
+        color: #fff;
     }
 
   }

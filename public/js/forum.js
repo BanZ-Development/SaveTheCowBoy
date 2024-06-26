@@ -132,7 +132,7 @@ function createPostElement(post, currentUserID) {
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
 			<p id="commentCounter">0</p>
 			<button id="commentIcon" class="iconBtn"><i class="fa-regular fa-comment"></i></button>
-			<button class="iconBtn"><i class="fa-regular fa-flag"></i></button>
+			<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 		</div>
 		</div>
 		</div>
@@ -144,6 +144,7 @@ function createPostElement(post, currentUserID) {
 
 	div.querySelector('#commentIcon').addEventListener('click', openPostComments);
 	div.querySelector('#likeBtn').addEventListener('click', likePost);
+	div.querySelector('#reportBtn').addEventListener('click', forumReport);
 	document.querySelector('#posts').appendChild(div);
 }
 
@@ -266,7 +267,7 @@ function loadComment(comment) {
 			<p>${date.toDateString()}</p>
 			<p id="likeCounter"> 0</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
-			<button class="iconBtn"><i class="fa-regular fa-flag"></i></button>
+			<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 		</div>
 	</div>`;
 	document.querySelector('#commentsList').appendChild(div);
@@ -312,4 +313,17 @@ function goToCommentSection() {
 	if (element) {
 		element.scrollIntoView({ behavior: 'smooth' });
 	}
+}
+
+
+function forumReport() {
+	document.querySelector('#makeReport').style.display = 'flex';
+	document.querySelector('#reportInformation').style.display = 'flex';
+}
+
+document.querySelector('#makeReport').addEventListener('click', closeReport);
+
+function closeReport() {
+	document.querySelector('#makeReport').style.display = 'none';
+	document.querySelector('#reportInformation').style.display = 'none';
 }
