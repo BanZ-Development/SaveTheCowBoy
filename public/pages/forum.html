@@ -28,15 +28,30 @@
                 <input type="file" name="" id="">
                 <button style="background-color: #f3f3f3; height: 40px; padding-block: 0px; font-family: 'Roboto';" class="btnLink" id="postButton">Post</button>
             </div>
+            <div id="makeReport" style="display: none;" class="popupPost"></div>
+            <div style="display: none;" id="reportInformation" class="postInformation">
+                <h1 style="color: #333; width: 94%; margin-inline: auto;">Report Post</h1>
+                <input style="width: 95%; margin-block: 20px; font-family: 'Roboto';" class="signupInput" id="title" placeholder="Enter title"type="text">
+                <textarea class="postText" id="message" placeholder="Enter text"type="text"></textarea>
+                <label>
+                    <input type="checkbox" name="interests" value="sports">
+                    Sports
+                </label><br>
+                <label>
+                    <input type="checkbox" name="interests" value="music">
+                    Music
+                </label><br>
+                <label>
+                    <input type="checkbox" name="interests" value="movies">
+                    Movies
+                </label><br>
+                <button style="background-color: #f3f3f3; height: 40px; padding-block: 0px; font-family: 'Roboto';" class="btnLink" id="postButton">Post</button>
+            </div>
         </div>
         <div id="posts"></div>
         </div>
     </div>
-    <style>
-        .line {
-            margin-block: 3.5px;
-        }
-    </style>
+    <style>.line {margin-block: 3.5px;}</style>
 </body>
 <script src="../js/navbar.js"></script>
 </html>

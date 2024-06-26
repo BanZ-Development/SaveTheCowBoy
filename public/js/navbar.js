@@ -9,7 +9,7 @@ function load() {
             <img src="../images/webLogo.png" alt="">
         </a>
         <div class="nav-links">
-            <a href="/" class="nav-link">Home</a>
+            <a href="/" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-house"></i> Home</a>
             <div class="navLinkDrop">
                 <p>Community</p>
                 <i class="material-icons">keyboard_arrow_down</i>
@@ -20,10 +20,8 @@ function load() {
                 <a style="border-radius: 0px 0px 4px 4px" href="cowboy-stories" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
             </div>
         </div>
-            <a href="pricing" class="nav-link">Pricing</a>
-            <a id="signupNav" href="signup" class="nav-link">Sign Up</a>
-        </div>
-        <div href="" style="display: none;"  id="navProfile" class="navProfile">
+            <a id="signupNav" href="signup" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Signup</a>
+            <div href="" style="display: none;"  id="navProfile" class="navProfile">
             <div class="navProfileUser">    
                 <p style="margin-inline: 10px;" id="username">Lucky</p>
                 <img id="pfp" src="images/default-pfp.jpeg" alt="">
@@ -36,6 +34,9 @@ function load() {
                 <a id="logoutBtn" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
             </div>
         </div>
+        </div>
+        
+        <button class="navIcon" id="burgerMenu"><i class="fa-solid fa-bars"></i></button>
     </nav>
     `;
 	document.body.innerHTML = nav.innerHTML + document.body.innerHTML;
@@ -88,4 +89,17 @@ async function returnPfp() {
 		.catch((err) => {
 			console.log(err);
 		});
+}
+
+document.querySelector('.navIcon').addEventListener('click', openMenu);
+
+function openMenu() {
+	let menu = document.querySelector('.nav-links').style.display;
+	if (menu == 'flex') {
+		document.querySelector('.nav-links').style.display = 'none';
+		document.querySelector('#burgerMenu').innerHTML = '<i class="fa-solid fa-bars"></i>';
+	} else {
+		document.querySelector('.nav-links').style.display = 'flex';
+		document.querySelector('#burgerMenu').innerHTML = '<i class="fa-solid fa-xmark"></i>';
+	}
 }
