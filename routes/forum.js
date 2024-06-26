@@ -4,8 +4,12 @@ const Comment = require('../model/Comment');
 
 router.post('/loadPosts', async function (req, res) {
 	const { loadedPosts } = req.body;
+	console.log(loadedPosts);
 	try {
-		let posts = await Post.find().skip(loadedPosts).limit(10);
+		const count = await Post.countDocuments();
+		console.log(count);
+		const difference = count - loadedPosts - 10;
+		let posts = await Post.find().skip(difference).limit(10);
 		if (posts) {
 			res.send({
 				status: true,
