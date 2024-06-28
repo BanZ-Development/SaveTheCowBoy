@@ -6,6 +6,7 @@ const User = require('../model/User');
 const Image = require('../model/Image');
 const crypto = require('crypto');
 const path = require('path');
+const cookie = require('../controllers/cookie');
 require('dotenv').config();
 router.use(bodyParser.json());
 
@@ -61,10 +62,9 @@ router.post('/upload-pfp', upload.single('file'), async (req, res) => {
 			fileID: id
 		});
 		const user = await User.findById(uid);
-		console.log(user.meta.username);
 		user.meta.pfp = image;
 		await user.save();
-		console.log('uploaded');
+		cookie.set(res, 'pfp', filename);
 		res.send({
 			status: true,
 			message: 'Profile picture updated!',
@@ -83,10 +83,13 @@ router.get('/getPfp', async (req, res) => {
 	if (!req.user) return res.send({ status: false });
 	const user = await User.findById(req.user.id);
 	if (!user.meta.pfp) return res.send({ status: false });
-	res.send({
-		status: true,
-		pfp: user.meta.pfp.name
-	});
+	else {
+		cookie.set(res, 'pfp', user.meta.pfp.name);
+		res.send({
+			status: true,
+			pfp: user.meta.pfp.name
+		});
+	}
 });
 
 module.exports = router;
