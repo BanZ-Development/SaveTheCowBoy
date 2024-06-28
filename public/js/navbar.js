@@ -32,6 +32,7 @@ function load() {
             <img src="../images/webLogo.png" alt="">
         </a>
         <div class="nav-links">
+			<span id="navSep" class="line"></span>
             <a href="/" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-house"></i> Home</a>
             <div class="navLinkDrop">
                 <p>Community</p>
@@ -43,7 +44,7 @@ function load() {
                 <a style="border-radius: 0px 0px 4px 4px" href="cowboy-stories" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
             </div>
         </div>
-            <a id="signupNav" href="signup" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Sign Up</a>
+            <a id="signupNav" href="signup" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Signup</a>
             <div href="" style="display: none;"  id="navProfile" class="navProfile">
             <div class="navProfileUser">    
                 <p style="margin-inline: 10px;" id="username"></p>
@@ -76,15 +77,15 @@ function checkLogin() {
 		.then(async (data) => {
 			if (data.status) {
 				document.querySelector('#username').innerHTML = SafeHTML(data.username);
-				document.querySelector('.navDrop').style = 'right: 275px;';
+				document.querySelector('.navDrop').style = 'right: -35px;';
 				document.querySelector('#signupNav').style = 'display: none; !important';
 				document.querySelector('#navProfile').style = 'display: flex;';
 				document.querySelector('#logoutBtn').style = 'display: flex; !important';
 				document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
 				if (data.pfp) document.querySelector('#pfp').src = `/image/${data.pfp}`;
 			} else {
-				document.querySelector('#signupNav').innerHTML = 'Sign Up';
-				document.querySelector('.navDrop').style = 'right: 200px;';
+				document.querySelector('#signupNav').innerHTML = '<i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Signup';
+				document.querySelector('.navDrop').style = 'right: -35px';
 				document.querySelector('.navProfile').style = 'display: none; !important';
 			}
 		})

@@ -14,7 +14,9 @@ var loadFile = function (event) {
 };
 
 function changeUsername() {
-    document.getElementById('username').removeAttribute('disabled')
+    console.log('change');
+    var usernameField = document.getElementById('username');
+    usernameField.disabled = false;
 }
 
 function ChangePassword() {

@@ -345,6 +345,7 @@ nav {
     height: 100%;
     display: flex;
     flex-direction: row;
+    position: relative;
 }
 
 .navLinkDrop > i {
@@ -576,6 +577,8 @@ nav {
 }
 
 .settingSidebarBtn {
+    display: flex;
+    flex-direction: row;
     border: none;
     height: 50px;
     width: 70%;
@@ -591,8 +594,15 @@ nav {
     text-align: left;
 }
 
+.settingSidebarBtn > p {
+    margin-block: 0px;
+    line-height: 50px;
+    font-size: 18.5px;
+}
+
 .settingSidebarBtn > i {
     margin-inline: 10px;
+    line-height: 46px;
 }
 
 .settingSidebarBtn:hover {
@@ -819,7 +829,16 @@ nav {
     background-color: #1e1e1e;
   }
 
+  #navSep {
+    display: none;
+  }
+
   @media only screen and (max-width: 1610px) {
+
+    .settingSidebarBtn {
+        font-size: 17px;
+    }
+
     .imgSignDesc > p {
         margin-inline: 5px;
         text-align: center;
@@ -911,7 +930,9 @@ nav {
   @media only screen and (max-width: 1060px) {
 
     #navSep {
+        display: block !important;
         order: 2;
+        margin-block: 2px;
     }
 
     #pfp {
@@ -970,7 +991,7 @@ nav {
         background-color: #1a1a1a;
         z-index: 4;
         margin-right: 0px;
-        border-radius: 0px 10px 10px 0px;
+        border-radius: 0px 15px 15px 0px;
     }
 
     .navProfileUser {
@@ -1179,6 +1200,7 @@ nav {
     .navLogo > img {
         width: 60%;
         height: 60%;
+        max-height: 100px;
         line-height: 100px;
     }
 
