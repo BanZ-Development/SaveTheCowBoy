@@ -717,6 +717,12 @@ nav {
     background-color: #22222269;
   }
 
+  .commentSection {
+    color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+  }
+
   .forumTitle {
     display: flex;
     flex-direction: row;

@@ -20,10 +20,10 @@ function load() {
                 <a style="border-radius: 0px 0px 4px 4px" href="cowboy-stories" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
             </div>
         </div>
-            <a id="signupNav" href="signup" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Signup</a>
+            <a id="signupNav" href="signup" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Sign Up</a>
             <div href="" style="display: none;"  id="navProfile" class="navProfile">
             <div class="navProfileUser">    
-                <p style="margin-inline: 10px;" id="username">Lucky</p>
+                <p style="margin-inline: 10px;" id="username"></p>
                 <img id="pfp" src="images/default-pfp.jpeg" alt="">
                 <i class="fa-solid fa-chevron-down"></i>
             </div>
@@ -34,7 +34,7 @@ function load() {
                 <a id="logoutBtn" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
             </div>
         </div>
-        </div>
+		</div>
         
         <button class="navIcon" id="burgerMenu"><i class="fa-solid fa-bars"></i></button>
     </nav>

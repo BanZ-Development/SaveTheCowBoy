@@ -56,7 +56,7 @@ app.use(
 		}),
 		cookie: {
 			path: '/',
-			maxAge: 3600000, // 1 hour
+			maxAge: 14 * 24 * 60 * 60, // 1 hour
 			httpOnly: false,
 			secure: false // TODO: Update this on production
 		}

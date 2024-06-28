@@ -157,7 +157,7 @@ function loadSinglePost(post, currentUserID) {
 		<div class="forumPost" id=${_id}>
 		<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
 		<div class="forumTitle">
-			<h3><a id="title" href="/forum?id=${_id}">${SafeHTML(title)}</a></h3>
+			<h3><a id="title">${SafeHTML(title)}</a></h3>
 			<p>${date.toDateString()}</p>
 		</div>
 		
@@ -174,7 +174,8 @@ function loadSinglePost(post, currentUserID) {
 		<div id="commentSection" class="commentSection">
 			<h2 class="forumTitle">Comments</h2>
 			<textarea class="postText" id="comment" placeholder="Add a comment..." type="text"></textarea>
-			<button id="commentBtn" class="btnLink">Comment</button>
+			<button style="line-height: 0px;"id="commentBtn" class="btnLink">Comment</button>
+			<span class="line"></span>
 			<div id="commentsList" class="commentsList">
 			</div>
 		</div>
@@ -263,13 +264,14 @@ function loadComment(comment) {
 	div.innerHTML = `
 	<div class="comment" id=${_id}>
 		<a class="forumUser" href="/profile?uid=${authorID}">${SafeHTML(author)}</a>
+		<p>${date.toDateString()}</p>
 		<p style="white-space:pre;">${SafeHTML(content)}</p>
 		<div class="forumBtns">
-			<p>${date.toDateString()}</p>
 			<p id="likeCounter"> 0</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
 			<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 		</div>
+		<span class="line"></span>
 	</div>`;
 	document.querySelector('#commentsList').appendChild(div);
 	if (window.location.hash) {
