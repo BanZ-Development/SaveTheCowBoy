@@ -1,3 +1,19 @@
+const InputValidation = (color) => {
+	const email = document.querySelector('#email');
+	const password = document.querySelector('#password');
+	AnimateBorder(email, color);
+	AnimateBorder(password, color);
+};
+
+const AnimateBorder = (element, color) => {
+	element.style.border = `2px solid ${color}`;
+};
+
+const ErrorMessage = (message) => {
+	let element = document.querySelector('#wrongCredentials');
+	element.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Incorrect username or password!';
+};
+
 async function login() {
 	let email = document.querySelector('#email').value;
 	let password = document.querySelector('#password').value;
@@ -15,12 +31,12 @@ async function login() {
 	})
 		.then((res) => res.json())
 		.then((data) => {
-			console.log(data);
-			if (data != undefined && data.status) {
-				console.log('Logged in!');
+			if (data.status) {
+				InputValidation('green');
 				window.location.replace('/');
 			} else {
-				console.log('Incorrect email or password!');
+				InputValidation('red');
+				ErrorMessage('Incorrect username or password!');
 			}
 		});
 }

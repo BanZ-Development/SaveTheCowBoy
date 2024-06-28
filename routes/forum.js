@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Post = require('../model/Post');
 const User = require('../model/User');
+const Report = require('../model/Report');
 const Comment = require('../model/Comment');
 
 router.post('/loadPosts', async function (req, res) {
@@ -159,11 +160,11 @@ router.post('/comment', async (req, res) => {
 
 router.post('/report', async (req, res) => {
 	try {
-		const { reason, message, postID } = req.body;
+		const { reasons, message, postID } = req.body;
 		const uid = req.user.id;
 
 		await Report.create({
-			reason: reason,
+			reasons: reasons,
 			message: message,
 			postID: postID,
 			reporterID: uid
@@ -176,15 +177,17 @@ router.post('/report', async (req, res) => {
 				});
 			})
 			.catch((error) => {
+				console.log(error);
 				res.send({
 					status: false,
 					error: error
 				});
 			});
 	} catch (error) {
+		console.log(error);
 		res.send({
 			status: false,
-			error: error.message
+			error: error
 		});
 	}
 });

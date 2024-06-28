@@ -6,6 +6,23 @@ const passport = require('passport');
 const crypto = require('crypto');
 require('../controllers/local');
 
+router.post('/login', async (req, res) => {
+	passport.authenticate('local', function (err, user, info) {
+		if (err) {
+			return next(err);
+		}
+		if (!user) {
+			return res.send({ status: false, message: info.message }); // Return the custom message
+		}
+		req.logIn(user, function (err) {
+			if (err) {
+				return next(err);
+			}
+			return res.send({ status: true, message: 'Login successful' });
+		});
+	})(req, res);
+});
+
 router.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), (req, res) => {
 	res.send({
 		status: true,

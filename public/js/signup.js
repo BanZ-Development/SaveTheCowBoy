@@ -1,3 +1,29 @@
+const InputValidation = (element, color) => {
+	const e = document.querySelector('#' + element);
+	AnimateBorder(e, color);
+};
+
+const AnimateBorder = (element, color) => {
+	element.style.border = `2px solid ${color}`;
+};
+
+const ErrorMessage = (elementName, message) => {
+	try {
+		let element = document.querySelector(`#${elementName}Error`);
+		element.innerHTML = message;
+	} catch (error) {
+		document
+			.querySelector(`#${elementName}`)
+			.insertAdjacentHTML('afterend', `<p style="color: red; margin-bottom: 0px; font-size: 13pt;" id="${elementName}Error"><i class="fa-solid fa-circle-exclamation"></i> ${message}</p>`);
+	}
+};
+
+const RemoveError = (elementName) => {
+	try {
+		document.querySelector(`#${elementName}Error`).remove();
+	} catch (error) {}
+};
+
 async function signupAndReturnUserID(user) {
 	return new Promise((resolve, reject) => {
 		setTimeout(() => {
@@ -103,6 +129,13 @@ function usernameCheck() {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
+			if (data.status) {
+				InputValidation('usernameInput', 'green');
+				RemoveError('usernameInput');
+			} else {
+				InputValidation('usernameInput', 'red');
+				ErrorMessage('usernameInput', 'Please choose a unique username!');
+			}
 		});
 }
 
@@ -120,12 +153,29 @@ function emailCheck() {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
+			if (data.status) {
+				InputValidation('email', 'green');
+				RemoveError('email');
+			} else {
+				InputValidation('email', 'red');
+				ErrorMessage('email', 'Please choose a unique email!');
+			}
 		});
 }
+let timeoutId;
+let delay = 500;
+const debounce = (func, delay) => {
+	clearTimeout(timeoutId);
+	timeoutId = setTimeout(func, delay);
+};
 
 document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#continueBtn').addEventListener('click', continueClick);
 	document.querySelector('#checkoutBtn').addEventListener('click', checkoutClick);
-	document.querySelector('#usernameInput').addEventListener('blur', usernameCheck);
-	document.querySelector('#email').addEventListener('blur', emailCheck);
+	document.querySelector('#usernameInput').addEventListener('input', () => {
+		debounce(usernameCheck, delay);
+	});
+	document.querySelector('#email').addEventListener('input', () => {
+		debounce(emailCheck, delay);
+	});
 });

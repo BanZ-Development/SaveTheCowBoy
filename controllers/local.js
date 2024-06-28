@@ -31,26 +31,22 @@ passport.use(
 		},
 		async (email, password, done) => {
 			console.log(email);
-
-			try {
-				if (!email || password == '') {
-					done(new Error('Missing credentials.'), null);
-				}
-				const query = User.where({
-					'meta.email': email
-				});
-				console.log(query);
-				const user = await query.findOne();
+			if (!email || password == '') {
+				done(new Error('Missing credentials.'), null);
+			}
+			const query = User.where({
+				'meta.email': email
+			});
+			const user = await query.findOne();
+			if (user) {
 				const isValid = await hasher.compareHash(password, user);
-				if (isValid) {
+				if (!isValid) done(null, false, { message: 'Incorrect password' });
+				else {
 					console.log('Auth successful');
 					done(null, user);
-				} else {
-					console.log('Wrong password');
-					done(null, null);
 				}
-			} catch (err) {
-				done(null, null);
+			} else {
+				done(null, false, { message: 'Incorrect email' });
 			}
 		}
 	)

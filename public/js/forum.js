@@ -166,9 +166,9 @@ function loadSinglePost(post, currentUserID) {
 		<div class="forumBtns">
 			<p id="likeCounter">${likes.length}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
-			<p id="commentCounter">0</p>
+			<p id="commentCounter">${comments.length}</p>
 			<button id="commentIcon" class="iconBtn"><i class="fa-regular fa-comment"></i></button>
-			<button class="iconBtn"><i class="fa-regular fa-flag"></i></button>
+			<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 		</div>
 		</div>
 		<div id="commentSection" class="commentSection">
@@ -185,6 +185,7 @@ function loadSinglePost(post, currentUserID) {
 	if (isLiked) {
 		div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
 	}
+	div.querySelector('#reportBtn').addEventListener('click', forumReport);
 	div.querySelector('#commentIcon').addEventListener('click', goToCommentSection);
 	div.querySelector('#likeBtn').addEventListener('click', likePost);
 	div.querySelector('#commentBtn').addEventListener('click', comment);
@@ -277,6 +278,35 @@ function loadComment(comment) {
 	}
 }
 
+function submitReport() {
+	let reasons = [];
+	const reportCheckboxes = document.querySelectorAll('#reportCheckbox');
+	const message = document.querySelector('#reportMessage').value;
+	const postID = document.querySelector('#reportTitle').querySelector('a').href.split('=')[1];
+	console.log(postID);
+	reportCheckboxes.forEach((checkbox) => {
+		if (checkbox.checked) reasons.push(checkbox.value);
+	});
+	const data = new FormData();
+	data.append('reasons', reasons);
+	data.append('message', message);
+	data.append('postID', postID);
+	fetch('api/forum/report', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+}
+
 loadPosts();
 
 function loadCreatePostButton() {
@@ -315,13 +345,18 @@ function goToCommentSection() {
 	}
 }
 
-
 function forumReport() {
+	const button = event.target;
+	const post = button.closest('.forumPost');
+	const postID = post.id;
+	const authorName = post.querySelector('.forumUser').innerHTML;
+	document.querySelector('#reportTitle').innerHTML = `Report <a href="/forum?id=${postID}">${authorName}'s Post</a>`;
 	document.querySelector('#makeReport').style.display = 'flex';
 	document.querySelector('#reportInformation').style.display = 'flex';
 }
 
 document.querySelector('#makeReport').addEventListener('click', closeReport);
+document.querySelector('#submitReportButton').addEventListener('click', submitReport);
 
 function closeReport() {
 	document.querySelector('#makeReport').style.display = 'none';
