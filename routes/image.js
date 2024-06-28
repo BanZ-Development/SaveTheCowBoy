@@ -6,7 +6,6 @@ const { GridFSBucket } = require('mongodb');
 let gfs, gfsBucket;
 mongoose.connection.once('open', () => {
 	try {
-		console.log('GFS');
 		gfs = Grid(mongoose.connection.db, mongoose.mongo);
 		gfs.collection('uploads');
 		gfsBucket = new GridFSBucket(mongoose.connection.db, { bucketName: 'uploads' });
@@ -17,9 +16,7 @@ mongoose.connection.once('open', () => {
 
 router.get('/:filename', async (req, res) => {
 	const file = await gfs.files.findOne({ filename: req.params.filename });
-	console.log(file);
 	if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
-		// Read output to browser
 		const readstream = gfsBucket.openDownloadStreamByName(file.filename);
 		readstream.on('error', (err) => {
 			res.status(500).json({ err: err.message });

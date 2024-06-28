@@ -18,6 +18,13 @@ const getCookie = (cname) => {
 	return '';
 };
 
+const setCookie = async (name, value, days) => {
+	const d = new Date();
+	d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+	let expires = 'expires=' + d.toUTCString();
+	document.cookie = name + '=' + value + ';' + expires + '; path=/; Secure; SameSite=None';
+};
+
 function load() {
 	let nav = document.createElement('nav');
 	nav.innerHTML = `<nav>
@@ -74,7 +81,7 @@ function checkLogin() {
 				document.querySelector('#navProfile').style = 'display: flex;';
 				document.querySelector('#logoutBtn').style = 'display: flex; !important';
 				document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
-				document.querySelector('#pfp').src = `/image/${data.pfp}`;
+				if (data.pfp) document.querySelector('#pfp').src = `/image/${data.pfp}`;
 			} else {
 				document.querySelector('#signupNav').innerHTML = 'Sign Up';
 				document.querySelector('.navDrop').style = 'right: 200px;';
@@ -111,7 +118,6 @@ function openMenu() {
 
 function checkForPfpCookie() {
 	let pfp = getCookie('pfp');
-	console.log(pfp);
 	if (pfp == '') {
 		fetch('api/profile/getPfp', {
 			method: 'get',

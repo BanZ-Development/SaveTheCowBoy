@@ -59,9 +59,9 @@ app.use(
 		}),
 		cookie: {
 			path: '/',
-			maxAge: 14 * 24 * 60 * 60, // 1 hour
-			httpOnly: false,
-			secure: false // TODO: Update this on production
+			maxAge: 14 * 24 * 60 * 60,
+			httpOnly: /true/.test(process.env.IS_PRODUCTION),
+			secure: /true/.test(process.env.IS_PRODUCTION)
 		}
 	})
 );
@@ -85,7 +85,6 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-	console.log(`Session: ${req.session.id}`);
 	next();
 });
 

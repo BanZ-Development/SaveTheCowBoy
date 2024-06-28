@@ -32,13 +32,14 @@ router.post('/login', passport.authenticate('local', { failureRedirect: '/login'
 
 router.post('/isLoggedIn', (req, res) => {
 	if (req.user) {
-		res.send({
+		let params = {
 			status: true,
 			message: 'User is logged in',
 			username: req.user.meta.username,
-			uid: req.user.id,
-			pfp: req.user.meta.pfp.name
-		});
+			uid: req.user.id
+		};
+		if (req.user.meta.pfp) Object.defineProperty(params, 'pfp', { value: req.user.meta.pfp.name });
+		res.send(params);
 	} else {
 		res.send({
 			status: false,
@@ -90,6 +91,9 @@ router.post('/signup', async (req, res) => {
 });
 
 router.get('/logout', function (req, res) {
+	try {
+		res.cookie('pfp', '', { expires: new Date(0), path: '/' });
+	} catch (err) {}
 	req.session.destroy(function (err) {
 		res.send({
 			status: true,

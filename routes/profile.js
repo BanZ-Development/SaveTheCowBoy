@@ -82,11 +82,10 @@ router.post('/upload-pfp', upload.single('file'), async (req, res) => {
 router.get('/getPfp', async (req, res) => {
 	if (!req.user) return res.send({ status: false });
 	const user = await User.findById(req.user.id);
-	const pfp = user.meta.pfp.name;
-	if (!pfp) return res.send({ status: false });
+	if (!user.meta.pfp) return res.send({ status: false });
 	res.send({
 		status: true,
-		pfp: pfp
+		pfp: user.meta.pfp.name
 	});
 });
 
