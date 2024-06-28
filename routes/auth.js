@@ -36,7 +36,8 @@ router.post('/isLoggedIn', (req, res) => {
 			status: true,
 			message: 'User is logged in',
 			username: req.user.meta.username,
-			uid: req.user.id
+			uid: req.user.id,
+			pfp: req.user.meta.pfp.name
 		});
 	} else {
 		res.send({

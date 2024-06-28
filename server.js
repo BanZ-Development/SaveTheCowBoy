@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
 const MongoStore = require('connect-mongo');
 const rateLimit = require('express-rate-limit');
 const session = require('express-session');
@@ -11,6 +14,7 @@ const adminRoute = require('./routes/admin');
 const checkoutRoute = require('./routes/checkout');
 const forumRoute = require('./routes/forum');
 const profileRoute = require('./routes/profile');
+const imageRoute = require('./routes/image');
 const User = require('./model/User');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
@@ -34,7 +38,6 @@ app.use(async (req, res, next) => {
 	try {
 		await mongoose.connect(process.env.MONGODB_URI, options);
 	} catch (err) {
-		console.log('Hello!');
 		console.error(err);
 	}
 	next();
@@ -121,6 +124,7 @@ app.use('/api/admin', adminRoute);
 app.use('/api/checkout', checkoutRoute);
 app.use('/api/forum', forumRoute);
 app.use('/api/profile', profileRoute);
+app.use('/image', imageRoute);
 
 app.get('/', async (req, res) => {
 	res.sendFile('index.html', { root: __dirname + '/public/pages/' });

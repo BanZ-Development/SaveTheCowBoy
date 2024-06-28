@@ -2,6 +2,22 @@ const SafeHTML = (html) => {
 	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 };
 
+const getCookie = (cname) => {
+	let name = cname + '=';
+	let decodedCookie = decodeURIComponent(document.cookie);
+	let ca = decodedCookie.split(';');
+	for (let i = 0; i < ca.length; i++) {
+		let c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return '';
+};
+
 function load() {
 	let nav = document.createElement('nav');
 	nav.innerHTML = `<nav>
@@ -9,7 +25,6 @@ function load() {
             <img src="../images/webLogo.png" alt="">
         </a>
         <div class="nav-links">
-		<span id="navSep" class="line"></span>
             <a href="/" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-house"></i> Home</a>
             <div class="navLinkDrop">
                 <p>Community</p>
@@ -59,7 +74,7 @@ function checkLogin() {
 				document.querySelector('#navProfile').style = 'display: flex;';
 				document.querySelector('#logoutBtn').style = 'display: flex; !important';
 				document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
-				//document.querySelector('#pfp').src = await returnPfp();
+				document.querySelector('#pfp').src = `/image/${data.pfp}`;
 			} else {
 				document.querySelector('#signupNav').innerHTML = 'Sign Up';
 				document.querySelector('.navDrop').style = 'right: 200px;';
@@ -74,24 +89,6 @@ function checkLogin() {
 load();
 checkLogin();
 
-async function returnPfp() {
-	fetch('api/profile/getPfp', {
-		method: 'get',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		}
-	})
-		.then((res) => res.json())
-		.then((data) => {
-			console.log(data);
-			const { imageSrc } = data;
-			return imageSrc;
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-}
-
 document.querySelector('.navIcon').addEventListener('click', openMenu);
 
 function openMenu() {
@@ -103,11 +100,38 @@ function openMenu() {
 		document.querySelector('.nav-links').style.display = 'flex';
 		document.querySelector('#burgerMenu').innerHTML = '<i class="fa-solid fa-xmark"></i>';
 		anime({
-				targets: '.nav-links',
-				translateX: [-100, 0],
-				opacity: [0, 1],
-				easing: 'easeInOutQuad',
-				duration: 200
+			targets: '.nav-links',
+			translateX: [-100, 0],
+			opacity: [0, 1],
+			easing: 'easeInOutQuad',
+			duration: 200
 		});
 	}
 }
+
+function checkForPfpCookie() {
+	let pfp = getCookie('pfp');
+	console.log(pfp);
+	if (pfp == '') {
+		fetch('api/profile/getPfp', {
+			method: 'get',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		})
+			.then((res) => res.json())
+			.then(async (data) => {
+				if (data.status) {
+					setCookie('pfp', data.pfp, 14);
+					pfp = getCookie('pfp');
+					document.querySelector('#pfp').src = `/image/${pfp}`;
+				} else {
+					document.querySelector('#pfp').src = '../images/default-pfp.jpeg';
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	} else document.querySelector('#pfp').src = `/image/${pfp}`;
+}
+checkForPfpCookie();

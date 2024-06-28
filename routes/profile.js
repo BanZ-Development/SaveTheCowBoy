@@ -1,18 +1,37 @@
 const router = require('express').Router();
-const User = require('../model/User');
 const multer = require('multer');
+const bodyParser = require('body-parser');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const User = require('../model/User');
 const Image = require('../model/Image');
-const { getImage } = require('../controllers/image');
+const crypto = require('crypto');
+const path = require('path');
+require('dotenv').config();
+router.use(bodyParser.json());
 
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, '../uploads/'); // Specify the directory for storing uploads
-	},
-	filename: function (req, file, cb) {
-		cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+const storage = new GridFsStorage({
+	url: process.env.MONGODB_URI,
+	file: (req, file) => {
+		return new Promise((resolve, reject) => {
+			crypto.randomBytes(16, (err, buf) => {
+				if (err) {
+					console.log(error);
+					return reject(err);
+				}
+				console.log('hello');
+				const filename = buf.toString('hex') + path.extname(file.originalname);
+				const fileInfo = {
+					filename: filename,
+					bucketName: 'uploads'
+				};
+				resolve(fileInfo);
+			});
+		}).catch((error) => {
+			console.log(error);
+		});
 	}
 });
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 router.post('/load', async (req, res) => {
 	const { uid } = req.body;
@@ -29,17 +48,17 @@ router.post('/load', async (req, res) => {
 	});
 });
 
-router.post('/upload-pfp', upload.single('image'), async (req, res) => {
+router.post('/upload-pfp', upload.single('file'), async (req, res) => {
 	try {
 		const uid = req.user.id;
-		const { fileInput, fileName, contentType } = req.body;
+		const file = req.file;
+		const { originalname, filename, size, uploadDate, contentType, id } = file;
 		if (!contentType.includes('image')) return;
 		const image = new Image({
-			name: fileName,
-			image: {
-				data: fileInput,
-				contentType: contentType
-			}
+			name: filename,
+			contentType: contentType,
+			uploadDate: uploadDate,
+			fileID: id
 		});
 		const user = await User.findById(uid);
 		console.log(user.meta.username);
@@ -48,7 +67,8 @@ router.post('/upload-pfp', upload.single('image'), async (req, res) => {
 		console.log('uploaded');
 		res.send({
 			status: true,
-			message: 'Profile picture updated!'
+			message: 'Profile picture updated!',
+			filename: filename
 		});
 	} catch (error) {
 		console.log(error);
@@ -62,10 +82,12 @@ router.post('/upload-pfp', upload.single('image'), async (req, res) => {
 router.get('/getPfp', async (req, res) => {
 	if (!req.user) return res.send({ status: false });
 	const user = await User.findById(req.user.id);
-	const image = user.meta.pfp.image;
-	const imageSrc = getImage(image);
-	console.log(imageSrc);
-	res.json({ imageSrc });
+	const pfp = user.meta.pfp.name;
+	if (!pfp) return res.send({ status: false });
+	res.send({
+		status: true,
+		pfp: pfp
+	});
 });
 
 module.exports = router;

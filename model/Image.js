@@ -6,9 +6,17 @@ const imageSchema = new Schema({
 		type: String,
 		required: true
 	},
-	image: {
-		data: Buffer,
-		contentType: String
+	contentType: {
+		type: String,
+		required: true
+	},
+	uploadDate: {
+		type: Date,
+		required: true
+	},
+	fileID: {
+		type: String,
+		required: true
 	}
 });
 
