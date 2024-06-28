@@ -571,6 +571,8 @@ nav {
     width: 20%;
     height: calc(100% - 30px);
     align-items: center;
+    background-color: #1a1a1a;
+    position: fixed;
 }
 
 .settingSidebarBtn {
@@ -603,9 +605,10 @@ nav {
     flex-direction: column;
     background-color: #1e1e1e;
     width: 80%;
-    height: 100%;
+    height: unset;
     color: #fff;
     padding-inline: 30px;
+    padding-left: 20%;
 }
 
 .line {
@@ -803,6 +806,13 @@ nav {
     font-size: 20px;
   }
 
+  .settingSection {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    background-color: #1e1e1e;
+  }
+
   @media only screen and (max-width: 1610px) {
     .imgSignDesc > p {
         margin-inline: 5px;
@@ -904,6 +914,12 @@ nav {
         order: 2;
     }
 
+    .navProfileDropLink:hover {
+        background-color: #5285ff !important;
+        border-radius: 5px !important;
+        color: #fff;
+    }
+
     #responsiveNavIcon {
         display: inline-block;
     }
@@ -1000,6 +1016,85 @@ nav {
   }
 
   @media only screen and (max-width: 856px) {
+
+    #aboutImg {
+        order: 1;
+    }
+
+    #aboutDesc {
+        order: 2;
+    }
+
+    #communityImages {
+        height: fit-content !important;
+    }
+
+    #communityImages > h1 {
+        font-size: 20px !important;
+    }
+
+    .aboutGridImg {
+        row-gap: 20px;
+        column-gap: 20px;
+    }
+
+    .carouselImg {
+        width: 40vw !important;
+        margin-inline: 0px;
+    }
+
+    .subscriptions {
+        grid-template-columns: auto !important;
+    }
+
+    .subscription {
+        width: 75vw !important;
+        height: 55vh !important;
+    }
+
+    .subscription > h1 {
+        font-size: 23px;
+    }
+
+    .subscription > h2 {
+        font-size: 23px;
+    }
+
+    .subOption > p {
+        line-height: 1.5;
+        font-size: 12px;
+    }
+
+    .subOption > i {
+        line-height: 2.5;
+    }
+
+    .aboutSection {
+        padding-top: 50px;
+        flex-direction: column;
+        margin-bottom: 100px;
+        width: 100%; 
+    }
+
+    .aboutSectionPortion {
+        margin-bottom: 0px;
+    }
+
+    .aboutSectionPortion > h1 {
+        font-size: 5vw !important;
+    }
+
+    .aboutSectionPortion > h2 {
+        font-size: 3.5vw !important;
+    }
+
+    .aboutSectionPortion > p {
+        font-size: 3.2vw !important;
+    }
+
+    .aboutImg {
+        width: 85vw !important;
+    }
 
     .main-contentText > h1 {
         font-size: 6.8vw;

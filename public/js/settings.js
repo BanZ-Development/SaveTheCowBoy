@@ -64,3 +64,9 @@ async function uploadPfp() {
 		};
 	}
 }
+
+document.querySelector('#changeSubscriptionBtn').addEventListener('click', changeSubscription)
+
+function changeSubscription() {
+	document.querySelector('.subscriptionSlider').style.display = 'flex'
+}

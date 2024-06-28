@@ -14,8 +14,9 @@
     <script src="../js/setting.js"></script>
     <script type="module" src="../js/navbar.js"></script>
     <script type="module" src="../js/settings.js"></script>
+    <script src="../js/slider.js"></script>
 </head>
-<body>
+<body style="background-color: #1e1e1e;">
     <div class="settings">
         <div class="settingSidebar">
             <button onclick="switchSetting(0)" class="settingSidebarBtn"><i class="fa-solid fa-user"></i> Account Settings</button>
@@ -65,7 +66,99 @@
                                 <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                             </div>
                         </div>
-                        <button id="cancelSubscriptionBtn"style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;" class="btnLink"><i class="fa-solid fa-ban"></i> Cancel Subscription</button>
+                        <div style="display: flex; flex-direction: row;">
+                            <button id="cancelSubscriptionBtn"style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;" class="btnLink"><i class="fa-solid fa-ban"></i> Cancel Subscription</button>
+                            <button id="changeSubscriptionBtn" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px; margin-inline: 5px;" class="btnLink"><i class="fa-solid fa-repeat"></i> Change Subscription</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: none; width: 85%; margin-inline: auto; flex-direction: column; margin-top: 50px;" class="subscriptionSlider">
+                    <h2 style="margin-left: 10px;">Change Subscription</h2>
+                    <div id="subscriptions" class="subscriptions">
+                        <div class="subscription">
+                            <h2>Day Worker</h2>
+                            <h1>$9.<p>99</p></h1>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <button onclick="subscribe()" class="subBtn">Select</button>
+                        </div>
+                        <div class="subscription">
+                            <h2>Ranch Cowboy</h2>
+                            <h1>$24.<p>99</p></h1>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <button onclick="subscribe()" class="subBtn">Select</button>
+                        </div>
+                        <div class="subscription">
+                            <h2>Jigger Boss</h2>
+                            <h1>$49.<p>99</p></h1>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <button onclick="subscribe()" class="subBtn">Select</button>
+                        </div>
+                        <div class="subscription">
+                            <h2>Top Hand</h2>
+                            <h1>$99.<p>99</p></h1>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <button onclick="subscribe()" class="subBtn">Select</button>
+                        </div>
+                        <div class="subscription">
+                            <h2>Cow Boss</h2>
+                            <h1>$249.<p>99</p></h1>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <button onclick="subscribe()" class="subBtn">Select</button>
+                        </div>
+                        <div class="subscription">
+                            <h2>Cattle Baron</h2>
+                            <h1>$499.<p>99</p></h1>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                            </div>
+                            <button onclick="subscribe()" class="subBtn">Select</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,11 +184,32 @@
     </div>
 
     <style>
+
+        .subscription:hover > .subBtn {
+            background-color: #44372c;
+            color: #fff;
+        }
+
         .subscription:hover {
             transform: scale(1);
             color: #2B2118;
             background-color: #f2f2f2;
         }
+
+        .subscriptions {
+            width: fit-content;
+            display: grid;
+            grid-template-columns: auto auto auto;
+            row-gap: 50px;
+            height: unset;
+            padding-bottom: 100px;
+            justify-content: center;
+        }
+
+        .subscription {
+            margin-inline: 10px;
+        }
+
     </style>
 
     </body>
