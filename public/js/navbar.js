@@ -9,6 +9,7 @@ function load() {
             <img src="../images/webLogo.png" alt="">
         </a>
         <div class="nav-links">
+		<span id="navSep" class="line"></span>
             <a href="/" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-house"></i> Home</a>
             <div class="navLinkDrop">
                 <p>Community</p>
@@ -101,5 +102,12 @@ function openMenu() {
 	} else {
 		document.querySelector('.nav-links').style.display = 'flex';
 		document.querySelector('#burgerMenu').innerHTML = '<i class="fa-solid fa-xmark"></i>';
+		anime({
+				targets: '.nav-links',
+				translateX: [-100, 0],
+				opacity: [0, 1],
+				easing: 'easeInOutQuad',
+				duration: 200
+		});
 	}
 }
