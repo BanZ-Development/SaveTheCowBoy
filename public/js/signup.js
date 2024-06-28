@@ -85,7 +85,7 @@ async function checkoutClick() {
 			if (data.status) {
 				signupAndReturnUserID(user).then((id) => {
 					console.log('ID: ' + id);
-					startCheckout(id);
+					startCheckout(id, tier);
 				});
 			} else {
 				console.log(data.message);
@@ -93,10 +93,10 @@ async function checkoutClick() {
 		});
 }
 
-function startCheckout(id) {
-	console.log('User id: ' + id);
+function startCheckout(id, tier) {
 	const data = new FormData();
 	data.append('uid', id);
+	data.append('tier', tier);
 	fetch('api/checkout/create-checkout-session', {
 		method: 'post',
 		headers: {
