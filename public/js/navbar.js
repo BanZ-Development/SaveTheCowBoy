@@ -33,7 +33,7 @@ function load() {
                 <a style="border-radius: 0px 0px 4px 4px" href="cowboy-stories" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
             </div>
         </div>
-            <a id="signupNav" href="signup" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Signup</a>
+            <a id="signupNav" href="signup" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i></a>
             <div href="" style="display: none;"  id="navProfile" class="navProfile">
             <div class="navProfileUser">    
                 <p style="margin-inline: 10px;" id="username"></p>
@@ -71,7 +71,9 @@ function checkLogin() {
 				document.querySelector('#navProfile').style = 'display: flex;';
 				document.querySelector('#logoutBtn').style = 'display: flex; !important';
 				document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
-				if (data.pfp) document.querySelector('#pfp').src = `/image/${data.pfp}`;
+				if (data.pfp) {
+					document.querySelector('#pfp').src = `/image/${data.pfp}`;
+				}
 			} else {
 				document.querySelector('#signupNav').innerHTML = '<i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Signup';
 				document.querySelector('.navDrop').style = 'right: -35px';
@@ -108,7 +110,7 @@ function openMenu() {
 
 function checkForPfpCookie() {
 	let pfp = getCookie('pfp');
-	if (pfp == '') {
+	if (!pfp) {
 		fetch('api/profile/getPfp', {
 			method: 'get',
 			headers: {
@@ -117,7 +119,7 @@ function checkForPfpCookie() {
 		})
 			.then((res) => res.json())
 			.then(async (data) => {
-				if (data.status) {
+				if (data.status && data.pfp != null) {
 					document.querySelector('#pfp').src = `/image/${data.pfp}`;
 				} else {
 					document.querySelector('#pfp').src = '../images/default-pfp.jpeg';

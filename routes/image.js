@@ -15,14 +15,18 @@ mongoose.connection.once('open', () => {
 });
 
 router.get('/:filename', async (req, res) => {
-	const file = await gfs.files.findOne({ filename: req.params.filename });
-	if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
-		const readstream = gfsBucket.openDownloadStreamByName(file.filename);
-		readstream.on('error', (err) => {
-			res.status(500).json({ err: err.message });
-		});
-		readstream.pipe(res);
-	} else {
+	try {
+		const file = await gfs.files.findOne({ filename: req.params.filename });
+		if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
+			const readstream = gfsBucket.openDownloadStreamByName(file.filename);
+			readstream.on('error', (err) => {
+				res.status(500).json({ err: err.message });
+			});
+			readstream.pipe(res);
+		} else {
+			res.status(404).json({ err: 'Not an image' });
+		}
+	} catch (err) {
 		res.status(404).json({ err: 'Not an image' });
 	}
 });

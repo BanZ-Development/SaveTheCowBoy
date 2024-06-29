@@ -60,24 +60,25 @@ function changeSubscription() {
 
 function checkForPfpCookie() {
 	let pfp = getCookie('pfp');
-	if (!pfp) {
-		fetch('api/profile/getPfp', {
-			method: 'get',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
+	console.log(pfp);
+	if (pfp) document.querySelector('#imagePreview').src = `/image/${pfp}`;
+	else document.querySelector('#imagePreview').src = '../images/default-pfp.jpeg';
+	fetch('api/profile/getPfp', {
+		method: 'get',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then(async (data) => {
+			if (data.status) {
+				document.querySelector('#imagePreview').src = `/image/${data.pfp}`;
+			} else {
+				document.querySelector('#imagePreview').src = '../images/default-pfp.jpeg';
 			}
 		})
-			.then((res) => res.json())
-			.then(async (data) => {
-				if (data.status) {
-					document.querySelector('#imagePreview').src = `/image/${data.pfp}`;
-				} else {
-					document.querySelector('#imagePreview').src = '../images/default-pfp.jpeg';
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	} else document.querySelector('#imagePreview').src = `/image/${pfp}`;
+		.catch((err) => {
+			console.log(err);
+		});
 }
 checkForPfpCookie();

@@ -38,7 +38,8 @@ router.post('/isLoggedIn', (req, res) => {
 			username: req.user.meta.username,
 			uid: req.user.id
 		};
-		if (req.user.meta.pfp) Object.defineProperty(params, 'pfp', { value: req.user.meta.pfp.name });
+		if (req.user.meta.pfp) params['pfp'] = req.user.meta.pfp.name;
+		console.log(params);
 		res.send(params);
 	} else {
 		res.send({
