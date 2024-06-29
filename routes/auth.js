@@ -7,7 +7,7 @@ const crypto = require('crypto');
 require('../controllers/local');
 
 router.post('/login', async (req, res) => {
-	passport.authenticate('local', function (err, user, info) {
+	passport.authenticate('local', { keepSessionInfo: true }, function (err, user, info) {
 		if (err) {
 			return next(err);
 		}
@@ -39,7 +39,6 @@ router.post('/isLoggedIn', (req, res) => {
 			uid: req.user.id
 		};
 		if (req.user.meta.pfp) params['pfp'] = req.user.meta.pfp.name;
-		console.log(params);
 		res.send(params);
 	} else {
 		res.send({
