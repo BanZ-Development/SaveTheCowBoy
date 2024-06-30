@@ -180,4 +180,68 @@ router.post('/cancel-subscription', async (req, res) => {
 	}
 });
 
+async function changeSubscription(customerId, newPriceId) {
+	try {
+		// Retrieve the customer's subscriptions
+		const subscriptions = await stripe.subscriptions.list({
+			customer: customerId,
+			status: 'active',
+			limit: 1
+		});
+
+		if (subscriptions.data.length === 0) {
+			throw new Error('No active subscription found for this customer.');
+		}
+
+		const subscriptionId = subscriptions.data[0].id;
+
+		// Update the subscription to the new price
+		const changedSubscription = await stripe.subscriptions.update(subscriptionId, {
+			items: [
+				{
+					id: subscriptions.data[0].items.data[0].id,
+					price: newPriceId
+				}
+			],
+			proration_behavior: 'none' // Ensure changes take effect from the next billing period
+		});
+
+		console.log('Subscription updated successfully:', changedSubscription);
+		return changedSubscription;
+	} catch (error) {
+		console.error('Error updating subscription:', error);
+		throw error;
+	}
+}
+
+router.post('/change-subscription', async (req, res) => {
+	try {
+		const id = req.user.id;
+		const user = await User.findById(id);
+		console.log(user);
+		const customerID = user.subscription.customer;
+		const tier = req.body.tier;
+		const priceID = tierToPriceID(tier);
+		console.log(customerID, tier, priceID);
+		changeSubscription(customerID, priceID)
+			.then((subscription) => {
+				res.send({
+					status: true,
+					message: 'Subscription changed!',
+					subscription: subscription
+				});
+			})
+			.catch((error) => {
+				console.log(error);
+				res.send({
+					status: false,
+					error: error.message
+				});
+			});
+	} catch (error) {
+		console.log(error);
+		res.send({ status: false, error: error.message });
+	}
+});
+
 module.exports = router;

@@ -52,9 +52,9 @@ function uploadPfp() {
 	}
 }
 
-document.querySelector('#changeSubscriptionBtn').addEventListener('click', changeSubscription);
+document.querySelector('#changeSubscriptionBtn').addEventListener('click', changeSubscriptionDisplay);
 
-function changeSubscription() {
+function changeSubscriptionDisplay() {
 	document.querySelector('.subscriptionSlider').style.display = 'flex';
 }
 
@@ -82,3 +82,31 @@ function checkForPfpCookie() {
 		});
 }
 checkForPfpCookie();
+
+function changeSubscription(tier) {
+	try {
+		let data = new FormData();
+		data.append('tier', tier);
+		fetch('api/checkout/change-subscription', {
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			body: new URLSearchParams(data)
+		})
+			.then((res) => res.json())
+			.then(async (data) => {
+				console.log(data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	} catch (error) {}
+}
+
+let subButtons = document.querySelectorAll('.subBtn');
+for (let i = 0; i < subButtons.length; i++) {
+	subButtons[i].addEventListener('click', () => {
+		changeSubscription(i);
+	});
+}
