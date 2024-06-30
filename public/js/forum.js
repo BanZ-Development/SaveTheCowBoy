@@ -127,7 +127,7 @@ function createPostElement(post, currentUserID) {
 		</div>
 		
 		
-		<p style="white-space:pre;">${SafeHTML(message)}</p>
+		<p style="white-space:pre;">${message}</p>
 		<div class="forumBtns">
 			<p id="likeCounter">${likes.length}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
@@ -163,7 +163,7 @@ function loadSinglePost(post, currentUserID) {
 		</div>
 		
 		
-		<p style="white-space:pre;">${SafeHTML(message)}</p>
+		<p style="white-space:pre;">${message}</p>
 		<div class="forumBtns">
 			<p id="likeCounter">${likes.length}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
@@ -199,7 +199,7 @@ function loadSinglePost(post, currentUserID) {
 
 function createPost() {
 	let title = document.querySelector('#title').value;
-	let message = document.querySelector('#message').value;
+	let message = tinymce.get('message').getContent();
 
 	const data = new FormData();
 	data.append('title', title);
@@ -364,4 +364,12 @@ document.querySelector('#submitReportButton').addEventListener('click', submitRe
 function closeReport() {
 	document.querySelector('#makeReport').style.display = 'none';
 	document.querySelector('#reportInformation').style.display = 'none';
+}
+
+function MCEtoMessage(mce) {
+	let message = '';
+	mce.children.forEach((child) => {
+		message += child.outerHTML;
+	});
+	return message;
 }
