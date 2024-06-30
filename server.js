@@ -59,7 +59,7 @@ app.use(
 		}),
 		cookie: {
 			path: '/',
-			maxAge: 14 * 24 * 60 * 60,
+			maxAge: 14 * 24 * 60 * 60 * 1000,
 			httpOnly: /true/.test(process.env.IS_PRODUCTION),
 			secure: /true/.test(process.env.IS_PRODUCTION),
 			sameSite: 'lax'
