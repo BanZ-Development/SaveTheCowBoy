@@ -56,6 +56,7 @@ document.querySelector('#changeSubscriptionBtn').addEventListener('click', chang
 
 function changeSubscriptionDisplay() {
 	document.querySelector('.subscriptionSlider').style.display = 'flex';
+	window.scroll(0, 925)
 }
 
 function checkForPfpCookie() {

@@ -23,6 +23,7 @@ function load() {
         <div class="nav-links">
 			<span id="navSep" class="line"></span>
             <a href="/" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-house"></i> Home</a>
+			<a id="logoutBtn2" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
             <div class="navLinkDrop">
                 <p>Community</p>
                 <i class="material-icons">keyboard_arrow_down</i>
@@ -44,7 +45,7 @@ function load() {
                 <a id="profile" class="navProfileDropLink"><i class="fa-solid fa-user"></i> Profile</a>
                 <a href="settings" class="navProfileDropLink"><i class="fa-solid fa-gear"></i> Settings</a>
                 <a href="subscription" class="navProfileDropLink"><i class="fa-solid fa-credit-card"></i> Subscription</a>
-                <a id="logoutBtn" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                <a id="logoutBtn1" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
             </div>
         </div>
 		</div>

@@ -40,17 +40,21 @@
                         </div>
                     </div>
                     <h2>Username</h2>
-                    <input id='username' placeholder="Username" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="text" disabled>
+                    <input id='settingUsername' placeholder="Username" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="text" disabled>
                     <button onclick="changeUsername()" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px; "><i class="fa-solid fa-pencil"></i> Change Username</button>
                     <h2>password</h2>
-                    <input id="password" placeholder="Password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
+                    <input id="settingPassword" placeholder="Password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
+                    <input id="settingOldPassword" placeholder="Old Password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
                     <button onclick="changePassword()" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;"><i class="fa-solid fa-pencil"></i> Change Password</button>
                 </div>
             </div>
             <div style="display: none;" id="settingsType" class="settingSection">
-                <div style="width: 85%; margin-inline: auto;">
+                <div style="width: 87%;" class="settingColumn">
                     <h1>Subscription Settings</h1>
                     <span class="line"></span>
+                </div>
+                
+                <div style="width: 85%; margin-inline: auto;">
                     <div style="margin-left: 10px;" class="">
                         <h2>Current Subscription</h2>
                         <div style="margin-inline: 0px;" class="subscription">
@@ -66,9 +70,9 @@
                                 <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                             </div>
                         </div>
-                        <div style="display: flex; flex-direction: row;">
+                        <div id="subButtonHolder" style="display: flex; flex-direction: row;">
                             <button id="cancelSubscriptionBtn"style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;" class="btnLink"><i class="fa-solid fa-ban"></i> Cancel Subscription</button>
-                            <button id="changeSubscriptionBtn" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px; margin-inline: 5px;" class="btnLink"><i class="fa-solid fa-repeat"></i> Change Subscription</button>
+                            <button id="changeSubscriptionBtn" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;" class="btnLink"><i class="fa-solid fa-repeat"></i> Change Subscription</button>
                         </div>
                     </div>
                 </div>
@@ -185,13 +189,17 @@
 
     <style>
 
+        #subButtonHolder > button {
+            margin-inline: 3px !important;
+        }
+
         .subscription:hover > .subBtn {
             background-color: #44372c;
             color: #fff;
         }
 
         .subscription:hover {
-            transform: scale(1);
+            transform: none;
             color: #2B2118;
             background-color: #f2f2f2;
         }
@@ -208,6 +216,48 @@
 
         .subscription {
             margin-inline: 10px;
+        }
+
+        .btnLink {
+            width: 40%;
+            min-width: 210px;
+        }
+
+        #settingUsername {
+            order: 0 !important;
+        }
+
+        #settingOldPassword {
+            margin-block: 10px;
+        }
+
+        .subscriptions > .subscription {
+                height: 497px;
+            }
+
+        @media only screen and (max-width: 856px) {
+
+            .settingSection {
+                padding-right: 0px;
+            }
+
+            .subscriptions {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .subscription {
+                width: 100% !important;
+                height: 450px !important;
+            }
+
+            #subButtonHolder {
+                flex-direction: column !important;
+            }
+
+            .settingSection > h1 {
+                font-size: min(max(32px), 5.6vw);
+            }
         }
 
     </style>
