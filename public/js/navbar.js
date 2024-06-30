@@ -70,7 +70,7 @@ function checkLogin() {
 				document.querySelector('.navDrop').style = 'right: -35px;';
 				document.querySelector('#signupNav').style = 'display: none; !important';
 				document.querySelector('#navProfile').style = 'display: flex;';
-				document.querySelector('#logoutBtn').style = 'display: flex; !important';
+				document.querySelector('#logoutBtn1').style = 'display: flex; !important';
 				document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
 				if (data.pfp) {
 					document.querySelector('#pfp').src = `/image/${data.pfp}`;
