@@ -808,7 +808,8 @@ nav {
   .forumBtns {
     display: flex;
     flex-direction: row;
-    justify-content: end;
+    justify-content: start;
+    margin-top: 20px;
 
   }
 

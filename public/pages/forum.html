@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="../js/anime.min.js"></script>
     <script type="module" src="../js/forum.js"></script>
+    <script src="https://cdn.tiny.cloud/1/9wldbenj6xv7lerycffzagy882g8y3r928kpmogujfz47kn4/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body>
     <div class="forumSection">
@@ -22,8 +23,8 @@
         <div>
             <div id="makePost" style="display: none;" class="popupPost"></div>
             <div style="display: none;" id="postInformation" class="postInformation">
-                <h1 style="color: #333; width: 94%; margin-inline: auto;">Create Post</h1>
-                <input style="width: 95%; margin-block: 20px; font-family: 'Roboto';" class="signupInput" id="title" placeholder="Enter title"type="text">
+                <h1 style="color: #333; width: 94%;">Create Post</h1>
+                <input style="width: 99%; margin-block: 20px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee;" class="signupInput" id="title" placeholder="Enter Title"type="text">
                 <textarea class="postText" id="message" placeholder="Enter text"type="text"></textarea>
                 <p>Add attachment(s)</p>
                 <input type="file" name="" id="">
@@ -68,7 +69,27 @@
         <div id="posts"></div>
         </div>
     </div>
-    <style>.line {margin-block: 3.5px;}</style>
+    <style>
+    .line {margin-block: 3.5px;} 
+    .tox-statusbar__branding {display: none;}
+    #postButton {
+        width: 200px;
+        margin: 10px 0px 10px 0px !important;
+    }
+    </style>
+    <script>
+        tinymce.init({
+          selector: 'textarea',
+          plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+          toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+          tinycomments_mode: 'embedded',
+          tinycomments_author: 'Author name',
+          mergetags_list: [
+            { value: 'First.Name', title: 'First Name' },
+            { value: 'Email', title: 'Email' },
+          ],
+        });
+        </script>
 </body>
 <script src="../js/navbar.js"></script>
 </html>
