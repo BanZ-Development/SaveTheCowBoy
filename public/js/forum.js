@@ -18,9 +18,9 @@ async function loadPosts() {
 		})
 			.then((res) => res.json())
 			.then((data) => {
+				loadCreatePostButton();
 				if (data.status) {
 					console.log(data);
-					loadCreatePostButton();
 					data.posts.forEach((post) => {
 						createPostElement(post, data.currentUserID);
 					});
@@ -71,7 +71,7 @@ function likePost() {
 	const root = element.closest('#post');
 	const button = root.querySelector('#likeBtn');
 	const title = root.querySelector('#title');
-	const postID = title.href.split('?id=')[1];
+	const postID = element.closest('.forumPost').id;
 	const counter = root.querySelector('#likeCounter');
 	const data = new FormData();
 	data.append('postID', postID);
@@ -98,6 +98,7 @@ function likePost() {
 	})
 		.then((res) => res.json())
 		.then((data) => {
+			console.log(data);
 			if (data.type == 'like') {
 				element.outerHTML = '<i class="fa-solid fa-heart"></i>';
 			} else if (data.type == 'unlike') {

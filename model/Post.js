@@ -24,6 +24,10 @@ const postSchema = new Schema({
 		required: true
 	},
 	likes: [String],
+	likesCount: {
+		type: Number,
+		default: 0
+	},
 	reports: {
 		type: Number,
 		required: false

@@ -26,7 +26,7 @@ const port = 5000;
 const host = '0.0.0.0';
 const limiter = rateLimit({
 	windowMs: 1 * 60 * 1000,
-	max: 50
+	max: 100
 });
 
 const options = {
@@ -61,7 +61,8 @@ app.use(
 			path: '/',
 			maxAge: 14 * 24 * 60 * 60,
 			httpOnly: /true/.test(process.env.IS_PRODUCTION),
-			secure: /true/.test(process.env.IS_PRODUCTION)
+			secure: /true/.test(process.env.IS_PRODUCTION),
+			sameSite: 'lax'
 		}
 	})
 );

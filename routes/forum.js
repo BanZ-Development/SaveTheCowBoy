@@ -7,9 +7,11 @@ const Comment = require('../model/Comment');
 router.post('/loadPosts', async function (req, res) {
 	const { loadedPosts } = req.body;
 	try {
+		let posts;
 		const count = await Post.countDocuments();
 		const difference = count - loadedPosts - 10;
-		let posts = await Post.find().skip(difference).limit(10);
+		if (count < 10) posts = await Post.find();
+		else posts = await Post.find().skip(difference).limit(10);
 		if (posts) {
 			res.send({
 				status: true,
@@ -82,25 +84,28 @@ router.post('/post', async function (req, res) {
 router.post('/likePost', async function (req, res) {
 	try {
 		const { postID } = req.body;
+		console.log(postID);
 		let post = await Post.findById(postID);
 		let user = req.user;
 		if (post && user) {
 			try {
 				if (post.likes.includes(user.id)) {
 					post.likes.pull(user.id);
+					post.likesCount -= 1;
 					await post.save();
 					res.send({
 						status: true,
 						type: 'unlike',
-						likes: post.likes.length
+						likes: post.likesCount
 					});
 				} else {
 					post.likes.push(user.id);
+					post.likesCount += 1;
 					await post.save();
 					res.send({
 						status: true,
 						type: 'like',
-						likes: post.likes.length
+						likes: post.likesCount
 					});
 				}
 			} catch (error) {
@@ -110,6 +115,11 @@ router.post('/likePost', async function (req, res) {
 					error: error.message
 				});
 			}
+		} else {
+			res.send({
+				status: false,
+				message: 'No post found with that ID'
+			});
 		}
 	} catch (error) {
 		console.log(error);
