@@ -1,5 +1,6 @@
 require('dotenv').config();
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 const User = require('../model/User');
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
@@ -242,6 +243,35 @@ router.post('/change-subscription', async (req, res) => {
 		console.log(error);
 		res.send({ status: false, error: error.message });
 	}
+});
+const endpointSecret = process.env.STRIPE_WEBHOOK_KEY;
+router.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+	const sig = request.headers['stripe-signature'];
+
+	let event;
+
+	try {
+		event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+	} catch (err) {
+		response.status(400).send(`Webhook Error: ${err.message}`);
+		return;
+	}
+
+	console.log(event.type);
+	// Handle the event
+	switch (event.type) {
+		case 'payment_intent.succeeded':
+			const paymentIntentSucceeded = event.data.object;
+			console.log(paymentIntentSucceeded);
+			// Then define and call a function to handle the event payment_intent.succeeded
+			break;
+		// ... handle other event types
+		default:
+			console.log(`Unhandled event type ${event.type}`);
+	}
+
+	// Return a 200 response to acknowledge receipt of the event
+	response.send();
 });
 
 module.exports = router;

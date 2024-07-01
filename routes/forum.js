@@ -9,9 +9,21 @@ router.post('/loadPosts', async function (req, res) {
 	try {
 		let posts;
 		const count = await Post.countDocuments();
-		const difference = count - loadedPosts - 10;
-		if (count < 10) posts = await Post.find();
-		else posts = await Post.find().skip(difference).limit(10);
+		const difference = count - loadedPosts;
+		console.log('Count: ' + count);
+		console.log('Difference: ' + difference);
+		if (count < 10) {
+			posts = await Post.find();
+		} else if (difference < 10) {
+			console.log(await Post.find());
+			posts = await Post.find()
+				.skip(10 - difference)
+				.limit(difference);
+		} else {
+			posts = await Post.find()
+				.skip(difference - 10)
+				.limit(10);
+		}
 		if (posts) {
 			res.send({
 				status: true,
@@ -21,6 +33,7 @@ router.post('/loadPosts', async function (req, res) {
 			});
 		}
 	} catch (error) {
+		console.log(error);
 		res.send({
 			status: false,
 			message: 'No posts found'

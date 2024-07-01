@@ -358,18 +358,11 @@ function forumReport() {
 	document.querySelector('#reportInformation').style.display = 'flex';
 }
 
-document.querySelector('#makeReport').addEventListener('click', closeReport);
-document.querySelector('#submitReportButton').addEventListener('click', submitReport);
-
 function closeReport() {
 	document.querySelector('#makeReport').style.display = 'none';
 	document.querySelector('#reportInformation').style.display = 'none';
 }
 
-function MCEtoMessage(mce) {
-	let message = '';
-	mce.children.forEach((child) => {
-		message += child.outerHTML;
-	});
-	return message;
-}
+document.querySelector('#makeReport').addEventListener('click', closeReport);
+document.querySelector('#submitReportButton').addEventListener('click', submitReport);
+//document.querySelector('#showMorePosts').addEventListener('click', loadPosts);
