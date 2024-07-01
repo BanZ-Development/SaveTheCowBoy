@@ -24,11 +24,22 @@
             <div id="makePost" style="display: none;" class="popupPost"></div>
             <div style="display: none;" id="postInformation" class="postInformation">
                 <h1 style="color: #333; width: 94%;">Create Post</h1>
-                <input style="width: 99%; margin-block: 20px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee;" class="signupInput" id="title" placeholder="Enter Title"type="text">
+                <input style="width: 99%; margin-block: 20px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px;" class="signupInput" id="title" placeholder="Enter Title"type="text">
                 <textarea class="postText" id="message" placeholder="Enter text"type="text"></textarea>
-                <p>Add attachment(s)</p>
-                <input type="file" name="" id="">
-                <button style="background-color: #f3f3f3; height: 40px; padding-block: 0px; font-family: 'Roboto';" class="btnLink" id="postButton">Post</button>
+                <label id="dropArea" class="submitImage" for="addImage">
+                  <input type="file" name="" id="addImage" hidden>
+                  <div class="submitImageText">
+                    <p>Drag and Drop images or videos or</p>
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                  </div>
+                  <div class="imageUploadPreviewDiv">
+                    <img id="imageUploadPreview" src="" alt="">
+                  </div>
+                </label>
+                <div class="inlineButtons">
+                  <button style="background-color: #f3f3f3; height: 40px; padding-block: 0px; font-family: 'Roboto'; border-radius: 10px;" class="btnLink" id="postButton">Post</button>
+                  <button id="removeImageBtn" style="background-color: #f3f3f3; height: 40px; padding-block: 0px; font-family: 'Roboto'; width: unset; border-radius: 10px; display: none;" class="btnLink" id="postButton">Delete Image</button>
+                </div>
             </div>
             <div id="makeReport" style="display: none;" class="popupPost"></div>
             <div style="display: none;" id="reportInformation" class="postInformation">
@@ -74,17 +85,25 @@
     </div>
     <style>
     .line {margin-block: 3.5px;} 
-    .tox-statusbar__branding {display: none;}
+    .tox-statusbar__branding, .tox-statusbar__resize-handle {display: none !important;}
     #postButton {
-        width: 200px;
+        width: 100px;
         margin: 10px 0px 10px 0px !important;
     }
+    .signupInput:focus-visible {
+      border: solid 2px #0268db !important;
+    }
+
+    img {
+      border-radius: 7px;
+    }
+
     </style>
     <script>
         tinymce.init({
           selector: '#message',
-          plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
-          toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+          plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate mentions tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+          toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
           tinycomments_mode: 'embedded',
           tinycomments_author: 'Author name',
           mergetags_list: [

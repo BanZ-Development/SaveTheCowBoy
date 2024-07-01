@@ -366,3 +366,42 @@ function closeReport() {
 document.querySelector('#makeReport').addEventListener('click', closeReport);
 document.querySelector('#submitReportButton').addEventListener('click', submitReport);
 //document.querySelector('#showMorePosts').addEventListener('click', loadPosts);
+function MCEtoMessage(mce) {
+	let message = '';
+	mce.children.forEach((child) => {
+		message += child.outerHTML;
+	});
+	return message;
+}
+
+// this like uploads image or whatever, idgaf
+
+let inputFile = document.getElementById('addImage');
+let imagePreview = document.getElementById('imageUploadPreview');
+
+document.getElementById('addImage').addEventListener('change', uploadImage);
+
+document.getElementById('dropArea').addEventListener('dragover', function(e){
+	e.preventDefault();
+});
+
+document.getElementById('dropArea').addEventListener('drop', function(e){
+	e.preventDefault();
+	inputFile.files = e.dataTransfer.files;
+	uploadImage();
+});
+
+function uploadImage() {
+	let imgLink = URL.createObjectURL(inputFile.files[0]);
+	imagePreview.setAttribute('src', imgLink);
+	document.querySelector('.submitImageText').style.display = 'none';
+	document.querySelector('.imageUploadPreviewDiv').style.display = 'block';
+	document.querySelector('#removeImageBtn').style.display = 'inline-block';
+}
+
+document.querySelector('#removeImageBtn').addEventListener('click', function(){
+	imagePreview.setAttribute('src', '');
+	document.querySelector('.submitImageText').style.display = 'flex';
+	document.querySelector('.imageUploadPreviewDiv').style.display = 'none';
+	document.querySelector('#removeImageBtn').style.display = 'none';
+});
