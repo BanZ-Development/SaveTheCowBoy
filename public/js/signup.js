@@ -7,14 +7,14 @@ const AnimateBorder = (element, color) => {
 	element.style.border = `2px solid ${color}`;
 };
 
-const ErrorMessage = (elementName, message) => {
+const ErrorMessage = (elementName, message, icon, color) => {
 	try {
 		let element = document.querySelector(`#${elementName}Error`);
 		element.innerHTML = message;
 	} catch (error) {
 		document
 			.querySelector(`#${elementName}`)
-			.insertAdjacentHTML('afterend', `<p style="color: red; margin-bottom: 0px; font-size: 13pt;" id="${elementName}Error"><i class="fa-solid fa-circle-exclamation"></i> ${message}</p>`);
+			.insertAdjacentHTML('afterend', `<p style="color: ${color}; margin-bottom: 0px; font-size: 13pt;" id="${elementName}Error"><i class="${icon}"></i> ${message}</p>`);
 	}
 };
 
@@ -44,7 +44,41 @@ async function signupAndReturnUserID(user) {
 	});
 }
 
+const createReturningUserAccount = () => {
+	document.querySelector('#signup2').style.display = 'none';
+	let email = document.querySelector('#email').value;
+	const data = new FormData();
+	data.append('email', email);
+	fetch('api/auth/check-unique-email', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			if (data.status && data.returningUser) {
+				let username = document.querySelector('#usernameInput').value;
+				let email = document.querySelector('#email').value;
+				let password = document.querySelector('#password').value;
+				const user = new FormData();
+				user.append('username', username);
+				user.append('email', email);
+				user.append('password', password);
+				user.append('returningUser', true);
+				signupAndReturnUserID(user).then((id) => {
+					console.log('Account created: ' + id);
+					location.replace('/login');
+				});
+			} else {
+				document.querySelector('#signup2').style.display = 'flex';
+			}
+		});
+};
+
 function continueClick() {
+	createReturningUserAccount();
 	anime({
 		targets: '#signup1',
 		opacity: 0,
@@ -53,7 +87,6 @@ function continueClick() {
 	});
 	setTimeout(function () {
 		document.getElementById('signup1').style.display = 'none';
-		document.getElementById('signup2').style.display = 'flex';
 	}, 1000);
 }
 
@@ -72,6 +105,7 @@ async function checkoutClick() {
 	user.append('username', username);
 	user.append('email', email);
 	user.append('password', password);
+	user.append('returningUser', false);
 
 	fetch('api/checkout/start', {
 		method: 'post',
@@ -85,7 +119,7 @@ async function checkoutClick() {
 			if (data.status) {
 				signupAndReturnUserID(user).then((id) => {
 					console.log('ID: ' + id);
-					startCheckout(id, tier);
+					startCheckout(id, index);
 				});
 			} else {
 				console.log(data.message);
@@ -134,7 +168,7 @@ function usernameCheck() {
 				RemoveError('usernameInput');
 			} else {
 				InputValidation('usernameInput', 'red');
-				ErrorMessage('usernameInput', 'Please choose a unique username!');
+				ErrorMessage('usernameInput', 'Please choose a unique username!', 'fa-solid fa-circle-exclamation', 'red');
 			}
 		});
 }
@@ -153,12 +187,15 @@ function emailCheck() {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
-			if (data.status) {
+			if (data.status && !data.returningUser) {
 				InputValidation('email', 'green');
 				RemoveError('email');
+			} else if (data.status && data.returningUser) {
+				InputValidation('email', 'blue');
+				ErrorMessage('email', 'This email is linked to your previous Save the Cowboy account.', 'fa-solid fa-floppy-disk', 'blue');
 			} else {
 				InputValidation('email', 'red');
-				ErrorMessage('email', 'Please choose a unique email!');
+				ErrorMessage('email', 'Please choose a unique email!', 'fa-solid fa-circle-exclamation', 'red');
 			}
 		});
 }

@@ -2,22 +2,22 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const User = require('../model/User');
-const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+const stripe = require('stripe')(process.env.STRIPE_STCB_TEST_KEY);
 
 const tierToPriceID = (tier) => {
 	switch (tier) {
 		case 0:
-			return process.env.STRIPE_DAY_WORKER;
+			return process.env.STRIPE_STCB_TEST_SUBSCRIPTION;
 		case 1:
-			return process.env.STRIPE_RANCH_COWBOY;
+			return process.env.STRIPE_STCB_TEST_SUBSCRIPTION;
 		case 2:
-			return process.env.STRIPE_JIGGER_BOSS;
+			return process.env.STRIPE_STCB_TEST_SUBSCRIPTION;
 		case 3:
-			return process.env.STRIPE_TOP_HAND;
+			return process.env.STRIPE_STCB_TEST_SUBSCRIPTION;
 		case 4:
-			return process.env.STRIPE_COW_BOSS;
+			return process.env.STRIPE_STCB_TEST_SUBSCRIPTION;
 		case 5:
-			return process.env.STRIPE_CATTLE_BARON;
+			return process.env.STRIPE_STCB_TEST_SUBSCRIPTION;
 	}
 };
 
