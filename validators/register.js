@@ -19,11 +19,9 @@ const schema = {
 			return v;
 		},
 		min: 8,
-		max: 20,
 		messages: {
 			stringPattern: 'pass value must contain a digit',
-			stringMin: 'Your pass value is too short',
-			stringMax: 'Your pass value is too large'
+			stringMin: 'Your pass value is too short'
 		}
 	},
 	email: { type: 'email' }

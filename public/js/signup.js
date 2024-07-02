@@ -7,14 +7,12 @@ const AnimateBorder = (element, color) => {
 	element.style.border = `2px solid ${color}`;
 };
 
-const ErrorMessage = (elementName, message, icon, color) => {
+const ErrorMessage = (elementName, message, color) => {
 	try {
 		let element = document.querySelector(`#${elementName}Error`);
 		element.innerHTML = message;
 	} catch (error) {
-		document
-			.querySelector(`#${elementName}`)
-			.insertAdjacentHTML('afterend', `<p style="color: ${color}; margin-bottom: 0px; font-size: 13pt;" id="${elementName}Error"><i class="${icon}"></i> ${message}</p>`);
+		document.querySelector(`#${elementName}`).insertAdjacentHTML('afterend', `<p style="color: ${color}; margin-bottom: 0px; font-size: 13pt;" id="${elementName}Error">${message}</p>`);
 	}
 };
 
@@ -77,23 +75,74 @@ const createReturningUserAccount = () => {
 		});
 };
 
+const validateUsername = (username) => {
+	if (username == '') {
+		InputValidation('usernameInput', 'red');
+		ErrorMessage('usernameInput', 'Username cannot be left empty!', 'red');
+		return false;
+	} else if (username.length < 3) {
+		InputValidation('usernameInput', 'red');
+		ErrorMessage('usernameInput', 'Username cannot be less than 3 characters!', 'red');
+		return false;
+	} else if (username.length > 20) {
+		InputValidation('usernameInput', 'red');
+		ErrorMessage('usernameInput', 'Username cannot be more than 20 characters!', 'red');
+		return false;
+	}
+	return true;
+};
+
+const validateEmail = (email) => {
+	if (email == '') {
+		InputValidation('email', 'red');
+		ErrorMessage('email', 'Email cannot be left empty!', 'red');
+		return false;
+	} else if (email.length < 4 || !email.includes('@')) {
+		InputValidation('email', 'red');
+		ErrorMessage('email', 'Please choose a valid email!', 'red');
+		return false;
+	}
+	return true;
+};
+
+const validatePassword = () => {
+	let password = document.querySelector('#password').value;
+	let error = 'Password must be at least 8 characters long, have a number, and a special character';
+	let special = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+	console.log(/\d/.test(password));
+	console.log(special.test(password));
+	if (password.length >= 8 && /\d/.test(password) && special.test(password)) {
+		InputValidation('password', 'green');
+		RemoveError('password');
+		return true;
+	} else {
+		InputValidation('password', 'red');
+		ErrorMessage('password', error, 'red');
+		return false;
+	}
+};
+
 function continueClick() {
-	createReturningUserAccount();
-	anime({
-		targets: '#signup1',
-		opacity: 0,
-		easing: 'easeInOutExpo',
-		duration: 1000
-	});
-	setTimeout(function () {
-		document.getElementById('signup1').style.display = 'none';
-	}, 1000);
+	let username = document.querySelector('#usernameInput').value;
+	let email = document.querySelector('#email').value;
+	if (validateUsername(username) && validateEmail(email) && validatePassword()) {
+		createReturningUserAccount();
+		anime({
+			targets: '#signup1',
+			opacity: 0,
+			easing: 'easeInOutExpo',
+			duration: 1000
+		});
+		setTimeout(function () {
+			document.getElementById('signup1').style.display = 'none';
+		}, 1000);
+	}
 }
 
 async function checkoutClick() {
 	let buttons = document.querySelectorAll('.subscriptionDesc');
 	let index;
-	for (var i = 0; i < buttons.length; i++) {
+	for (let i = 0; i < buttons.length; i++) {
 		if (buttons[i].getAttribute('data-selected') === 'true') index = i;
 	}
 
@@ -151,6 +200,7 @@ function startCheckout(id, tier) {
 
 function usernameCheck() {
 	let username = document.querySelector('#usernameInput').value;
+	validateUsername(username);
 	const data = new FormData();
 	data.append('username', username);
 	fetch('api/auth/check-unique-username', {
@@ -166,15 +216,17 @@ function usernameCheck() {
 			if (data.status) {
 				InputValidation('usernameInput', 'green');
 				RemoveError('usernameInput');
+				validateUsername(username);
 			} else {
 				InputValidation('usernameInput', 'red');
-				ErrorMessage('usernameInput', 'Please choose a unique username!', 'fa-solid fa-circle-exclamation', 'red');
+				ErrorMessage('usernameInput', 'Please choose a unique username!', 'red');
 			}
 		});
 }
 
 function emailCheck() {
 	let email = document.querySelector('#email').value;
+	validateEmail(email);
 	const data = new FormData();
 	data.append('email', email);
 	fetch('api/auth/check-unique-email', {
@@ -190,12 +242,13 @@ function emailCheck() {
 			if (data.status && !data.returningUser) {
 				InputValidation('email', 'green');
 				RemoveError('email');
+				validateEmail(email);
 			} else if (data.status && data.returningUser) {
 				InputValidation('email', 'blue');
-				ErrorMessage('email', 'This email is linked to your previous Save the Cowboy account.', 'fa-solid fa-floppy-disk', 'blue');
+				ErrorMessage('email', 'This email is linked to your previous Save the Cowboy account.', 'blue');
 			} else {
 				InputValidation('email', 'red');
-				ErrorMessage('email', 'Please choose a unique email!', 'fa-solid fa-circle-exclamation', 'red');
+				ErrorMessage('email', 'Please choose a unique email!', 'red');
 			}
 		});
 }
@@ -214,5 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 	document.querySelector('#email').addEventListener('input', () => {
 		debounce(emailCheck, delay);
+	});
+	document.querySelector('#password').addEventListener('input', () => {
+		debounce(validatePassword, delay);
 	});
 });
