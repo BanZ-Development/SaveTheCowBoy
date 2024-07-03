@@ -747,6 +747,8 @@ nav {
   .forumUser {
     color: #626262;
     text-decoration: none;
+    line-height: 40px;
+    margin-inline: 20px;
   }
 
   .forumUser:hover {
@@ -872,6 +874,19 @@ nav {
   .imageUploadPreviewDiv {
     display: none;
     margin-block: 30px;
+  }
+
+  .forumPfp {
+    height: 40px;
+    width: 40px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+  }
+
+  .inlineForumUser {
+    display: flex;
+    flex-direction: row;
   }
 
   @media only screen and (max-width: 1610px) {

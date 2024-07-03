@@ -95,4 +95,18 @@ router.get('/getPfp', async (req, res) => {
 	}
 });
 
+router.post('/getPfp', async (req, res) => {
+	const { userID } = req.body;
+	if (!userID) return res.send({ status: false });
+	const user = await User.findById(userID);
+	if (!user.meta.pfp) return res.send({ status: false });
+	else {
+		cookie.set(res, 'pfp', user.meta.pfp.name);
+		res.send({
+			status: true,
+			pfp: user.meta.pfp.name
+		});
+	}
+});
+
 module.exports = router;

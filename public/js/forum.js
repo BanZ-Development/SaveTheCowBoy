@@ -22,7 +22,7 @@ async function loadPosts() {
 				if (data.status) {
 					console.log(data);
 					data.posts.forEach((post) => {
-						createPostElement(post, data.currentUserID);
+						createPostElement(post, data.currentUserID, data.pfp);
 					});
 				} else {
 					console.log(data);
@@ -66,13 +66,83 @@ function returnID() {
 }
 
 function createPostElement(post, currentUserID) {
+function likePost() {
+	let element = event.target;
+	if (element.nodeName != 'I') element = element.querySelector('i');
+	const root = element.closest('#post');
+	const button = root.querySelector('#likeBtn');
+	const title = root.querySelector('#title');
+	const postID = element.closest('.forumPost').id;
+	const counter = root.querySelector('#likeCounter');
+	const data = new FormData();
+	data.append('postID', postID);
+	try {
+		if (element.outerHTML == '<i class="fa-regular fa-heart"></i>') {
+			//liking
+			element.outerHTML = '<i class="fa-solid fa-heart"></i>';
+			counter.innerHTML++;
+		} else {
+			//unliking
+			element.outerHTML = '<i class="fa-regular fa-heart"></i>';
+			counter.innerHTML--;
+		}
+		button.enabled = false;
+	} catch (error) {
+		console.log(error);
+	}
+	fetch('api/forum/likePost', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.type == 'like') {
+				element.outerHTML = '<i class="fa-solid fa-heart"></i>';
+			} else if (data.type == 'unlike') {
+				element.outerHTML = '<i class="fa-regular fa-heart"></i>';
+			}
+			counter.innerHTML = data.likes;
+			button.enabled = true;
+		})
+		.catch((err) => {
+			console.log(err);
+			button.enabled = true;
+		});
+	}
+}
+
+function returnPfp(uID, parent) {
+	let data = new FormData();
+	data.append("userID", uID);
+	fetch("api/profile/getPfp", {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	}).then((res)=> res.json()).then(async(data)=>{
+		if (data.status) {parent.querySelector('.forumPfp').src = "/image/" + data.pfp}
+		else {
+			parent.querySelector('.forumPfp').src = '../images/default-pfp.jpeg';
+		}
+	}) 
+}
+
+function createPostElement(post, currentUserID, pfp) {
 	const { _id, title, message, username, postDate, uID, likes, comments } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
 	div.innerHTML = `<div id="post">
 		<span class="line"></span>
 		<div class="forumPost" id=${_id}>
-		<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
+		<div class="inlineForumUser">
+			<img class="forumPfp" src="/image/${pfp}"></img>
+			<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
+		</div>
 		<div class="forumTitle">
 			<h3><a id="title" href="/forum?id=${_id}">${SafeHTML(title)}</a></h3>
 			<p>${date.toDateString()}</p>
@@ -90,6 +160,7 @@ function createPostElement(post, currentUserID) {
 		</div>
 		</div>
 		`;
+	returnPfp(uID, div);
 	let isLiked = likes.includes(currentUserID);
 	if (isLiked) {
 		div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
@@ -102,13 +173,17 @@ function createPostElement(post, currentUserID) {
 }
 
 function loadSinglePost(post, currentUserID) {
-	const { _id, title, message, username, postDate, uID, likes, comments } = post;
+	const { _id, title, message, username, postDate, uID, likes, comments, pfp } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
 	div.innerHTML = `<div id="post">
 		<span class="line"></span>
 		<div class="forumPost" id=${_id}>
-		<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
+		<div class="inlineForumUser">
+			<img class="forumPfp" src="${pfp}"></img>
+			<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
+		</div>
+		
 		<div class="forumTitle">
 			<h3><a id="title">${SafeHTML(title)}</a></h3>
 			<p>${date.toDateString()}</p>
