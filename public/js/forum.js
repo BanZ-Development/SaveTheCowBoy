@@ -65,54 +65,6 @@ function returnID() {
 	return id;
 }
 
-function likePost() {
-	let element = event.target;
-	if (element.nodeName != 'I') element = element.querySelector('i');
-	const root = element.closest('#post');
-	const button = root.querySelector('#likeBtn');
-	const title = root.querySelector('#title');
-	const postID = element.closest('.forumPost').id;
-	const counter = root.querySelector('#likeCounter');
-	const data = new FormData();
-	data.append('postID', postID);
-	try {
-		if (element.outerHTML == '<i class="fa-regular fa-heart"></i>') {
-			//liking
-			element.outerHTML = '<i class="fa-solid fa-heart"></i>';
-			counter.innerHTML++;
-		} else {
-			//unliking
-			element.outerHTML = '<i class="fa-regular fa-heart"></i>';
-			counter.innerHTML--;
-		}
-		button.enabled = false;
-	} catch (error) {
-		console.log(error);
-	}
-	fetch('api/forum/likePost', {
-		method: 'post',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: new URLSearchParams(data)
-	})
-		.then((res) => res.json())
-		.then((data) => {
-			console.log(data);
-			if (data.type == 'like') {
-				element.outerHTML = '<i class="fa-solid fa-heart"></i>';
-			} else if (data.type == 'unlike') {
-				element.outerHTML = '<i class="fa-regular fa-heart"></i>';
-			}
-			counter.innerHTML = data.likes;
-			button.enabled = true;
-		})
-		.catch((err) => {
-			console.log(err);
-			button.enabled = true;
-		});
-}
-
 function createPostElement(post, currentUserID) {
 	const { _id, title, message, username, postDate, uID, likes, comments } = post;
 	let div = document.createElement('div');
@@ -335,7 +287,6 @@ function closePost() {
 }
 
 function openPostComments() {
-	console.log('open comments');
 	let button = event.target;
 	let postID = button.closest('.forumPost').id;
 	location.href = `forum?id=${SafeHTML(postID)}#commentSection`;

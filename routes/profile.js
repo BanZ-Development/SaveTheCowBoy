@@ -37,11 +37,14 @@ const upload = multer({ storage });
 router.post('/load', async (req, res) => {
 	const { uid } = req.body;
 	const user = await User.findById(uid);
+	let pfp = null;
+	if (user.meta.pfp) pfp = user.meta.pfp.name;
 	const profile = {
 		username: user.meta.username,
 		uid: user.id,
-		posts: null,
-		isSubscribed: user.subscription.isSubscribed
+		posts: user.posts,
+		isSubscribed: user.subscription.isSubscribed,
+		pfp: pfp
 	};
 	res.send({
 		status: true,

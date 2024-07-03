@@ -72,6 +72,9 @@ router.post('/post', async function (req, res) {
 			postDate: date
 		};
 		const post = await Post.create(params);
+		let user = await User.findById(req.user.id);
+		user.posts.push(post.id);
+		await user.save();
 		if (post) {
 			res.send({
 				status: true,

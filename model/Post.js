@@ -32,7 +32,8 @@ const postSchema = new Schema({
 		type: Number,
 		required: false
 	},
-	comments: [Object]
+	comments: [Object],
+	tags: [String]
 });
 
 module.exports = mongoose.model('Post', postSchema);

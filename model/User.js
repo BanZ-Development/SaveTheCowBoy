@@ -45,7 +45,8 @@ const userSchema = new Schema({
 	forgotPassword: {
 		token: String,
 		expirationDate: Date
-	}
+	},
+	posts: [String]
 });
 
 module.exports = mongoose.model('User', userSchema);
