@@ -889,6 +889,11 @@ nav {
     flex-direction: row;
   }
 
+  .forumPost {
+    font-family: 'Roboto';
+    color: #ccc;
+  }
+
   @media only screen and (max-width: 1610px) {
 
     .settingSidebarBtn {

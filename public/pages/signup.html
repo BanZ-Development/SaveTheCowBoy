@@ -34,6 +34,10 @@
             <input autocomplete="new-password" placeholder="Enter email" class="signupInput" type="email" id="email">
             <p>Password</p>
             <input autocomplete="new-password"placeholder="Enter password" class="signupInput" type="password" id="password">
+            <div style="display: flex; flex-direction: row; margin-inline: auto;width: 70%;">
+                <input type="checkbox" name="checkbox" id="showPassword">
+                <p style="color: #333;">Show Password</p>
+            </div>
             <a style="width: 70%; margin-inline: auto; margin-block: 6px;" href="/login">Already have an account?</a>
             <button id="continueBtn" style="background-color: #2B2118; height: 52px; color: #fff; width: 70%; margin-inline: auto; margin-top: 100px; font-size: 25px; font-family: 'Montserrat';" class="btnLink">Continue</button>
             
@@ -146,9 +150,6 @@
         </div>
     </div>
     <script>
-
-        
-
         function selectSubscription(sub) {
             let selectedSubscription = document.querySelectorAll('.subscriptionPick')[sub];
             for (i=0; i < 6; i++) {

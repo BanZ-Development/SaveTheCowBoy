@@ -274,3 +274,16 @@ document.addEventListener('DOMContentLoaded', () => {
 		debounce(validatePassword, delay);
 	});
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('#showPassword').addEventListener('change', function () {
+        let checkbox = document.getElementById('showPassword');
+        let passwordField = document.getElementById('password');
+
+        if (checkbox.checked) {
+            passwordField.setAttribute('type', 'text');
+        } else {
+            passwordField.setAttribute('type', 'password');
+        }
+    });
+});

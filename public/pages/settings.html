@@ -53,31 +53,8 @@
                     <h1>Subscription Settings</h1>
                     <span class="line"></span>
                 </div>
-                
-                <div style="width: 85%; margin-inline: auto;">
-                    <div style="margin-left: 10px;" class="">
-                        <h2>Current Subscription</h2>
-                        <div style="margin-inline: 0px;" class="subscription">
-                            <h2>Day Worker</h2>
-                            <h1>$9.<p>99</p></h1>
-                            <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                            <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                            </div>
-                        </div>
-                        <div id="subButtonHolder" style="display: flex; flex-direction: row;">
-                            <button id="cancelSubscriptionBtn"style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;" class="btnLink"><i class="fa-solid fa-ban"></i> Cancel Subscription</button>
-                            <button id="changeSubscriptionBtn" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;" class="btnLink"><i class="fa-solid fa-repeat"></i> Change Subscription</button>
-                        </div>
-                    </div>
-                </div>
-                <div style="display: none; width: 85%; margin-inline: auto; flex-direction: column; margin-top: 50px;" class="subscriptionSlider">
-                    <h2 style="margin-left: 10px;">Change Subscription</h2>
+                <div width: 85%; margin-inline: auto; flex-direction: column; margin-top: 50px;" class="subscriptionSlider">
+                    <h2 style="margin-left: 10px;">Change Current Subscription</h2>
                     <div id="subscriptions" class="subscriptions">
                         <div class="subscription">
                             <h2>Day Worker</h2>
@@ -91,7 +68,7 @@
                             <div class="subOption">
                                 <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                             </div>
-                            <button class="subBtn">Select</button>
+                            <button id="cancelSubscriptionBtn" class="subBtn"><i class="fa-solid fa-trash"></i> Cancel Subscription</button>
                         </div>
                         <div class="subscription">
                             <h2>Ranch Cowboy</h2>
@@ -105,7 +82,7 @@
                             <div class="subOption">
                                 <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                             </div>
-                            <button class="subBtn">Select</button>
+                            <button id="changeSubscriptionBtn" class="subBtn"><i class="fa-solid fa-repeat"></i> Change Subscription</button>
                         </div>
                         <div class="subscription">
                             <h2>Jigger Boss</h2>
@@ -119,7 +96,7 @@
                             <div class="subOption">
                                 <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                             </div>
-                            <button class="subBtn">Select</button>
+                            <button class="subBtn"><i class="fa-solid fa-repeat"></i> Change Subscription</button>
                         </div>
                         <div class="subscription">
                             <h2>Top Hand</h2>
@@ -133,7 +110,7 @@
                             <div class="subOption">
                                 <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                             </div>
-                            <button class="subBtn">Select</button>
+                            <button class="subBtn"><i class="fa-solid fa-repeat"></i> Change Subscription</button>
                         </div>
                         <div class="subscription">
                             <h2>Cow Boss</h2>
@@ -147,7 +124,7 @@
                             <div class="subOption">
                                 <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                             </div>
-                            <button class="subBtn">Select</button>
+                            <button class="subBtn"><i class="fa-solid fa-repeat"></i> Change Subscription</button>
                         </div>
                         <div class="subscription">
                             <h2>Cattle Baron</h2>
@@ -161,7 +138,7 @@
                             <div class="subOption">
                                 <i class="material-icons">task_alt</i> <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                             </div>
-                            <button class="subBtn">Select</button>
+                            <button class="subBtn"><i class="fa-solid fa-repeat"></i> Change Subscription</button>
                         </div>
                     </div>
                 </div>
@@ -188,6 +165,22 @@
     </div>
 
     <style>
+
+        .subBtn {
+            width: fit-content;
+            padding-inline: 10px;
+        }
+
+        .subBtn > i {
+            margin-right: 10px;
+            margin-left: 5px;
+        }
+
+        .subscriptionSlider {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
 
         #subButtonHolder > button {
             margin-inline: 3px !important;
