@@ -381,11 +381,11 @@ let imagePreview = document.getElementById('imageUploadPreview');
 
 document.getElementById('addImage').addEventListener('change', uploadImage);
 
-document.getElementById('dropArea').addEventListener('dragover', function(e){
+document.getElementById('dropArea').addEventListener('dragover', function (e) {
 	e.preventDefault();
 });
 
-document.getElementById('dropArea').addEventListener('drop', function(e){
+document.getElementById('dropArea').addEventListener('drop', function (e) {
 	e.preventDefault();
 	inputFile.files = e.dataTransfer.files;
 	uploadImage();
@@ -399,7 +399,7 @@ function uploadImage() {
 	document.querySelector('#removeImageBtn').style.display = 'inline-block';
 }
 
-document.querySelector('#removeImageBtn').addEventListener('click', function(){
+document.querySelector('#removeImageBtn').addEventListener('click', function () {
 	imagePreview.setAttribute('src', '');
 	document.querySelector('.submitImageText').style.display = 'flex';
 	document.querySelector('.imageUploadPreviewDiv').style.display = 'none';

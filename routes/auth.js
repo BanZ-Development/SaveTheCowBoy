@@ -57,47 +57,54 @@ router.post('/signup', async (req, res) => {
 	async function Passed() {
 		try {
 			const { username, password, email } = req.body;
-			const { hash, salt } = await hasher.returnHashAndSalt(password);
-			let subscription = null;
+			if (isUniqueUsernameAndEmail(username, email)) {
+				const { hash, salt } = await hasher.returnHashAndSalt(password);
+				let subscription = null;
 
-			const { status, customerID } = await isReturningUser(email);
-			if (status) {
-				const sub = await getSubscriptionByCustomer(customerID);
-				subscription = {
-					isSubscribed: true,
-					tier: {
-						id: sub.id
+				const { status, customerID } = await isReturningUser(email);
+				if (status) {
+					const sub = await getSubscriptionByCustomer(customerID);
+					subscription = {
+						isSubscribed: true,
+						tier: {
+							id: sub.id
+						},
+						customer: customerID,
+						renewalDate: sub.current_period_end
+					};
+				}
+
+				await User.create({
+					meta: {
+						username: username,
+						password: hash,
+						email: email,
+						salt: salt
 					},
-					customer: customerID,
-					renewalDate: sub.current_period_end
-				};
-			}
-
-			await User.create({
-				meta: {
-					username: username,
-					password: hash,
-					email: email,
-					salt: salt
-				},
-				admin: false,
-				subscription: subscription
-			})
-				.then((user) => {
-					console.log(user._id);
-					res.send({
-						status: true,
-						message: 'User created',
-						id: user._id,
-						isReturningUser: status
-					});
+					admin: false,
+					subscription: subscription
 				})
-				.catch((error) => {
-					res.send({
-						status: false,
-						error: error
+					.then((user) => {
+						console.log(user._id);
+						res.send({
+							status: true,
+							message: 'User created',
+							id: user._id,
+							isReturningUser: status
+						});
+					})
+					.catch((error) => {
+						res.send({
+							status: false,
+							error: error
+						});
 					});
+			} else {
+				res.send({
+					status: false,
+					message: 'Cannot sign up because either username or email is not unique!'
 				});
+			}
 		} catch (err) {
 			console.log(err);
 		}

@@ -109,8 +109,6 @@ const validatePassword = () => {
 	let password = document.querySelector('#password').value;
 	let error = 'Password must be at least 8 characters long, have a number, and a special character';
 	let special = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-	console.log(/\d/.test(password));
-	console.log(special.test(password));
 	if (password.length >= 8 && /\d/.test(password) && special.test(password)) {
 		InputValidation('password', 'green');
 		RemoveError('password');
@@ -122,10 +120,12 @@ const validatePassword = () => {
 	}
 };
 
-function continueClick() {
+const isUniqueUsernameAndEmail = (username, password) => {};
+
+async function continueClick() {
 	let username = document.querySelector('#usernameInput').value;
 	let email = document.querySelector('#email').value;
-	if (validateUsername(username) && validateEmail(email) && validatePassword()) {
+	if (validateUsername(username) && validateEmail(email) && validatePassword() && (await usernameCheck()) && (await emailCheck())) {
 		createReturningUserAccount();
 		anime({
 			targets: '#signup1',
@@ -198,7 +198,7 @@ function startCheckout(id, tier) {
 		});
 }
 
-function usernameCheck() {
+async function usernameCheck() {
 	let username = document.querySelector('#usernameInput').value;
 	validateUsername(username);
 	const data = new FormData();
@@ -221,10 +221,11 @@ function usernameCheck() {
 				InputValidation('usernameInput', 'red');
 				ErrorMessage('usernameInput', 'Please choose a unique username!', 'red');
 			}
+			return data.status;
 		});
 }
 
-function emailCheck() {
+async function emailCheck() {
 	let email = document.querySelector('#email').value;
 	validateEmail(email);
 	const data = new FormData();
@@ -250,6 +251,7 @@ function emailCheck() {
 				InputValidation('email', 'red');
 				ErrorMessage('email', 'Please choose a unique email!', 'red');
 			}
+			return data.status;
 		});
 }
 let timeoutId;
