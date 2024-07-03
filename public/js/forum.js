@@ -322,6 +322,7 @@ function submitReport() {
 	data.append('reasons', reasons);
 	data.append('message', message);
 	data.append('postID', postID);
+	closeReport();
 	fetch('api/forum/report', {
 		method: 'post',
 		headers: {
