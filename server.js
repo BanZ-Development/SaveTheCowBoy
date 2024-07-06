@@ -1,9 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const multer = require('multer');
-const { GridFsStorage } = require('multer-gridfs-storage');
-const Grid = require('gridfs-stream');
 const MongoStore = require('connect-mongo');
 const rateLimit = require('express-rate-limit');
 const session = require('express-session');
@@ -62,7 +59,7 @@ app.use(
 			maxAge: 14 * 24 * 60 * 60 * 1000,
 			httpOnly: /true/.test(process.env.IS_PRODUCTION),
 			secure: /true/.test(process.env.IS_PRODUCTION),
-			sameSite: 'lax'
+			sameSite: 'strict'
 		}
 	})
 );

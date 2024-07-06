@@ -125,17 +125,25 @@ const isUniqueUsernameAndEmail = (username, password) => {};
 async function continueClick() {
 	let username = document.querySelector('#usernameInput').value;
 	let email = document.querySelector('#email').value;
-	if (validateUsername(username) && validateEmail(email) && validatePassword() && (await usernameCheck()) && (await emailCheck())) {
-		createReturningUserAccount();
-		anime({
-			targets: '#signup1',
-			opacity: 0,
-			easing: 'easeInOutExpo',
-			duration: 1000
+	if (validateUsername(username) && validateEmail(email)) {
+		await usernameCheck().then(async (res) => {
+			if (res)
+				await emailCheck().then((res2) => {
+					if (res2) {
+						console.log('should be working');
+						createReturningUserAccount();
+						anime({
+							targets: '#signup1',
+							opacity: 0,
+							easing: 'easeInOutExpo',
+							duration: 1000
+						});
+						setTimeout(function () {
+							document.getElementById('signup1').style.display = 'none';
+						}, 1000);
+					}
+				});
 		});
-		setTimeout(function () {
-			document.getElementById('signup1').style.display = 'none';
-		}, 1000);
 	}
 }
 
@@ -203,26 +211,32 @@ async function usernameCheck() {
 	validateUsername(username);
 	const data = new FormData();
 	data.append('username', username);
-	fetch('api/auth/check-unique-username', {
-		method: 'post',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: new URLSearchParams(data)
-	})
-		.then((res) => res.json())
-		.then((data) => {
-			console.log(data);
-			if (data.status) {
-				InputValidation('usernameInput', 'green');
-				RemoveError('usernameInput');
-				validateUsername(username);
-			} else {
-				InputValidation('usernameInput', 'red');
-				ErrorMessage('usernameInput', 'Please choose a unique username!', 'red');
-			}
-			return data.status;
-		});
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			fetch('api/auth/check-unique-username', {
+				method: 'post',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: new URLSearchParams(data)
+			})
+				.then((res) => res.json())
+				.then((data) => {
+					console.log(data);
+					if (data.status) {
+						InputValidation('usernameInput', 'green');
+						RemoveError('usernameInput');
+						validateUsername(username);
+					} else {
+						InputValidation('usernameInput', 'red');
+						ErrorMessage('usernameInput', 'Please choose a unique username!', 'red');
+					}
+					resolve(data.status);
+				});
+		}, 100);
+	}).catch((error) => {
+		reject(error);
+	});
 }
 
 async function emailCheck() {
@@ -230,29 +244,35 @@ async function emailCheck() {
 	validateEmail(email);
 	const data = new FormData();
 	data.append('email', email);
-	fetch('api/auth/check-unique-email', {
-		method: 'post',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: new URLSearchParams(data)
-	})
-		.then((res) => res.json())
-		.then((data) => {
-			console.log(data);
-			if (data.status && !data.returningUser) {
-				InputValidation('email', 'green');
-				RemoveError('email');
-				validateEmail(email);
-			} else if (data.status && data.returningUser) {
-				InputValidation('email', 'blue');
-				ErrorMessage('email', 'This email is linked to your previous Save the Cowboy account.', 'blue');
-			} else {
-				InputValidation('email', 'red');
-				ErrorMessage('email', 'Please choose a unique email!', 'red');
-			}
-			return data.status;
-		});
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			fetch('api/auth/check-unique-email', {
+				method: 'post',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: new URLSearchParams(data)
+			})
+				.then((res) => res.json())
+				.then((data) => {
+					console.log(data);
+					if (data.status && !data.returningUser) {
+						InputValidation('email', 'green');
+						RemoveError('email');
+						validateEmail(email);
+					} else if (data.status && data.returningUser) {
+						InputValidation('email', 'blue');
+						ErrorMessage('email', 'This email is linked to your previous Save the Cowboy account.', 'blue');
+					} else {
+						InputValidation('email', 'red');
+						ErrorMessage('email', 'Please choose a unique email!', 'red');
+					}
+					resolve(data.status);
+				});
+		}, 100);
+	}).catch((error) => {
+		reject(error);
+	});
 }
 let timeoutId;
 let delay = 500;
@@ -275,15 +295,15 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('#showPassword').addEventListener('change', function () {
-        let checkbox = document.getElementById('showPassword');
-        let passwordField = document.getElementById('password');
+document.addEventListener('DOMContentLoaded', function () {
+	document.querySelector('#showPassword').addEventListener('change', function () {
+		let checkbox = document.getElementById('showPassword');
+		let passwordField = document.getElementById('password');
 
-        if (checkbox.checked) {
-            passwordField.setAttribute('type', 'text');
-        } else {
-            passwordField.setAttribute('type', 'password');
-        }
-    });
+		if (checkbox.checked) {
+			passwordField.setAttribute('type', 'text');
+		} else {
+			passwordField.setAttribute('type', 'password');
+		}
+	});
 });

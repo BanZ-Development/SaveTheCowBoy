@@ -24,7 +24,8 @@ const userSchema = new Schema({
 	},
 	admin: {
 		type: Boolean,
-		required: true
+		required: true,
+		default: false
 	},
 	subscription: {
 		tier: {

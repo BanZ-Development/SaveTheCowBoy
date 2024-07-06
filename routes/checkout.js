@@ -2,29 +2,31 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const User = require('../model/User');
-const stripe = require('stripe')(process.env.STRIPE_STCB_TEST_KEY);
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 const tierToPriceID = (tier) => {
 	switch (tier) {
-		case 0:
-			return process.env.STRIPE_STCB_TEST_SUBSCRIPTION;
-		case 1:
-			return process.env.STRIPE_STCB_TEST_SUBSCRIPTION;
-		case 2:
-			return process.env.STRIPE_STCB_TEST_SUBSCRIPTION;
-		case 3:
-			return process.env.STRIPE_STCB_TEST_SUBSCRIPTION;
-		case 4:
-			return process.env.STRIPE_STCB_TEST_SUBSCRIPTION;
-		case 5:
-			return process.env.STRIPE_STCB_TEST_SUBSCRIPTION;
+		case '0':
+			return process.env.STRIPE_DAY_WORKER;
+		case '1':
+			return process.env.STRIPE_RANCH_COWBOY;
+		case '2':
+			return process.env.STRIPE_JIGGER_BOSS;
+		case '3':
+			return process.env.STRIPE_TOP_HAND;
+		case '4':
+			return process.env.STRIPE_COW_BOSS;
+		case '5':
+			return process.env.STRIPE_CATTLE_BARON;
 	}
 };
 
 router.post('/create-checkout-session', async (req, res) => {
 	try {
 		const { uid, tier } = req.body;
+		console.log(typeof tier);
 		const priceID = tierToPriceID(tier);
+		console.log('Price: ' + priceID);
 		const session = await stripe.checkout.sessions.create({
 			success_url: `${process.env.URL}/success?uid=${uid}`,
 			cancel_url: `${process.env.URL}/signup`,

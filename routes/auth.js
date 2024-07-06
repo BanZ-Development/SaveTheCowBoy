@@ -5,7 +5,7 @@ const hasher = require('../controllers/hasher');
 const validate = require('../controllers/validate');
 const passport = require('passport');
 const crypto = require('crypto');
-const stripe = require('stripe')(process.env.STRIPE_STCB_TEST_KEY);
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 require('../controllers/local');
 
 router.post('/login', async (req, res) => {
@@ -217,6 +217,23 @@ router.post('/forgot-password', async (req, res) => {
 		res.send({ status: false });
 	}
 });
+
+const isUniqueUsernameAndEmail = async (username, email) => {
+	try {
+		let status = true;
+		let query = User.where({
+			'meta.email': email
+		});
+		let user = await query.findOne();
+		if (user) status = false;
+		query = User.where({
+			'meta.username': username
+		});
+		user = await query.findOne();
+		if (user) status = false;
+		return status;
+	} catch (e) {}
+};
 
 const isReturningUser = async (email) => {
 	try {
