@@ -15,3 +15,10 @@ function checkAdmin() {
 if (checkAdmin()) {
 	console.log('logged in.');
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+	document.querySelector('#dropInformation').addEventListener('click', () => {
+		let rows = document.querySelectorAll('tableRow');
+		console.log(rows).length;
+	});
+});
