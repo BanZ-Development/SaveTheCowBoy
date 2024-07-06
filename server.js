@@ -59,7 +59,7 @@ app.use(
 			maxAge: 14 * 24 * 60 * 60 * 1000,
 			httpOnly: /true/.test(process.env.IS_PRODUCTION),
 			secure: /true/.test(process.env.IS_PRODUCTION),
-			sameSite: 'strict'
+			sameSite: 'lax'
 		}
 	})
 );

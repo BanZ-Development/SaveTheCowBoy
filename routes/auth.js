@@ -6,6 +6,7 @@ const validate = require('../controllers/validate');
 const passport = require('passport');
 const crypto = require('crypto');
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+const axios = require('axios');
 require('../controllers/local');
 
 router.post('/login', async (req, res) => {
@@ -154,22 +155,21 @@ router.post('/check-unique-username', async (req, res) => {
 
 router.post('/check-unique-email', async (req, res) => {
 	const { email } = req.body;
-	let status = true;
-	let message = 'User has a unique email.';
 	try {
 		const query = User.where({
 			'meta.email': email
 		});
 		const user = await query.findOne();
 		if (user) {
-			status = false;
-			message = 'Please choose a unique email!';
+			res.send({
+				status: false,
+				message: 'Please choose a unique email'
+			});
 		}
 	} catch (e) {}
 	try {
-		const returningUser = await isReturningUser(email);
-		console.log(returningUser);
-		if (returningUser.status) {
+		const { status, customerID } = await isReturningUser(email);
+		if (status) {
 			res.send({
 				status: status,
 				returningUser: true,
@@ -179,7 +179,7 @@ router.post('/check-unique-email', async (req, res) => {
 			res.send({
 				status: status,
 				returningUser: false,
-				message: message
+				message: 'User has a unique email'
 			});
 		}
 	} catch (e) {
@@ -237,45 +237,35 @@ const isUniqueUsernameAndEmail = async (username, email) => {
 
 const isReturningUser = async (email) => {
 	try {
-		let customer = null;
-		let hasMore = true;
-		let startingAfter = null;
-
-		while (hasMore) {
-			const options = {
-				limit: 100 // Stripe allows a max of 100 per request
-			};
-			if (startingAfter) {
-				options.starting_after = startingAfter;
+		const response = await axios.get('https://api.stripe.com/v1/customers', {
+			headers: {
+				Authorization: `Bearer ${process.env.STRIPE_PRIVATE_KEY}`,
+				'Content-Type': 'application/json'
+			},
+			params: {
+				email: email
 			}
+		});
 
-			const customers = await stripe.customers.list(options);
-			customer = customers.data.find((c) => c.email === email);
-
-			if (customer) {
-				break;
-			}
-
-			hasMore = customers.has_more;
-			startingAfter = customers.data.length > 0 ? customers.data[customers.data.length - 1].id : null;
-		}
-
+		const customer = response.data.data[0];
+		const isReturning = response.data.data.length !== 0;
 		if (customer) {
 			console.log(`[${email}] -> Customer found: ${customer.id}`);
 			return {
-				status: true,
+				status: isReturning,
 				customerID: customer.id,
 				email: email
 			};
 		} else {
-			console.log('[${email}] -> Customer not found.');
+			console.log(`[${email}] -> Customer not found.`);
 			return {
 				status: false,
 				email: email
 			};
 		}
 	} catch (error) {
-		console.log(error);
+		console.error('Error:', error.message);
+		return false;
 	}
 };
 
