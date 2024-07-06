@@ -171,13 +171,13 @@ router.post('/check-unique-email', async (req, res) => {
 		const { status, customerID } = await isReturningUser(email);
 		if (status) {
 			res.send({
-				status: status,
+				status: true,
 				returningUser: true,
 				message: 'Unique username and is a returning user'
 			});
 		} else {
 			res.send({
-				status: status,
+				status: true,
 				returningUser: false,
 				message: 'User has a unique email'
 			});
