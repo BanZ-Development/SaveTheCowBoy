@@ -894,6 +894,21 @@ nav {
     color: #ccc;
   }
 
+  .construction {
+    position: fixed;
+    background-color: #ffc300;
+    color: #fff;
+    width: 100%;
+    text-align: center;
+    z-index: 5;
+  }
+
+  .signupDivSec > h3 {
+    color: #333;
+    margin-inline: auto;
+    width: 70%;
+}
+
   @media only screen and (max-width: 1610px) {
 
     .settingSidebarBtn {
@@ -1013,7 +1028,7 @@ nav {
   @media only screen and (max-width: 1060px) {
 
     #logoutBtn1 {
-        display: none;
+        display: none !important;
     }
 
     #logoutBtn2 {
@@ -1166,6 +1181,34 @@ nav {
 
   @media only screen and (max-width: 856px) {
 
+    .signupDivSec > h1 {
+        font-size: 23.5px !important;
+        width: 90%;
+    }
+
+    .subscriptionPick {
+        width: 94%;
+    }
+
+    #checkoutBtn {
+        margin-bottom: 100px;
+    }
+
+    #continueBtn {
+        margin-bottom: 100px;
+    }
+
+    #signup3 {
+        padding-top: 220px;
+    }
+
+    .signupDivSec {
+        margin-top: 120px;
+        display: none;
+        width: 100%;
+        height: fit-content !important;
+    }
+
     .settingSidebar {
         width: 80px;
     }
@@ -1260,6 +1303,7 @@ nav {
 
     .btnLink {
         transform: scale(0.9);
+        margin-inline: 0px;
     }
 
     .subscriptions {

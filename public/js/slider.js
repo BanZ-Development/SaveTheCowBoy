@@ -3,8 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		let links = ['signup'];
 		let titles = ['Long X Ranch Cowboys'];
 		let desc = [
-			'Save the Cowboy, a 501(c)(3) non-profit, Christian, working-ranch introduces our subscription and community service, <b>Long X Ranch Cowboys</b>. Connect with other ranchers, learn and spread the gospel, and help support our local ranchers.<br>Help <b>Save the Cowboy</b> with us!'
-		];
+			'Save the Cowboy, a 501(c)(3) non-profit, Christian, working-ranch introduces our subscription and community service, <b>Long X Ranch Cowboys</b>. Connect with other ranchers, learn and spread the gospel, and help support our local ranchers.'];
 		let repo = ['']; // donate link
 
 		let slide = document.querySelectorAll('.slide');

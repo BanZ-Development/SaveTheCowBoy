@@ -16,7 +16,11 @@ const getCookie = (name) => {
 
 function load() {
 	let nav = document.createElement('nav');
-	nav.innerHTML = `<nav>
+	nav.innerHTML = `
+	<div class="construction" style="display: none;">
+	<p id="constructionDesc"><i class="fa-solid fa-wrench"></i> sorry that page is still under construction</p>
+	</div>
+	<nav id="nav">
     <a class="navLogo" href="/">
             <img src="../images/webLogo.png" alt="">
         </a>
@@ -28,10 +32,10 @@ function load() {
                 <p>Community</p>
                 <i class="material-icons">keyboard_arrow_down</i>
             <div class="navDrop">
-                <a style="border-radius: 4px 4px 0px 0px;" href="forum" class="dropLink"><i class="fa-regular fa-comments"></i> Forum</a>
-                <a href="devotions" class="dropLink"><i class="fa-regular fa-calendar"></i> Daily Devotions</a>
-                <a href="bible-plans" class="dropLink"><i class="fa-solid fa-book-bible"></i> Bible Plans</a>
-                <a style="border-radius: 0px 0px 4px 4px" href="cowboy-stories" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
+                <a style="border-radius: 4px 4px 0px 0px;" href="" class="dropLink"><i class="fa-regular fa-comments" disabled></i> Forum</a>
+                <a href="" class="dropLink"><i class="fa-regular fa-calendar"></i> Daily Devotions</a>
+                <a href="" class="dropLink"><i class="fa-solid fa-book-bible"></i> Bible Plans</a>
+                <a style="border-radius: 0px 0px 4px 4px" href="" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
             </div>
         </div>
             <a id="signupNav" href="signup" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i></a>
@@ -78,7 +82,9 @@ function checkLogin() {
 			} else {
 				document.querySelector('#signupNav').innerHTML = '<i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Signup';
 				document.querySelector('.navDrop').style = 'right: -35px';
-				document.querySelector('.navProfile').style = 'display: none; !important';
+				document.querySelector('.navProfile').style = 'display: none !important;';
+				document.querySelector('#logoutBtn2').style = 'display: none !important;';
+				document.querySelector('#navSep').style = 'display: none !important;';
 			}
 		})
 		.catch((err) => {
@@ -129,3 +135,11 @@ function checkForPfpCookie() {
 	} else document.querySelector('#pfp').src = `/image/${pfp}`;
 }
 checkForPfpCookie();
+
+document.addEventListener('DOMContentLoaded', function() {
+	document.querySelector('.dropLink').addEventListener('click', (event) => {
+		event.preventDefault();
+		document.querySelector('.construction').style = 'display: block !important;';
+		document.querySelector('#nav').style = 'margin-top: 51px;';
+	});
+});
