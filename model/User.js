@@ -28,10 +28,7 @@ const userSchema = new Schema({
 		default: false
 	},
 	subscription: {
-		tier: {
-			rank: Number,
-			id: String
-		},
+		tier: String,
 		sessionID: {
 			type: String
 		},

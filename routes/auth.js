@@ -65,11 +65,11 @@ router.post('/signup', async (req, res) => {
 				const { status, customerID } = await isReturningUser(email);
 				if (status) {
 					const sub = await getSubscriptionByCustomer(customerID);
+					console.log('Subscription: \n');
+					console.log(sub);
 					subscription = {
 						isSubscribed: true,
-						tier: {
-							id: sub.id
-						},
+						tier: sub.plan.id,
 						customer: customerID,
 						renewalDate: sub.current_period_end
 					};

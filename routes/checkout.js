@@ -24,7 +24,6 @@ const tierToPriceID = (tier) => {
 router.post('/create-checkout-session', async (req, res) => {
 	try {
 		const { uid, tier } = req.body;
-		console.log(typeof tier);
 		const priceID = tierToPriceID(tier);
 		console.log('Price: ' + priceID);
 		const session = await stripe.checkout.sessions.create({
@@ -105,9 +104,7 @@ router.post('/stripe-session', async (req, res) => {
 						const update = {
 							subscription: {
 								isSubscribed: true,
-								tier: {
-									id: session.subscription
-								},
+								tier: session.subscription,
 								customer: session.customer,
 								renewalDate: date
 							}
@@ -151,7 +148,7 @@ router.post('/stripe-session', async (req, res) => {
 
 router.post('/cancel-subscription', async (req, res) => {
 	const id = req.user.id;
-	const subscriptionID = req.user.subscription.tier.id;
+	const subscriptionID = req.user.subscription.tier;
 	const update = {
 		subscription: {
 			tier: null,
@@ -246,6 +243,34 @@ router.post('/change-subscription', async (req, res) => {
 		res.send({ status: false, error: error.message });
 	}
 });
+
+router.post('/get-subscription', async (req, res) => {
+	try {
+		let admin = req.user.admin;
+		let subscription = req.user.subscription;
+		if (subscription.tier) {
+			console.log(subscription);
+			res.send({
+				status: true,
+				subscription: subscription,
+				admin: admin
+			});
+		} else {
+			res.send({
+				status: true,
+				subscription: null,
+				admin: admin
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: false,
+			error: error.message
+		});
+	}
+});
+
 const endpointSecret = process.env.STRIPE_WEBHOOK_KEY;
 router.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
 	const sig = request.headers['stripe-signature'];
