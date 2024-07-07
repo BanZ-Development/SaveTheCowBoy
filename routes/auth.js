@@ -57,7 +57,7 @@ router.post('/signup', async (req, res) => {
 
 	async function Passed() {
 		try {
-			const { username, password, email } = req.body;
+			const { username, password, email, firstName, lastName, phoneNumber, address } = req.body;
 			if (isUniqueUsernameAndEmail(username, email)) {
 				const { hash, salt } = await hasher.returnHashAndSalt(password);
 				let subscription = null;
@@ -80,7 +80,11 @@ router.post('/signup', async (req, res) => {
 						username: username,
 						password: hash,
 						email: email,
-						salt: salt
+						salt: salt,
+						firstName: firstName,
+						lastName: lastName,
+						phoneNumber: phoneNumber,
+						address: address
 					},
 					admin: false,
 					subscription: subscription

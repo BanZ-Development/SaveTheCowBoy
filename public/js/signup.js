@@ -60,17 +60,25 @@ const createReturningUserAccount = () => {
 				let username = document.querySelector('#usernameInput').value;
 				let email = document.querySelector('#email').value;
 				let password = document.querySelector('#password').value;
+				let firstName = document.querySelector('#firstName').value;
+				let lastName = document.querySelector('#lastName').value;
+				let phoneNumber = document.querySelector('#phoneNumber').value;
+				let address = document.querySelector('#address').value;
 				const user = new FormData();
 				user.append('username', username);
 				user.append('email', email);
 				user.append('password', password);
 				user.append('returningUser', true);
+				user.append('firstName', firstName);
+				user.append('lastName', lastName);
+				user.append('phoneNumber', phoneNumber);
+				user.append('address', address);
 				signupAndReturnUserID(user).then((id) => {
 					console.log('Account created: ' + id);
 					location.replace('/login');
 				});
 			} else {
-				document.querySelector('#signup2').style.display = 'flex';
+				document.querySelector('#signup3').style.display = 'flex';
 			}
 		});
 };
@@ -105,6 +113,42 @@ const validateEmail = (email) => {
 	return true;
 };
 
+const validateFirstName = (firstName) => {
+	if (firstName == '') {
+		InputValidation('firstName', 'red');
+		ErrorMessage('firstName', 'First name cannot be left empty!', 'red');
+		return false;
+	}
+	return true;
+};
+
+const validateLastName = (lastName) => {
+	if (lastName == '') {
+		InputValidation('lastName', 'red');
+		ErrorMessage('lastName', 'Last name cannot be left empty!', 'red');
+		return false;
+	}
+	return true;
+};
+
+const validatePhoneNumber = (phoneNumber) => {
+	if (phoneNumber == '') {
+		InputValidation('phoneNumber', 'red');
+		ErrorMessage('phoneNumber', 'Phone number cannot be left empty!', 'red');
+		return false;
+	}
+	return true;
+};
+
+const validateAddress = (address) => {
+	if (address == '') {
+		InputValidation('address', 'red');
+		ErrorMessage('address', 'Home address cannot be left empty!', 'red');
+		return false;
+	}
+	return true;
+};
+
 const validatePassword = () => {
 	let password = document.querySelector('#password').value;
 	let error = 'Password must be at least 8 characters long, have a number, and a special character';
@@ -120,8 +164,6 @@ const validatePassword = () => {
 	}
 };
 
-const isUniqueUsernameAndEmail = (username, password) => {};
-
 async function continueClick() {
 	let username = document.querySelector('#usernameInput').value;
 	let email = document.querySelector('#email').value;
@@ -130,8 +172,6 @@ async function continueClick() {
 			if (res)
 				await emailCheck().then((res2) => {
 					if (res2) {
-						console.log('should be working');
-						createReturningUserAccount();
 						anime({
 							targets: '#signup1',
 							opacity: 0,
@@ -140,10 +180,30 @@ async function continueClick() {
 						});
 						setTimeout(function () {
 							document.getElementById('signup1').style.display = 'none';
+							document.querySelector('#signup2').style.display = 'flex';
 						}, 1000);
 					}
 				});
 		});
+	}
+}
+
+async function continueAgainClick() {
+	let firstName = document.querySelector('#firstName').value;
+	let lastName = document.querySelector('#lastName').value;
+	let phoneNumber = document.querySelector('#phoneNumber').value;
+	let address = document.querySelector('#address').value;
+	if (validateFirstName(firstName) && validateLastName(lastName) && validatePhoneNumber(phoneNumber) && validateAddress(address)) {
+		createReturningUserAccount();
+		anime({
+			targets: '#signup2',
+			opacity: 0,
+			easing: 'easeInOutExpo',
+			duration: 1000
+		});
+		setTimeout(function () {
+			document.getElementById('signup2').style.display = 'none';
+		}, 1000);
 	}
 }
 
@@ -153,7 +213,10 @@ async function checkoutClick() {
 	for (let i = 0; i < buttons.length; i++) {
 		if (buttons[i].getAttribute('data-selected') === 'true') index = i;
 	}
-
+	let firstName = document.querySelector('#firstName').value;
+	let lastName = document.querySelector('#lastName').value;
+	let phoneNumber = document.querySelector('#phoneNumber').value;
+	let address = document.querySelector('#address').value;
 	let username = document.querySelector('#usernameInput').value;
 	let email = document.querySelector('#email').value;
 	let password = document.querySelector('#password').value;
@@ -163,6 +226,10 @@ async function checkoutClick() {
 	user.append('email', email);
 	user.append('password', password);
 	user.append('returningUser', false);
+	user.append('firstName', firstName);
+	user.append('lastName', lastName);
+	user.append('phoneNumber', phoneNumber);
+	user.append('address', address);
 
 	fetch('api/checkout/start', {
 		method: 'post',
@@ -262,9 +329,11 @@ async function emailCheck() {
 						validateEmail(email);
 					} else if (data.status && data.returningUser) {
 						InputValidation('email', 'blue');
+						RemoveError('email');
 						ErrorMessage('email', 'This email is linked to your previous Save the Cowboy account.', 'blue');
 					} else {
 						InputValidation('email', 'red');
+						RemoveError('email');
 						ErrorMessage('email', 'Please choose a unique email!', 'red');
 					}
 					resolve(data.status);
@@ -283,6 +352,7 @@ const debounce = (func, delay) => {
 
 document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#continueBtn').addEventListener('click', continueClick);
+	document.querySelector('#continueAgain').addEventListener('click', continueAgainClick);
 	document.querySelector('#checkoutBtn').addEventListener('click', checkoutClick);
 	document.querySelector('#usernameInput').addEventListener('input', () => {
 		debounce(usernameCheck, delay);

@@ -16,6 +16,10 @@ const userSchema = new Schema({
 			type: String,
 			required: true
 		},
+		firstName: String,
+		lastName: String,
+		phoneNumber: String,
+		address: String,
 		salt: {
 			type: String,
 			required: true

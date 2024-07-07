@@ -155,14 +155,15 @@ function createCancelSubButton(index) {
 	let sub = document.querySelectorAll('.subscription')[index];
 	sub.style.backgroundColor = '#212121';
 	sub.style.color = 'white';
+	sub.style.border = 'solid 1px #464646';
 	let button = document.createElement('button');
+	button.style.backgroundColor = '#fff';
+	button.style.color = '#44372c';
 	button.className = 'subBtn';
 	button.id = 'changeSubscriptionBtn';
 	button.onclick = cancelSubscriptionConfirm;
 	button.innerHTML = '<i class="fa-solid fa-trash"></i> Cancel Subscription';
 	sub.appendChild(button);
-	let text = document.createElement('p');
-	text.innerHTML = 'Current Subscription';
 }
 
 async function createSubscriptionPage() {

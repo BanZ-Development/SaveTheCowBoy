@@ -249,7 +249,6 @@ router.post('/get-subscription', async (req, res) => {
 		let admin = req.user.admin;
 		let subscription = req.user.subscription;
 		if (subscription.tier) {
-			console.log(subscription);
 			res.send({
 				status: true,
 				subscription: subscription,
