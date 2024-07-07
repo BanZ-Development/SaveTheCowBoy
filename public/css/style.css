@@ -34,6 +34,10 @@ nav {
     z-index: 3;
 }
 
+button {
+    touch-action: manipulation;
+}
+
 #responsiveNavIcon {
     display: none;
 }
