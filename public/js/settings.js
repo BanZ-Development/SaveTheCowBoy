@@ -161,10 +161,20 @@ function createCancelSubButton(index) {
 	button.style.color = '#44372c';
 	button.className = 'subBtn';
 	button.id = 'changeSubscriptionBtn';
-	button.onclick = cancelSubscriptionConfirm;
+	button.onclick = openCancelPopup;
 	button.innerHTML = '<i class="fa-solid fa-trash"></i> Cancel Subscription';
 	sub.appendChild(button);
 }
+
+function openCancelPopup() {
+	document.querySelector('#confirmCancel') = 'flex';
+	document.querySelector('#cancelInformation').style.display = 'flex';
+}
+
+document.querySelector('#confirmCancel').addEventListener('click', () => {
+	document.querySelector('#confirmCancel') = 'none';
+	document.querySelector('#cancelInformation').style.display = 'none';
+});
 
 async function createSubscriptionPage() {
 	const subscription = await returnSubscription();
