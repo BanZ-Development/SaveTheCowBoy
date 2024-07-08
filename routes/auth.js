@@ -52,74 +52,81 @@ router.post('/isLoggedIn', (req, res) => {
 });
 
 router.post('/signup', async (req, res) => {
-	console.log(req.body);
-	validate.Authenticate(validate.register(req, res), Passed, Failed);
+	try {
+		await validate.Authenticate(validate.register(req, res), Passed, Failed);
 
-	async function Passed() {
-		try {
-			const { username, password, email, firstName, lastName, phoneNumber, address } = req.body;
-			if (isUniqueUsernameAndEmail(username, email)) {
-				const { hash, salt } = await hasher.returnHashAndSalt(password);
-				let subscription = null;
+		async function Passed() {
+			try {
+				const { username, password, email, firstName, lastName, phoneNumber, address } = req.body;
+				if (isUniqueUsernameAndEmail(username, email)) {
+					const { hash, salt } = await hasher.returnHashAndSalt(password);
+					let subscription = null;
 
-				const { status, customerID } = await isReturningUser(email);
-				if (status) {
-					const sub = await getSubscriptionByCustomer(customerID);
-					console.log('Subscription: \n');
-					console.log(sub);
-					subscription = {
-						isSubscribed: true,
-						tier: sub.plan.id,
-						customer: customerID,
-						renewalDate: sub.current_period_end
-					};
-				}
+					const { status, customerID } = await isReturningUser(email);
+					if (status) {
+						const sub = await getSubscriptionByCustomer(customerID);
+						console.log('Subscription: \n');
+						console.log(sub);
+						subscription = {
+							isSubscribed: true,
+							tier: sub.plan.id,
+							customer: customerID,
+							renewalDate: sub.current_period_end
+						};
+					}
 
-				await User.create({
-					meta: {
-						username: username,
-						password: hash,
-						email: email,
-						salt: salt,
-						firstName: firstName,
-						lastName: lastName,
-						phoneNumber: phoneNumber,
-						address: address
-					},
-					admin: false,
-					subscription: subscription
-				})
-					.then((user) => {
-						console.log(user._id);
-						res.send({
-							status: true,
-							message: 'User created',
-							id: user._id,
-							isReturningUser: status
-						});
+					await User.create({
+						meta: {
+							username: username,
+							password: hash,
+							email: email,
+							salt: salt,
+							firstName: firstName,
+							lastName: lastName,
+							phoneNumber: phoneNumber,
+							address: address
+						},
+						admin: false,
+						subscription: subscription
 					})
-					.catch((error) => {
-						res.send({
-							status: false,
-							error: error
+						.then((user) => {
+							console.log(user._id);
+							res.send({
+								status: true,
+								message: 'User created',
+								id: user._id,
+								isReturningUser: status
+							});
+						})
+						.catch((error) => {
+							res.send({
+								status: false,
+								error: error
+							});
 						});
+				} else {
+					res.send({
+						status: false,
+						message: 'Cannot sign up because either username or email is not unique!'
 					});
-			} else {
-				res.send({
-					status: false,
-					message: 'Cannot sign up because either username or email is not unique!'
-				});
+				}
+			} catch (err) {
+				console.log(err);
 			}
-		} catch (err) {
-			console.log(err);
 		}
-	}
 
-	function Failed(result) {
+		async function Failed(result) {
+			res.send({
+				status: false,
+				message: 'Input validation failed',
+				errors: result
+			});
+		}
+	} catch (error) {
 		res.send({
 			status: false,
 			message: 'Input validation failed',
-			errors: result
+			error: error
 		});
 	}
 });

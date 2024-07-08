@@ -32,17 +32,12 @@ const userSchema = new Schema({
 		default: false
 	},
 	subscription: {
-		tier: String,
 		sessionID: {
 			type: String
 		},
-		isSubscribed: {
-			type: Boolean
-		},
 		customer: {
 			type: String
-		},
-		renewalDate: Date
+		}
 	},
 	forgotPassword: {
 		token: String,

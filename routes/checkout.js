@@ -23,7 +23,19 @@ const tierToPriceID = (tier) => {
 
 router.post('/create-checkout-session', async (req, res) => {
 	try {
-		const { uid, tier } = req.body;
+		let uid;
+		try {
+			uid = req.user.id;
+		} catch (e) {
+			uid = req.body.uid;
+		}
+		if (uid == null || uid == '' || uid == 'undefined') {
+			res.send({
+				status: false,
+				message: 'Could not create checkout session'
+			});
+		}
+		const { tier } = req.body;
 		const priceID = tierToPriceID(tier);
 		console.log('Price: ' + priceID);
 		const session = await stripe.checkout.sessions.create({
@@ -90,7 +102,7 @@ router.post('/stripe-session', async (req, res) => {
 		.then(async (user) => {
 			if (user) {
 				//check if already subscribed
-				if (!user.subscription.sessionID || user.subscription.isSubscribed) {
+				if (user.subscription.customer) {
 					res.send({ status: false });
 					return;
 				} else {
@@ -103,10 +115,7 @@ router.post('/stripe-session', async (req, res) => {
 						console.log(date);
 						const update = {
 							subscription: {
-								isSubscribed: true,
-								tier: session.subscription,
-								customer: session.customer,
-								renewalDate: date
+								customer: session.customer
 							}
 						};
 						if (session && session.status === 'complete') {
@@ -147,36 +156,64 @@ router.post('/stripe-session', async (req, res) => {
 });
 
 router.post('/cancel-subscription', async (req, res) => {
-	const id = req.user.id;
-	const subscriptionID = req.user.subscription.tier;
-	const update = {
-		subscription: {
-			tier: null,
-			sessionID: null,
-			isSubscribed: false,
-			customer: null
-		}
-	};
-	if (req.user.subscription.isSubscribed && subscriptionID) {
-		try {
-			const subscription = await stripe.subscriptions.update(subscriptionID, { cancel_at_period_end: true }).then(() => {
-				res.send({
-					status: true,
-					message: 'Subscription cancelled successfully'
-				});
+	try {
+		const customerID = req.user.subscription.customer;
+		if (req.user.subscription.isSubscribed && customerID) {
+			const subscriptions = await stripe.subscriptions.list({
+				customer: customerID,
+				limit: 1
 			});
-		} catch (error) {
-			console.log(error);
+			const firstSubscription = subscriptions.data[0];
+
+			// Update the subscription to cancel at the end of the period
+			const updatedSubscription = await stripe.subscriptions.update(firstSubscription.id, {
+				cancel_at_period_end: true
+			});
+
+			res.send({
+				status: true,
+				message: 'Subscription cancelled.',
+				subscription: updatedSubscription
+			});
+		} else {
 			res.send({
 				status: false,
-				error: error.message
+				message: 'Subscription required to cancel'
 			});
 		}
-	} else {
-		res.send({
-			status: false,
-			message: 'Subscription required to cancel'
-		});
+	} catch (error) {
+		res.send({ status: false, error: error.message });
+	}
+});
+
+router.post('/renew-subscription', async (req, res) => {
+	try {
+		const customerID = req.user.subscription.customer;
+		if (req.user.subscription.isSubscribed && customerID) {
+			const subscriptions = await stripe.subscriptions.list({
+				customer: customerID,
+				limit: 1
+			});
+			const firstSubscription = subscriptions.data[0];
+
+			// Update the subscription to cancel at the end of the period
+			const updatedSubscription = await stripe.subscriptions.update(firstSubscription.id, {
+				cancel_at_period_end: false
+			});
+
+			res.send({
+				status: true,
+				message: 'Subscription renewed.',
+				subscription: updatedSubscription
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'Subscription required to renew'
+			});
+		}
+	} catch (error) {
+		res.send({ status: false, error: error.message });
 	}
 });
 
@@ -216,13 +253,9 @@ async function changeSubscription(customerId, newPriceId) {
 
 router.post('/change-subscription', async (req, res) => {
 	try {
-		const id = req.user.id;
-		const user = await User.findById(id);
-		console.log(user);
-		const customerID = user.subscription.customer;
-		const tier = req.body.tier;
-		const priceID = tierToPriceID(tier);
-		console.log(customerID, tier, priceID);
+		const { priceID } = req.body;
+		const customerID = req.user.subscription.customer;
+		console.log(customerID, priceID);
 		changeSubscription(customerID, priceID)
 			.then((subscription) => {
 				res.send({
@@ -247,25 +280,44 @@ router.post('/change-subscription', async (req, res) => {
 router.post('/get-subscription', async (req, res) => {
 	try {
 		let admin = req.user.admin;
-		let subscription = req.user.subscription;
-		if (subscription.tier) {
-			res.send({
-				status: true,
-				subscription: subscription,
-				admin: admin
+		let customerID = req.user.subscription.customer;
+		if (customerID) {
+			const subscriptions = await stripe.subscriptions.list({
+				customer: customerID,
+				limit: 1
 			});
+			const subscription = subscriptions.data[0];
+			console.log(subscription);
+			if (subscription) {
+				res.send({
+					status: true,
+					subscription: subscription,
+					admin: admin,
+					message: 'Customer and subscription found.'
+				});
+			} else {
+				res.send({
+					status: true,
+					subscription: null,
+					admin: admin,
+					message: 'No subscription found. Customer found, however.'
+				});
+			}
 		} else {
 			res.send({
 				status: true,
 				subscription: null,
-				admin: admin
+				admin: admin,
+				message: 'No customer account found!'
 			});
 		}
 	} catch (error) {
 		console.log(error);
 		res.send({
 			status: false,
-			error: error.message
+			subscription: null,
+			admin: req.user.admin,
+			error: 'Error in get-subscription request'
 		});
 	}
 });

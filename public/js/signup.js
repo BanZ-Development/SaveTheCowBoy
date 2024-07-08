@@ -255,6 +255,9 @@ function startCheckout(id, tier) {
 	const data = new FormData();
 	data.append('uid', id);
 	data.append('tier', tier);
+	let button = document.querySelector('#checkoutBtn');
+	button.onclick = null;
+	button.innerHTML = 'Processing...';
 	fetch('api/checkout/create-checkout-session', {
 		method: 'post',
 		headers: {
@@ -266,9 +269,15 @@ function startCheckout(id, tier) {
 		.then((data) => {
 			console.log(data);
 			if (data.status) {
+				RemoveError('checkoutBtn');
+				InputValidation('checkoutBtn', 'green');
 				window.location = data.url;
 			} else {
+				button.innerHTML = 'Check out';
 				console.log('Error while creating Stripe checkout session.');
+				RemoveError('checkoutBtn');
+				ErrorMessage('checkoutBtn', 'Cannot create your account. Make sure you have a valid email address.', 'red');
+				InputValidation('checkoutBtn', 'red');
 			}
 		});
 }

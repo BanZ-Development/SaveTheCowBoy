@@ -1,3 +1,5 @@
+const subscriptionList = ['5cc9c4dade2a2', '5cc9c50d875e5', '5cc9c54839744', '5cc9c565839f9', '5cc9c5b9deeca', '5cc9c5c85507e'];
+
 const SafeHTML = (html) => {
 	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 };
@@ -14,7 +16,34 @@ const getCookie = (name) => {
 	return value;
 };
 
+const InputValidation = (element, color) => {
+	const e = document.querySelector('#' + element);
+	AnimateBorder(e, color);
+};
+
+const AnimateBorder = (element, color) => {
+	element.style.border = `2px solid ${color}`;
+};
+
+const ErrorMessage = (elementName, message, color) => {
+	try {
+		let element = document.querySelector(`#${elementName}Error`);
+		element.innerHTML = message;
+	} catch (error) {
+		document.querySelector(`#${elementName}`).insertAdjacentHTML('afterend', `<p style="color: ${color}; margin-bottom: 0px; font-size: 13pt;" id="${elementName}Error">${message}</p>`);
+	}
+};
+
+const RemoveError = (elementName) => {
+	try {
+		document.querySelector(`#${elementName}Error`).remove();
+	} catch (error) {}
+};
+
 function cancelSubscriptionConfirm() {
+	let button = document.querySelector('#confirmPopupBtn');
+	button.innerHTML = 'Processing...';
+	button.onclick = null;
 	fetch('api/checkout/cancel-subscription', {
 		method: 'post',
 		headers: {
@@ -24,7 +53,28 @@ function cancelSubscriptionConfirm() {
 		.then((res) => res.json())
 		.then(async (data) => {
 			console.log(data);
-		});
+			if (data.status) {
+				button.onclick = cancelSubscriptionConfirm;
+				button.innerHTML = 'Cancelled';
+				document.querySelector('#popupBlur').addEventListener('click', () => {
+					location.reload();
+				});
+				InputValidation('confirmPopupBtn', 'green');
+				RemoveError('confirmPopupBtn');
+				ErrorMessage(
+					'confirmPopupBtn',
+					`Your subscription has been cancelled.<br>You will still have access to LXR until ${new Date(data.subscription.current_period_end * 1000).toDateString()}`,
+					'green'
+				);
+			} else {
+				InputValidation('confirmPopupBtn', 'red');
+				RemoveError('confirmPopupBtn');
+				ErrorMessage('confirmPopupBtn', 'An error occurred while processing your cancellation request. Please try again.', 'red');
+				button.onclick = cancelSubscriptionConfirm;
+				button.innerHTML = 'Confirm';
+			}
+		})
+		.catch((err) => {});
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -58,7 +108,6 @@ function changeSubscriptionDisplay() {
 
 function checkForPfpCookie() {
 	let pfp = getCookie('pfp');
-	console.log(pfp);
 	if (pfp) document.querySelector('#imagePreview').src = `/image/${pfp}`;
 	else document.querySelector('#imagePreview').src = '../images/default-pfp.jpeg';
 	fetch('api/profile/getPfp', {
@@ -138,6 +187,14 @@ const subscriptionTierToIndex = (id) => {
 	}
 };
 
+const setSubscriptionTiers = () => {
+	let subs = document.querySelectorAll('.subscription');
+	for (let i = 0; i < subs.length; i++) {
+		subs[i].dataset.tier = subscriptionList[i];
+	}
+};
+setSubscriptionTiers();
+
 function createChangeSubButtons(index) {
 	let subs = document.querySelectorAll('.subscription');
 	for (let i = 0; i < subs.length; i++) {
@@ -145,13 +202,13 @@ function createChangeSubButtons(index) {
 		let button = document.createElement('button');
 		button.className = 'subBtn';
 		button.id = 'changeSubscriptionBtn';
-		button.onclick = changeSubscription;
+		button.onclick = openChangePopup;
 		button.innerHTML = '<i class="fa-solid fa-repeat"></i> Change Subscription';
 		subs[i].appendChild(button);
 	}
 }
 
-function createCancelSubButton(index) {
+function createCancelSubButton(index, isCancelled) {
 	let sub = document.querySelectorAll('.subscription')[index];
 	sub.style.backgroundColor = '#212121';
 	sub.style.color = 'white';
@@ -161,26 +218,190 @@ function createCancelSubButton(index) {
 	button.style.color = '#44372c';
 	button.className = 'subBtn';
 	button.id = 'changeSubscriptionBtn';
-	button.onclick = openCancelPopup;
-	button.innerHTML = '<i class="fa-solid fa-trash"></i> Cancel Subscription';
+	if (!isCancelled) {
+		button.onclick = openCancelPopup;
+		button.innerHTML = '<i class="fa-solid fa-trash"></i> Cancel Subscription';
+	} else {
+		button.onclick = openRenewPopup;
+		button.innerHTML = '<i class="fa-solid fa-arrow-rotate-right"></i> Renew Subscription';
+	}
+
 	sub.appendChild(button);
 }
 
 function openCancelPopup() {
-	document.querySelector('#confirmCancel').style.display = 'flex';
-	document.querySelector('#cancelInformation').style.display = 'flex';
+	document.querySelector('#popupTitle').innerHTML = 'Are you sure you want to cancel your subscription?';
+	document.querySelector('#popupBlur').style.display = 'flex';
+	document.querySelector('#popupBox').style.display = 'flex';
+	document.querySelector('#confirmPopupBtn').addEventListener('click', cancelSubscriptionConfirm);
 }
 
-document.querySelector('#confirmCancel').addEventListener('click', () => {
-	document.querySelector('#confirmCancel').style.display = 'none';
-	document.querySelector('#cancelInformation').style.display = 'none';
+function openRenewPopup() {
+	document.querySelector('#popupTitle').innerHTML = 'Would you like to renew your subscription?';
+	document.querySelector('#popupBlur').style.display = 'flex';
+	document.querySelector('#popupBox').style.display = 'flex';
+	document.querySelector('#confirmPopupBtn').addEventListener('click', renewSubscriptionConfirm);
+}
+
+function openChangePopup() {
+	let button = event.target;
+	let sub = button.closest('.subscription');
+	let tier = sub.dataset.tier;
+	document.querySelector('#popupTitle').innerHTML = 'Are you sure you want to change your plan?';
+	document.querySelector('#popupBlur').style.display = 'flex';
+	document.querySelector('#popupBox').style.display = 'flex';
+	document.querySelector('#popupBox').dataset.tier = tier;
+	document.querySelector('#confirmPopupBtn').addEventListener('click', changeSubscriptionConfirm);
+}
+
+function openNewSubPopup() {
+	let button = event.target;
+	let sub = button.closest('.subscription');
+	let tier = sub.dataset.tier;
+	document.querySelector('#popupTitle').innerHTML = 'Are you sure you want to subscribe to this plan?';
+	document.querySelector('#popupBlur').style.display = 'flex';
+	document.querySelector('#popupBox').style.display = 'flex';
+	document.querySelector('#popupBox').dataset.tier = tier;
+	document.querySelector('#confirmPopupBtn').addEventListener('click', newSubConfirm);
+}
+
+function newSubConfirm() {
+	const tier = document.querySelector('#popupBox').dataset.tier;
+	const index = subscriptionTierToIndex(tier);
+	let data = new FormData();
+	data.append('tier', index);
+	let button = document.querySelector('#confirmPopupBtn');
+	button.innerHTML = 'Processing...';
+	button.onclick = null;
+	fetch('api/checkout/create-checkout-session', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then(async (data) => {
+			console.log(data);
+			if (data.status) {
+				RemoveError('confirmPopupBtn');
+				InputValidation('confirmPopupBtn', 'green');
+				window.location = data.url;
+			} else {
+				console.log('Error while creating Stripe checkout session.');
+				InputValidation('confirmPopupBtn', 'red');
+				RemoveError('confirmPopupBtn');
+				ErrorMessage('confirmPopupBtn', 'Error while creating your checkout session. Please try again.', 'red');
+				button.innerHTML = 'Confirm';
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+}
+
+function changeSubscriptionConfirm() {
+	const priceID = document.querySelector('#popupBox').dataset.tier;
+	let data = new FormData();
+	data.append('priceID', priceID);
+	let button = document.querySelector('#confirmPopupBtn');
+	button.innerHTML = 'Processing...';
+	button.onclick = null;
+	fetch('api/checkout/change-subscription', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then(async (data) => {
+			console.log(data);
+			if (data.status) {
+				button.innerHTML = 'Changed';
+				document.querySelector('#popupBlur').addEventListener('click', () => {
+					location.reload();
+				});
+				InputValidation('confirmPopupBtn', 'green');
+				RemoveError('confirmPopupBtn');
+				ErrorMessage('confirmPopupBtn', `Your subscription has been charged.<br>You will still be charged on ${new Date(data.subscription.current_period_end * 1000).toDateString()}`, 'green');
+			} else {
+				InputValidation('confirmPopupBtn', 'red');
+				RemoveError('confirmPopupBtn');
+				ErrorMessage('confirmPopupBtn', 'An error occurred while processing your subscription change request. Please try again.', 'red');
+				button.innerHTML = 'Confirm';
+			}
+			button.onclick = changeSubscriptionConfirm;
+		})
+		.catch((err) => {});
+}
+
+function renewSubscriptionConfirm() {
+	let button = document.querySelector('#confirmPopupBtn');
+	button.innerHTML = 'Processing...';
+	button.onclick = null;
+	fetch('api/checkout/renew-subscription', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then(async (data) => {
+			console.log(data);
+			if (data.status) {
+				button.onclick = renewSubscriptionConfirm;
+				button.innerHTML = 'Renewed';
+				document.querySelector('#popupBlur').addEventListener('click', () => {
+					location.reload();
+				});
+				InputValidation('confirmPopupBtn', 'green');
+				RemoveError('confirmPopupBtn');
+				ErrorMessage('confirmPopupBtn', `Your subscription has been renewed.<br>You will still be charged on ${new Date(data.subscription.current_period_end * 1000).toDateString()}`, 'green');
+			} else {
+				InputValidation('confirmPopupBtn', 'red');
+				RemoveError('confirmPopupBtn');
+				ErrorMessage('confirmPopupBtn', 'An error occurred while processing your cancellation request. Please try again.', 'red');
+				button.onclick = renewSubscriptionConfirm;
+				button.innerHTML = 'Confirm';
+			}
+		})
+		.catch((err) => {});
+}
+
+document.querySelector('#popupBlur').addEventListener('click', () => {
+	document.querySelector('#popupBlur').style.display = 'none';
+	document.querySelector('#popupBox').style.display = 'none';
 });
+
+function createNewSubButtons() {
+	let subs = document.querySelectorAll('.subscription');
+	for (let i = 0; i < subs.length; i++) {
+		let button = document.createElement('button');
+		button.className = 'subBtn';
+		button.id = 'changeSubscriptionBtn';
+		button.onclick = openNewSubPopup;
+		button.innerHTML = '<i class="fa-solid fa-credit-card"></i> Subscribe';
+		subs[i].appendChild(button);
+	}
+}
+
+function createNewSubscriberPage() {
+	console.log('new subscriber');
+	createNewSubButtons();
+}
 
 async function createSubscriptionPage() {
 	const subscription = await returnSubscription();
-	const index = subscriptionTierToIndex(subscription.tier);
+	if (!subscription) {
+		createNewSubscriberPage();
+		return;
+	}
+	const tier = subscription.plan.id;
+	const index = subscriptionTierToIndex(tier);
+	const isCancelled = subscription.cancel_at_period_end;
 	createChangeSubButtons(index);
-	createCancelSubButton(index);
+	createCancelSubButton(index, isCancelled);
 }
 createSubscriptionPage();
 
