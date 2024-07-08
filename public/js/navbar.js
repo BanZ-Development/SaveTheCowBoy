@@ -48,7 +48,7 @@ function load() {
             <div class="navProfileDrop">
                 <a id="profile" class="navProfileDropLink"><i class="fa-solid fa-user"></i> Profile</a>
                 <a href="settings" class="navProfileDropLink"><i class="fa-solid fa-gear"></i> Settings</a>
-                <a href="subscription" class="navProfileDropLink"><i class="fa-solid fa-credit-card"></i> Subscription</a>
+                <a id="navSub" href="subscription" class="navProfileDropLink"><i class="fa-solid fa-credit-card"></i> Subscription</a>
                 <a id="logoutBtn1" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
             </div>
         </div>
@@ -152,3 +152,23 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	}
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+	document.querySelector('#profile').setAttribute('href', '');
+	document.querySelector('#profile').addEventListener('click', construction);
+	document.querySelector('#navSub').addEventListener('click', construction);
+});
+
+
+function construction(event) {
+	event.preventDefault();
+	document.querySelector('.construction').style = 'display: block !important;';
+	document.querySelector('#nav').style = 'margin-top: 51px;';
+	anime({
+		targets: ".construction, #constructionDesc",
+		easing: 'easeInOutQuad',
+		translateY: [-100, 0],
+		opacity: [0, 1],
+		duration: 200
+	});
+}
