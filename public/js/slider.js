@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
 	var f = function () {
-		let links = ['signup'];
+		let links = ['https://pushpay.com/g/savethecowboy?src=hpp'];
 		let titles = ['Long X Ranch Cowboys'];
 		let desc = [
 			'Save the Cowboy, a 501(c)(3) non-profit, Christian, working-ranch introduces our subscription and community service, <b>Long X Ranch Cowboys</b>. Connect with other ranchers, learn and spread the gospel, and help support our local ranchers.'];
-		let repo = ['']; // donate link
+		let repo = ['signup']; // donate link
 
 		let slide = document.querySelectorAll('.slide');
 		let curr = -1; // initialize curr to -1
