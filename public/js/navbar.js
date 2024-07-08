@@ -117,8 +117,8 @@ function openMenu() {
 
 function checkForPfpCookie() {
 	let pfp = getCookie('pfp');
-	if (pfp) document.querySelector('#imagePreview').src = `/image/${pfp}`;
-	else document.querySelector('#imagePreview').src = '../images/default-pfp.jpeg';
+	if (pfp) document.querySelector('#pfp').src = `/image/${pfp}`;
+	else document.querySelector('#pfp').src = '../images/default-pfp.jpeg';
 	fetch('api/profile/getPfp', {
 		method: 'get',
 		headers: {
