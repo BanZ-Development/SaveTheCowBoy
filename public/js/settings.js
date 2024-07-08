@@ -167,12 +167,12 @@ function createCancelSubButton(index) {
 }
 
 function openCancelPopup() {
-	document.querySelector('#confirmCancel') = 'flex';
+	document.querySelector('#confirmCancel').style.display = 'flex';
 	document.querySelector('#cancelInformation').style.display = 'flex';
 }
 
 document.querySelector('#confirmCancel').addEventListener('click', () => {
-	document.querySelector('#confirmCancel') = 'none';
+	document.querySelector('#confirmCancel').style.display = 'none';
 	document.querySelector('#cancelInformation').style.display = 'none';
 });
 
