@@ -907,11 +907,23 @@ button {
     z-index: 5;
   }
 
+  #constructionDesc {
+    text-transform: capitalize;
+    font-weight: 600;
+    margin-block: 0px;
+    height: 100%;
+    line-height: 51px;
+  }
+
   .signupDivSec > h3 {
     color: #333;
     margin-inline: auto;
     width: 70%;
 }
+
+ #confirmPopupBtn:hover {
+    border: solid 2px #fff0 !important;
+ }
 
   @media only screen and (max-width: 1610px) {
 
@@ -1185,6 +1197,10 @@ button {
   }
 
   @media only screen and (max-width: 856px) {
+
+    #popupBox {
+        width: 80% !important;
+    }
 
     .signupDivSec > h1 {
         font-size: 23.5px !important;

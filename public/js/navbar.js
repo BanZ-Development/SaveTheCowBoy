@@ -18,7 +18,7 @@ function load() {
 	let nav = document.createElement('nav');
 	nav.innerHTML = `
 	<div class="construction" style="display: none;">
-	<p id="constructionDesc"><i class="fa-solid fa-wrench"></i> sorry that page is still under construction</p>
+	<p id="constructionDesc"><i style="margin-inline:5px;" class="fa-solid fa-wrench"></i> sorry that page is still under construction</p>
 	</div>
 	<nav id="nav">
     <a class="navLogo" href="/">
@@ -142,6 +142,13 @@ document.addEventListener('DOMContentLoaded', function() {
 			event.preventDefault();
 			document.querySelector('.construction').style = 'display: block !important;';
 			document.querySelector('#nav').style = 'margin-top: 51px;';
+			anime({
+				targets: ".construction, #constructionDesc",
+				easing: 'easeInOutQuad',
+				translateY: [-100, 0],
+				opacity: [0, 1],
+				duration: 200
+			});
 		});
 	}
 });
