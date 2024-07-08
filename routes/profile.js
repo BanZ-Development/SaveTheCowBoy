@@ -83,9 +83,9 @@ router.post('/upload-pfp', upload.single('file'), async (req, res) => {
 });
 
 router.get('/getPfp', async (req, res) => {
-	if (!req.user) return res.send({ status: false });
+	if (!req.user) return res.send({ status: false, message: 'No user' });
 	const user = await User.findById(req.user.id);
-	if (!user.meta.pfp) return res.send({ status: false });
+	if (!user.meta.pfp) return res.send({ status: false, message: 'No pfp' });
 	else {
 		cookie.set(res, 'pfp', user.meta.pfp.name);
 		res.send({

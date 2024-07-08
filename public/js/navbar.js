@@ -117,22 +117,25 @@ function openMenu() {
 
 function checkForPfpCookie() {
 	let pfp = getCookie('pfp');
-	if (!pfp) {
-		fetch('api/profile/getPfp', {
-			method: 'get',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
+	if (pfp) document.querySelector('#imagePreview').src = `/image/${pfp}`;
+	else document.querySelector('#imagePreview').src = '../images/default-pfp.jpeg';
+	fetch('api/profile/getPfp', {
+		method: 'get',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then(async (data) => {
+			if (data.status) {
+				document.querySelector('#imagePreview').src = `/image/${data.pfp}`;
+			} else {
+				document.querySelector('#imagePreview').src = '../images/default-pfp.jpeg';
 			}
 		})
-			.then((res) => res.json())
-			.then(async (data) => {
-				if (data.status && data.pfp != null) {
-					document.querySelector('#pfp').src = `/image/${data.pfp}`;
-				} else {
-					document.querySelector('#pfp').src = '../images/default-pfp.jpeg';
-				}
-			});
-	} else document.querySelector('#pfp').src = `/image/${pfp}`;
+		.catch((err) => {
+			console.log(err);
+		});
 }
 checkForPfpCookie();
 
