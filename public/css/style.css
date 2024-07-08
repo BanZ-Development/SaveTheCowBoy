@@ -1096,6 +1096,7 @@ button {
     }
 
     .nav-links {
+        padding-top: 10px;
         position: fixed;
         height: 100vh !important;
         width: 70%;

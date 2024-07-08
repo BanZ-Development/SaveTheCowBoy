@@ -137,9 +137,11 @@ function checkForPfpCookie() {
 checkForPfpCookie();
 
 document.addEventListener('DOMContentLoaded', function() {
-	document.querySelector('.dropLink').addEventListener('click', (event) => {
-		event.preventDefault();
-		document.querySelector('.construction').style = 'display: block !important;';
-		document.querySelector('#nav').style = 'margin-top: 51px;';
-	});
+	for (let i=0; i < document.querySelectorAll('.dropLink').length;i++) {
+		document.querySelectorAll('.dropLink')[i].addEventListener('click', (event) => {
+			event.preventDefault();
+			document.querySelector('.construction').style = 'display: block !important;';
+			document.querySelector('#nav').style = 'margin-top: 51px;';
+		});
+	}
 });
