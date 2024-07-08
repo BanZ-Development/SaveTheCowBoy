@@ -19,7 +19,12 @@ const userSchema = new Schema({
 		firstName: String,
 		lastName: String,
 		phoneNumber: String,
-		address: String,
+		shipping: {
+			address: String,
+			city: String,
+			state: String,
+			zip: String
+		},
 		salt: {
 			type: String,
 			required: true

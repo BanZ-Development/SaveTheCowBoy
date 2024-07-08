@@ -64,6 +64,9 @@ const createReturningUserAccount = () => {
 				let lastName = document.querySelector('#lastName').value;
 				let phoneNumber = document.querySelector('#phoneNumber').value;
 				let address = document.querySelector('#address').value;
+				let city = document.querySelector('#city').value;
+				let zip = document.querySelector('#zip').value;
+				let state = document.querySelector('#state').value;
 				const user = new FormData();
 				user.append('username', username);
 				user.append('email', email);
@@ -73,6 +76,9 @@ const createReturningUserAccount = () => {
 				user.append('lastName', lastName);
 				user.append('phoneNumber', phoneNumber);
 				user.append('address', address);
+				user.append('city', city);
+				user.append('zip', zip);
+				user.append('state', state);
 				signupAndReturnUserID(user).then((id) => {
 					console.log('Account created: ' + id);
 					location.replace('/login');
@@ -220,6 +226,9 @@ async function checkoutClick() {
 	let username = document.querySelector('#usernameInput').value;
 	let email = document.querySelector('#email').value;
 	let password = document.querySelector('#password').value;
+	let city = document.querySelector('#city').value;
+	let zip = document.querySelector('#zip').value;
+	let state = document.querySelector('#state').value;
 	const user = new FormData();
 	user.append('tier', index);
 	user.append('username', username);
@@ -230,7 +239,9 @@ async function checkoutClick() {
 	user.append('lastName', lastName);
 	user.append('phoneNumber', phoneNumber);
 	user.append('address', address);
-
+	user.append('city', city);
+	user.append('zip', zip);
+	user.append('state', state);
 	fetch('api/checkout/start', {
 		method: 'post',
 		headers: {

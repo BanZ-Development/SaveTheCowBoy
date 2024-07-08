@@ -48,7 +48,7 @@ function load() {
             <div class="navProfileDrop">
                 <a id="profile" class="navProfileDropLink"><i class="fa-solid fa-user"></i> Profile</a>
                 <a href="settings" class="navProfileDropLink"><i class="fa-solid fa-gear"></i> Settings</a>
-                <a id="navSub" href="subscription" class="navProfileDropLink"><i class="fa-solid fa-credit-card"></i> Subscription</a>
+                <a id="navSub" class="navProfileDropLink"><i class="fa-solid fa-credit-card"></i> Subscription</a>
                 <a id="logoutBtn1" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
             </div>
         </div>
@@ -75,7 +75,7 @@ function checkLogin() {
 				document.querySelector('#signupNav').style = 'display: none; !important';
 				document.querySelector('#navProfile').style = 'display: flex;';
 				document.querySelector('#logoutBtn1').style = 'display: flex; !important';
-				document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
+				//document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
 				if (data.pfp) {
 					document.querySelector('#pfp').src = `/image/${data.pfp}`;
 				}
@@ -136,14 +136,14 @@ function checkForPfpCookie() {
 }
 checkForPfpCookie();
 
-document.addEventListener('DOMContentLoaded', function() {
-	for (let i=0; i < document.querySelectorAll('.dropLink').length;i++) {
+document.addEventListener('DOMContentLoaded', function () {
+	for (let i = 0; i < document.querySelectorAll('.dropLink').length; i++) {
 		document.querySelectorAll('.dropLink')[i].addEventListener('click', (event) => {
 			event.preventDefault();
 			document.querySelector('.construction').style = 'display: block !important;';
 			document.querySelector('#nav').style = 'margin-top: 51px;';
 			anime({
-				targets: ".construction, #constructionDesc",
+				targets: '.construction, #constructionDesc',
 				easing: 'easeInOutQuad',
 				translateY: [-100, 0],
 				opacity: [0, 1],
@@ -153,19 +153,18 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 	document.querySelector('#profile').setAttribute('href', '');
 	document.querySelector('#profile').addEventListener('click', construction);
 	document.querySelector('#navSub').addEventListener('click', construction);
 });
-
 
 function construction(event) {
 	event.preventDefault();
 	document.querySelector('.construction').style = 'display: block !important;';
 	document.querySelector('#nav').style = 'margin-top: 51px;';
 	anime({
-		targets: ".construction, #constructionDesc",
+		targets: '.construction, #constructionDesc',
 		easing: 'easeInOutQuad',
 		translateY: [-100, 0],
 		opacity: [0, 1],

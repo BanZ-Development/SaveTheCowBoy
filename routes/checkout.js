@@ -47,7 +47,10 @@ router.post('/create-checkout-session', async (req, res) => {
 					quantity: 1
 				}
 			],
-			mode: 'subscription'
+			mode: 'subscription',
+			subscription_data: {
+				trial_period_days: 14
+			}
 		});
 		console.log('User ID: ' + uid);
 		console.log('Session ID: ' + session.id);
@@ -158,7 +161,7 @@ router.post('/stripe-session', async (req, res) => {
 router.post('/cancel-subscription', async (req, res) => {
 	try {
 		const customerID = req.user.subscription.customer;
-		if (req.user.subscription.isSubscribed && customerID) {
+		if (customerID) {
 			const subscriptions = await stripe.subscriptions.list({
 				customer: customerID,
 				limit: 1
@@ -189,7 +192,7 @@ router.post('/cancel-subscription', async (req, res) => {
 router.post('/renew-subscription', async (req, res) => {
 	try {
 		const customerID = req.user.subscription.customer;
-		if (req.user.subscription.isSubscribed && customerID) {
+		if (customerID) {
 			const subscriptions = await stripe.subscriptions.list({
 				customer: customerID,
 				limit: 1
