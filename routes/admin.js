@@ -11,15 +11,19 @@ require('dotenv').config();
 require('../controllers/local');
 
 router.get('/isAdmin', async (req, res) => {
-	console.log(req.user.admin);
-	if (req.user.admin) {
-		res.send({
-			status: true
-		});
-	} else {
-		res.send({
-			status: false
-		});
+	try {
+		console.log(req.user.admin);
+		if (req.user.admin) {
+			res.send({
+				status: true
+			});
+		} else {
+			res.send({
+				status: false
+			});
+		}
+	} catch (err) {
+		res.send({ status: false });
 	}
 });
 
@@ -35,8 +39,11 @@ router.use((req, res, next) => {
 
 router.post('/get-members', async (req, res) => {
 	try {
-		const { search, filter } = req.body;
-		const users = await User.find(); //add filters and search later
+		let { filter } = req.body;
+		let users;
+		filter = JSON.parse(filter);
+		if (Object.entries(filter).length === 0) users = await User.find();
+		else users = await User.find(filter);
 		let members = [];
 		users.forEach((user) => {
 			members.push({

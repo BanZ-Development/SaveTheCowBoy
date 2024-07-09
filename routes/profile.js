@@ -92,28 +92,42 @@ router.post('/upload-pfp', upload.single('file'), async (req, res) => {
 });
 
 router.get('/getPfp', async (req, res) => {
-	if (!req.user) return res.send({ status: false, message: 'No user' });
-	const user = await User.findById(req.user.id);
-	if (!user.meta.pfp) return res.send({ status: false, message: 'No pfp' });
-	else {
-		cookie.set(res, 'pfp', user.meta.pfp.name);
+	try {
+		if (!req.user) return res.send({ status: false, message: 'No user' });
+		const user = await User.findById(req.user.id);
+		if (!user.meta.pfp) return res.send({ status: false, message: 'No pfp' });
+		else {
+			cookie.set(res, 'pfp', user.meta.pfp.name);
+			res.send({
+				status: true,
+				pfp: user.meta.pfp.name
+			});
+		}
+	} catch (err) {
 		res.send({
-			status: true,
-			pfp: user.meta.pfp.name
+			status: false,
+			error: err.message
 		});
 	}
 });
 
 router.post('/getPfp', async (req, res) => {
-	const { userID } = req.body;
-	if (!userID) return res.send({ status: false });
-	const user = await User.findById(userID);
-	if (!user.meta.pfp) return res.send({ status: false });
-	else {
-		cookie.set(res, 'pfp', user.meta.pfp.name);
+	try {
+		const { userID } = req.body;
+		if (!userID) return res.send({ status: false });
+		const user = await User.findById(userID);
+		if (!user.meta.pfp) return res.send({ status: false });
+		else {
+			cookie.set(res, 'pfp', user.meta.pfp.name);
+			res.send({
+				status: true,
+				pfp: user.meta.pfp.name
+			});
+		}
+	} catch (err) {
 		res.send({
-			status: true,
-			pfp: user.meta.pfp.name
+			status: false,
+			error: err.message
 		});
 	}
 });

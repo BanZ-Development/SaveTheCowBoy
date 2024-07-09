@@ -79,6 +79,13 @@ function checkLogin() {
 				if (data.pfp) {
 					document.querySelector('#pfp').src = `/image/${data.pfp}`;
 				}
+				if (data.admin) {
+					let adminLink = document.createElement('a');
+					adminLink.className = 'navProfileDropLink';
+					adminLink.innerHTML = '<i class="fa-solid fa-chart-line"></i> Admin Dashboard';
+					adminLink.href = 'admin';
+					document.querySelector('#navSub').insertAdjacentElement('afterend', adminLink);
+				}
 			} else {
 				document.querySelector('#signupNav').innerHTML = '<i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Signup';
 				document.querySelector('.navDrop').style = 'right: -35px';

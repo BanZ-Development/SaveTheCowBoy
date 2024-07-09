@@ -45,7 +45,7 @@ async function loadPosts() {
 			.then((data) => {
 				console.log(data);
 				if (data.status) {
-					loadSinglePost(data.post, data.currentUserID);
+					loadSinglePost(data.post, data.currentUserID, data.pfp);
 				} else {
 					console.log('error!');
 				}
@@ -173,15 +173,18 @@ function createPostElement(post, currentUserID, pfp) {
 	document.querySelector('#posts').appendChild(div);
 }
 
-function loadSinglePost(post, currentUserID) {
-	const { _id, title, message, username, postDate, uID, likes, comments, pfp } = post;
+function loadSinglePost(post, currentUserID, pfp) {
+	const { _id, title, message, username, postDate, uID, likes, comments } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
+	let profilePic = '../images/default-pfp.jpeg';
+	if (pfp.name) profilePic = `/image/${pfp.name}`;
+
 	div.innerHTML = `<div id="post">
 		<span class="line"></span>
 		<div class="forumPost" id=${_id}>
 		<div class="inlineForumUser">
-			<img class="forumPfp" src="${pfp}"></img>
+			<img id="postPfp" class="forumPfp" src="${profilePic}"></img>
 			<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
 		</div>
 		
@@ -292,7 +295,10 @@ function loadComment(comment) {
 	let div = document.createElement('div');
 	div.innerHTML = `
 	<div class="comment" id=${_id}>
+		<div class="inlineForumUser">
+		<img id="postPfp" class="forumPfp" src="../images/default-pfp.jpeg"></img>
 		<a class="forumUser" href="/profile?uid=${authorID}">${SafeHTML(author)}</a>
+		</div>
 		<p>${date.toDateString()}</p>
 		<p style="white-space:pre;">${SafeHTML(content)}</p>
 		<div class="forumBtns">
@@ -302,6 +308,7 @@ function loadComment(comment) {
 		</div>
 		<span class="line"></span>
 	</div>`;
+	returnPfp(authorID, div);
 	document.querySelector('#commentsList').appendChild(div);
 	if (window.location.hash) {
 		const id = window.location.hash.substring(1);

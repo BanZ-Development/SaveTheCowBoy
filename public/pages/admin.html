@@ -30,12 +30,29 @@
             <div id="members" class="settingSection">
                 <div class="settingColumn">
                     <h1>Members</h1>
+                    <div id="filterPopup" style="background-color: rgb(27, 27, 27); border: white 2px; border-radius: 5px; width: 50%; height: 110%;">
+                        <h1 style="margin-bottom: 3px;"><i class="fa-solid fa-arrow-up-wide-short"></i> Filter</h1>
+                        <span class="line"></span>
+                        <h4 style="margin-bottom: 3px; margin-top: 5px;">Username</h4>
+                        <input type="text" id="usernameInput">
+                        <h4 style="margin-bottom: 3px;">First Name</h4>
+                        <input type="text" id="fnInput">
+                        <h4 style="margin-bottom: 3px;">Last Name</h4>
+                        <input type="text" id="lnInput">
+                        <h4 style="margin-bottom: 3px;">Phone Number</h4>
+                        <input type="text" id="pnInput">
+                        <h4 style="margin-bottom: 3px;">State</h4>
+                        <input type="text" id="stateInput">
+                        <h4 style="margin-bottom: 3px;">City</h4>
+                        <input type="text" id="cityInput">
+                        <h4 style="margin-bottom: 3px;">Address</h4>
+                        <input type="text" id="addressInput">
+                        <h4 style="margin-bottom: 3px;">Zip Code</h4>
+                        <input type="text" id="zipInput">
+                        <button id="applyFilterBtn">Apply Filter</button>
+                    </div>
                     <div style="margin-block: 20px; display: flex; flex-direction: row;">
-                        <div class="searchInput">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input placeholder="Search Members" type="text" class="search">
-                        </div>
-                        <button class="filterBtn"><i class="fa-solid fa-arrow-up-wide-short"></i> Filter</button>
+                        <button id="filterBtn"class="filterBtn"><i class="fa-solid fa-arrow-up-wide-short"></i> Filter</button>
                     </div>
                     <span class="line"></span>
                     <div id="members" class="membersTable">
@@ -58,10 +75,6 @@
                 <div class="settingColumn" id="memberColumn">
                     <h1>Analytics</h1>
                     <div style="margin-block: 20px; display: flex; flex-direction: row;">
-                        <div class="searchInput">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input placeholder="Search Members" type="text" class="search">
-                        </div>
                         <button class="filterBtn"><i class="fa-solid fa-arrow-up-wide-short"></i> Filter</button>
                     </div>
                     <span class="line"></span>

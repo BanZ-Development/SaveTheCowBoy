@@ -44,12 +44,14 @@ router.post('/loadPosts', async function (req, res) {
 router.post('/loadPost', async function (req, res) {
 	try {
 		let post = await Post.findById(req.body.id);
+		let author = await User.findById(post.uID);
 		if (post) {
 			res.send({
 				status: true,
 				message: '1 post loaded',
 				post: post,
-				currentUserID: req.user.id
+				currentUserID: req.user.id,
+				pfp: author.meta.pfp
 			});
 		}
 	} catch (error) {
