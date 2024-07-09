@@ -366,6 +366,7 @@ function loadComment(comment, currentUserID) {
 				<div class="forumBtns">
 					<p id="likeCounter">${likesCount}</p>
 					<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
+					<button id="replyBtn" class="iconBtn"><i class="fa-regular fa-comment"></i></button>
 					<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 				</div>
 				</div>
