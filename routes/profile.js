@@ -35,21 +35,30 @@ const storage = new GridFsStorage({
 const upload = multer({ storage });
 
 router.post('/load', async (req, res) => {
-	const { uid } = req.body;
-	const user = await User.findById(uid);
-	let pfp = null;
-	if (user.meta.pfp) pfp = user.meta.pfp.name;
-	const profile = {
-		username: user.meta.username,
-		uid: user.id,
-		posts: user.posts,
-		isSubscribed: user.subscription.isSubscribed,
-		pfp: pfp
-	};
-	res.send({
-		status: true,
-		profile: profile
-	});
+	try {
+		const { uid } = req.body;
+		const user = await User.findById(uid);
+		let pfp = null;
+		if (user.meta.pfp) pfp = user.meta.pfp.name;
+		const profile = {
+			username: user.meta.username,
+			uid: user.id,
+			posts: user.posts,
+			isSubscribed: user.subscription.isSubscribed,
+			pfp: pfp
+		};
+		res.send({
+			status: true,
+			profile: profile
+		});
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: 'User is not logged in',
+			error: err.message
+		});
+	}
 });
 
 router.post('/upload-pfp', upload.single('file'), async (req, res) => {

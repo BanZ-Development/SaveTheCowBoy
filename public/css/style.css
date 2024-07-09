@@ -409,6 +409,99 @@ button {
     text-indent: 10px;
 }
 
+.signupDivSec > h3 {
+    color: #333;
+    margin-inline: auto;
+    width: 70%;
+}
+
+.membersTable {
+    border: 0;
+  }
+
+  #tableDescription > p {
+    line-height: 20px;
+  }
+
+  .tableRow {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    background-color: #fff0;
+    padding-inline: 5px;
+    height: 60px;
+    margin-block: 10px;
+  }
+
+  .tableRowInfo {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .tableRowInfo > p {
+    width: fit-content;
+    margin-inline: 10px;
+    text-align: left;
+    width: 120px;
+  }
+
+  #firstNameAdmin {
+    margin-left: 25px;
+  }
+
+  #emailAdmin {
+    width: 250px;
+  }
+
+  #addressAdmin {
+    width: 200px;
+  }
+
+  .tableDropBtn {
+    margin-block: auto;
+    width: 25px;
+    height: 25px;
+    background-color: #fff0;
+    border-radius: 50%;
+    border: solid 1px #fff;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .filterBtn {
+    color: #fff;
+    background-color: #1e1e1e;
+    border: 2px solid #303030;
+    padding: 10px;
+    font-size: 17px;
+    border-radius: 10px;
+    margin-left: auto;
+    cursor: pointer;
+    width: 120px;
+  }
+
+  .filterBtn:hover {
+    background-color: #353535;
+  }
+
+  .searchInput {
+    background-color: #fff;
+    color: #333;
+    padding: 5px;
+    padding-inline: 15px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .searchInput > input {
+    color: #333;
+    border: none;
+    height: 100%;
+    outline: none;
+    font-size: 19px;
+    font-family: 'Roboto';
+  }
+
 .signupDivSec {
     display: flex;
     flex-direction: column;
@@ -835,6 +928,7 @@ button {
     flex-direction: column;
     height: fit-content;
     background-color: #1e1e1e;
+    display: none;
   }
 
   #navSep {

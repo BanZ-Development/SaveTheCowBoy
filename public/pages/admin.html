@@ -16,6 +16,90 @@
     <script type="module" src="../js/navbar.js"></script>
 </head>
 <body>
-    
+    <div class="settings">
+        <div class="settingSidebar">
+            <button class="settingSidebarBtn"><i class="fa-solid fa-users"></i> <p>Members</p></button>
+            <button class="settingSidebarBtn"><i class="fa-solid fa-chart-simple"></i> <p>Analytics</p></button>
+            <button class="settingSidebarBtn"><i class="fa-solid fa-flag"></i> <p>Reports</p></button>
+            <button class="settingSidebarBtn"><i class="fa-solid fa-file-pen"></i> <p>Forums</p></button>
+            <button class="settingSidebarBtn"><i class="fa-regular fa-calendar-check"></i> <p>Daily Devotions</p></button>
+            <button class="settingSidebarBtn"><i class="fa-solid fa-book-bible"></i> <p>Bible Plans</p></button>
+            <button class="settingSidebarBtn"><i class="fa-solid fa-hat-cowboy-side"></i> <p>Cowboy Stories</p></button>
+        </div>
+        <div class="settingMainContent">
+            <div id="members" class="settingSection">
+                <div class="settingColumn">
+                    <h1>Members</h1>
+                    <div style="margin-block: 20px; display: flex; flex-direction: row;">
+                        <div class="searchInput">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input placeholder="Search Members" type="text" class="search">
+                        </div>
+                        <button class="filterBtn"><i class="fa-solid fa-arrow-up-wide-short"></i> Filter</button>
+                    </div>
+                    <span class="line"></span>
+                    <div id="members" class="membersTable">
+                        <div id="tableDescription" style="height: 50px; background-color: #242424; flex-direction: row;" class="tableRow">
+                            <div class="tableRowInfo">
+                                <p style="margin-left: 50px;" id="firstNameAdmin">First Name</p>
+                                <p id="lastNameAdmin">Last Name</p>
+                                <p id="emailAdmin">Email</p>
+                                <p id="phoneNumberAdmin">Phone</p>
+                                <p id="stateAdmin">State</p>
+                                <p id="cityAdmin">City</p>
+                                <p id="addressAdmin">Address</p>
+                                <p id="zipAdmin">Zip</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="analytics" class="settingSection">
+                <div class="settingColumn" id="memberColumn">
+                    <h1>Analytics</h1>
+                    <div style="margin-block: 20px; display: flex; flex-direction: row;">
+                        <div class="searchInput">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input placeholder="Search Members" type="text" class="search">
+                        </div>
+                        <button class="filterBtn"><i class="fa-solid fa-arrow-up-wide-short"></i> Filter</button>
+                    </div>
+                    <span class="line"></span>
+                    <div id="membersContainer" class="membersTable">
+                        <div id="tableDescription" style="height: 50px; background-color: #242424; flex-direction: row;" class="tableRow">
+                            <div class="tableRowInfo">
+                                <p style="margin-left: 50px;" id="firstNameAdmin">First Name</p>
+                                <p id="lastNameAdmin">Last Name</p>
+                                <p id="emailAdmin">Email</p>
+                                <p id="phoneNumberAdmin">Phone</p>
+                                <p id="addressAdmin">Address</p>
+                            </div>
+                        </div>
+                        <div class="tableRow">
+                            <div class="tableRowInfo">
+                                <button id="dropInformation" class="tableDropBtn"> <i class="fa-solid fa-chevron-right"></i></i></button>
+                                <p id="firstNameAdmin">Lucky</p>
+                                <p id="lastNameAdmin">Lightfoot</p>
+                                <p id="emailAdmin">swordslayer07@gmail.com</p>
+                                <p id="phoneNumberAdmin">(630) 310-2681</p>
+                                <p id="addressAdmin">27250 E. Lakeview Dr</p>
+                            </div>
+                        </div>
+                        <span class="line"></span>
+                        <div class="tableRow">
+                            <div class="tableRowInfo">
+                                <button id="dropInformation" class="tableDropBtn"> <i class="fa-solid fa-chevron-right"></i></button>
+                                <p id="firstNameAdmin">Jack</p>
+                                <p id="lastNameAdmin">Gimre</p>
+                                <p id="emailAdmin">jackgimre@gmail.com</p>
+                                <p id="phoneNumberAdmin">(331) 222-1409</p>
+                                <p id="addressAdmin">2091 Wild Dunes Ct  </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

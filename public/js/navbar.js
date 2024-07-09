@@ -32,7 +32,7 @@ function load() {
                 <p>Community</p>
                 <i class="material-icons">keyboard_arrow_down</i>
             <div class="navDrop">
-                <a style="border-radius: 4px 4px 0px 0px;" href="" class="dropLink"><i class="fa-regular fa-comments" disabled></i> Forum</a>
+                <a style="border-radius: 4px 4px 0px 0px;" href="forum" class="dropLink"><i class="fa-regular fa-comments" disabled></i> Forum</a>
                 <a href="" class="dropLink"><i class="fa-regular fa-calendar"></i> Daily Devotions</a>
                 <a href="" class="dropLink"><i class="fa-solid fa-book-bible"></i> Bible Plans</a>
                 <a style="border-radius: 0px 0px 4px 4px" href="" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
@@ -75,7 +75,7 @@ function checkLogin() {
 				document.querySelector('#signupNav').style = 'display: none; !important';
 				document.querySelector('#navProfile').style = 'display: flex;';
 				document.querySelector('#logoutBtn1').style = 'display: flex; !important';
-				//document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
+				document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
 				if (data.pfp) {
 					document.querySelector('#pfp').src = `/image/${data.pfp}`;
 				}
@@ -128,9 +128,9 @@ function checkForPfpCookie() {
 		.then((res) => res.json())
 		.then(async (data) => {
 			if (data.status) {
-				document.querySelector('#imagePreview').src = `/image/${data.pfp}`;
+				document.querySelector('#pfp').src = `/image/${data.pfp}`;
 			} else {
-				document.querySelector('#imagePreview').src = '../images/default-pfp.jpeg';
+				document.querySelector('#pfp').src = '../images/default-pfp.jpeg';
 			}
 		})
 		.catch((err) => {
@@ -139,6 +139,7 @@ function checkForPfpCookie() {
 }
 checkForPfpCookie();
 
+/* COMMENT OUT ON TEST (CONSTRUCTION BANNER)
 document.addEventListener('DOMContentLoaded', function () {
 	for (let i = 0; i < document.querySelectorAll('.dropLink').length; i++) {
 		document.querySelectorAll('.dropLink')[i].addEventListener('click', (event) => {
@@ -154,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 		});
 	}
-});
+});*/
 
 document.addEventListener('DOMContentLoaded', function () {
 	document.querySelector('#profile').setAttribute('href', '');

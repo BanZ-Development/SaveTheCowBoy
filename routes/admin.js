@@ -33,35 +33,34 @@ router.use((req, res, next) => {
 	else res.sendStatus(401);
 });
 
-router.post('/news', async (req, res) => {
-	validate.Authenticate(validate.news(req, res), Passed, Failed);
-
-	async function Passed() {
-		const { username } = req.user.meta.username;
-		const { title, message, expireDate } = req.body;
-		const postDate = new Date();
-
-		let params = {
-			title: title,
-			message: message,
-			postDate: postDate
-		};
-		if (expireDate) params['expireDate'] = expireDate;
-
-		const result = await News.create(params);
+router.post('/get-members', async (req, res) => {
+	try {
+		const { search, filter } = req.body;
+		const users = await User.find(); //add filters and search later
+		let members = [];
+		users.forEach((user) => {
+			members.push({
+				uid: user.id,
+				firstName: user.meta.firstName,
+				lastName: user.meta.lastName,
+				email: user.meta.email,
+				phoneNumber: user.meta.phoneNumber,
+				address: user.meta.shipping.address,
+				city: user.meta.shipping.city,
+				state: user.meta.shipping.state,
+				zip: user.meta.shipping.zip,
+				pfp: user.meta.pfp,
+				admin: user.admin,
+				customer: user.subscription.customer
+			});
+		});
 		res.send({
 			status: true,
-			message: 'News has been created!',
-			params: params
+			members: members
 		});
-	}
-
-	function Failed(result) {
-		res.send({
-			status: true,
-			message: 'Input validation failed',
-			errors: result
-		});
+	} catch (err) {
+		console.log(err);
+		res.send({ status: false, error: err.message });
 	}
 });
 
