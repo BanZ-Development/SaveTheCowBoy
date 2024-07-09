@@ -6,7 +6,16 @@ const commentSchema = new Schema({
 	authorID: { type: String, required: true },
 	author: { type: String, required: true },
 	postDate: { type: Date, default: Date.now },
-	comments: [Object]
+	comments: [Object],
+	likes: [String],
+	likesCount: {
+		type: Number,
+		default: 0
+	},
+	reports: {
+		type: Number,
+		required: false
+	}
 });
 
 module.exports = mongoose.model('Comment', commentSchema);

@@ -23,9 +23,12 @@ const disableAllViews = () => {
 };
 
 const enableView = (view) => {
+	disableAllViews();
 	let viewElement = document.querySelector(`#${view}`);
-	if (viewElement) viewElement.style.display = 'flex';
-	else document.querySelector('#members').style.display = 'flex';
+	if (viewElement) {
+		viewElement.style.display = 'flex';
+		updateURL(view);
+	} else document.querySelector('#members').style.display = 'flex';
 };
 
 const openView = (view) => {
@@ -35,6 +38,9 @@ const openView = (view) => {
 			break;
 		case 'analytics':
 			openAnalytics();
+			break;
+		case 'reports':
+			openReports();
 			break;
 		default:
 			openMembers();
@@ -141,9 +147,31 @@ async function applyFilterClick() {
 }
 
 async function openMembers() {
+	enableView('members');
+	//removeAllMembers();
 	let members = await returnMembers();
 	members.forEach((member) => createMemberElement(member));
 	document.querySelector('#filterBtn').addEventListener('click', openFilterClick);
 	document.querySelector('#applyFilterBtn').addEventListener('click', applyFilterClick);
 }
-function openAnalytics() {}
+
+const updateURL = (view) => {
+	const newUrl = window.location.origin + window.location.pathname + `?v=${view}`;
+	history.pushState(null, '', newUrl);
+};
+
+function openAnalytics() {
+	enableView('analytics');
+	console.log('analytics');
+}
+
+async function openReports() {
+	enableView('reports');
+	console.log('reports');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+	document.querySelector('#membersBtn').addEventListener('click', openMembers);
+	document.querySelector('#analyticsBtn').addEventListener('click', openAnalytics);
+	document.querySelector('#reportsBtn').addEventListener('click', openReports);
+});

@@ -224,7 +224,7 @@ function loadSinglePost(post, currentUserID, pfp) {
 	div.querySelector('#commentBtn').addEventListener('click', comment);
 	document.querySelector('#posts').appendChild(div);
 	comments.forEach((comment) => {
-		loadComment(comment);
+		loadComment(comment, currentUserID);
 	});
 }
 
@@ -288,32 +288,101 @@ function comment() {
 		});
 }
 
-function loadComment(comment) {
-	const { _id, author, authorID, content, postDate, comments, likes } = comment;
-	let date = new Date(postDate);
-	console.log(comment);
-	let div = document.createElement('div');
-	div.innerHTML = `
-	<div class="comment" id=${_id}>
-		<div class="inlineForumUser">
-		<img id="postPfp" class="forumPfp" src="../images/default-pfp.jpeg"></img>
-		<a class="forumUser" href="/profile?uid=${authorID}">${SafeHTML(author)}</a>
-		</div>
-		<p>${date.toDateString()}</p>
-		<p style="white-space:pre;">${SafeHTML(content)}</p>
-		<div class="forumBtns">
-			<p id="likeCounter"> 0</p>
-			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
-			<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
-		</div>
-		<span class="line"></span>
-	</div>`;
-	returnPfp(authorID, div);
-	document.querySelector('#commentsList').appendChild(div);
-	if (window.location.hash) {
-		const id = window.location.hash.substring(1);
-		if (id == 'commentSection') goToCommentSection();
+function likeComment() {
+	let element = event.target;
+	if (element.nodeName != 'I') element = element.querySelector('i');
+	const root = element.closest('.comment');
+	const button = root.querySelector('#likeBtn');
+	const commentID = element.closest('.comment').id;
+	const counter = root.querySelector('#likeCounter');
+	const data = new FormData();
+	data.append('commentID', commentID);
+	try {
+		if (element.outerHTML == '<i class="fa-regular fa-heart"></i>') {
+			//liking
+			element.outerHTML = '<i class="fa-solid fa-heart"></i>';
+			counter.innerHTML++;
+		} else {
+			//unliking
+			element.outerHTML = '<i class="fa-regular fa-heart"></i>';
+			counter.innerHTML--;
+		}
+		button.enabled = false;
+	} catch (error) {
+		console.log(error);
 	}
+	fetch('api/forum/likeComment', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.type == 'like') {
+				element.outerHTML = '<i class="fa-solid fa-heart"></i>';
+			} else if (data.type == 'unlike') {
+				element.outerHTML = '<i class="fa-regular fa-heart"></i>';
+			}
+			counter.innerHTML = data.likes;
+			button.enabled = true;
+		})
+		.catch((err) => {
+			console.log(err);
+			button.enabled = true;
+		});
+}
+
+function loadComment(comment, currentUserID) {
+	const data = new FormData();
+	data.append('commentID', comment);
+
+	fetch('api/forum/loadComment', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			const com = data.comment;
+			const { _id, author, authorID, content, postDate, comments, likes, likesCount } = com;
+			let date = new Date(postDate);
+			let div = document.createElement('div');
+			div.innerHTML = `
+			<div class="comment" id=${_id}>
+				<div class="inlineForumUser">
+				<img id="postPfp" class="forumPfp" src="../images/default-pfp.jpeg"></img>
+				<a class="forumUser" href="/profile?uid=${authorID}">${SafeHTML(author)}</a>
+				</div>
+				<p>${date.toDateString()}</p>
+				<p style="white-space:pre;">${SafeHTML(content)}</p>
+				<div class="forumBtns">
+					<p id="likeCounter">${likesCount}</p>
+					<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
+					<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
+				</div>
+				<span class="line"></span>
+			</div>`;
+			returnPfp(authorID, div);
+			div.querySelector('#likeBtn').addEventListener('click', likeComment);
+			let isLiked = likes.includes(currentUserID);
+			if (isLiked) {
+				div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
+			}
+			document.querySelector('#commentsList').appendChild(div);
+			if (window.location.hash) {
+				const id = window.location.hash.substring(1);
+				if (id == 'commentSection') goToCommentSection();
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+		});
 }
 
 function submitReport() {

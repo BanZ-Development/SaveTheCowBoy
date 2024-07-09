@@ -62,6 +62,28 @@ router.post('/loadPost', async function (req, res) {
 	}
 });
 
+router.post('/loadComment', async function (req, res) {
+	try {
+		console.log('Comment ID:', req.body.commentID);
+		let comment = await Comment.findById(req.body.commentID);
+		let author = await User.findById(comment.authorID);
+		if (comment) {
+			res.send({
+				status: true,
+				message: 'Comment loaded',
+				currentUserID: req.user.id,
+				pfp: author.meta.pfp,
+				comment: comment
+			});
+		}
+	} catch (error) {
+		res.send({
+			status: false,
+			message: 'No comment found with that ID'
+		});
+	}
+});
+
 router.post('/post', async function (req, res) {
 	try {
 		const { title, message } = req.body;
@@ -148,6 +170,54 @@ router.post('/likePost', async function (req, res) {
 	}
 });
 
+router.post('/likeComment', async function (req, res) {
+	try {
+		const { commentID } = req.body;
+		let comment = await Comment.findById(commentID);
+		let user = req.user;
+		if (comment && user) {
+			try {
+				if (comment.likes.includes(user.id)) {
+					comment.likes.pull(user.id);
+					comment.likesCount -= 1;
+					await comment.save();
+					res.send({
+						status: true,
+						type: 'unlike',
+						likes: comment.likesCount
+					});
+				} else {
+					comment.likes.push(user.id);
+					comment.likesCount += 1;
+					await comment.save();
+					res.send({
+						status: true,
+						type: 'like',
+						likes: comment.likesCount
+					});
+				}
+			} catch (error) {
+				console.log(error);
+				res.send({
+					status: false,
+					error: error.message
+				});
+			}
+		} else {
+			res.send({
+				status: false,
+				message: 'No comment found with that ID'
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: false,
+			message: 'No comment found with that ID'
+		});
+	}
+});
+
 router.post('/comment', async (req, res) => {
 	try {
 		const { content, postID } = req.body;
@@ -161,7 +231,8 @@ router.post('/comment', async (req, res) => {
 					author: user.meta.username,
 					authorID: user.id
 				});
-				post.comments.push(newComment);
+				await Comment.create(newComment);
+				post.comments.push(newComment.id);
 				await post.save();
 				res.send({
 					status: true,
