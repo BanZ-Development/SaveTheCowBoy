@@ -2,6 +2,14 @@ const SafeHTML = (html) => {
 	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 };
 
+const DateText = (date) => {
+	const options = { month: 'long' };
+	const month = new Intl.DateTimeFormat('en-US', options).format(date);
+	const day = date.getDate();
+	const year = date.getFullYear();
+	return `${month} ${day}, ${year}`;
+};
+
 async function loadPosts() {
 	const id = returnID();
 	let loadedPosts = 0;
@@ -143,7 +151,7 @@ function createPostElement(post, currentUserID, pfp) {
 		<div class="inlineForumUser">
 			<img class="forumPfp" src="/image/${pfp}"></img>
 			<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
-			<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${date.toDateString()}</p>
+			<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
 		</div>
 		<div class="forumTitle">
 			<h3><a id="title" href="/forum?id=${_id}">${SafeHTML(title)}</a></h3>
@@ -186,7 +194,7 @@ function loadSinglePost(post, currentUserID, pfp) {
 		<div class="inlineForumUser">
 			<img id="postPfp" class="forumPfp" src="${profilePic}"></img>
 			<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
-			<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${date.toDateString()}</p>
+			<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
 		</div>
 		
 		<div class="forumTitle">
@@ -289,50 +297,50 @@ function comment() {
 }
 
 function likeComment() {
-    let element = event.target;
-    if (element.nodeName != 'I') element = element.querySelector('i');
-    const root = element.closest('.comment');
-    const button = root.querySelector('#likeBtn');
-    const commentID = element.closest('.comment').id;
-    const counter = root.querySelector('#likeCounter');
-    const data = new FormData();
-    data.append('commentID', commentID);
-    try {
-        if (element.outerHTML == '<i class="fa-regular fa-heart"></i>') {
-            //liking
-            element.outerHTML = '<i class="fa-solid fa-heart"></i>';
-            counter.innerHTML++;
-        } else {
-            //unliking
-            element.outerHTML = '<i class="fa-regular fa-heart"></i>';
-            counter.innerHTML--;
-        }
-        button.enabled = false;
-    } catch (error) {
-        console.log(error);
-    }
-    fetch('api/forum/likeComment', {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams(data)
-    })
-        .then((res) => res.json())
-        .then((data) => {
-            console.log(data);
-            if (data.type == 'like') {
-                element.outerHTML = '<i class="fa-solid fa-heart"></i>';
-            } else if (data.type == 'unlike') {
-                element.outerHTML = '<i class="fa-regular fa-heart"></i>';
-            }
-            counter.innerHTML = data.likes;
-            button.enabled = true;
-        })
-        .catch((err) => {
-            console.log(err);
-            button.enabled = true;
-        });
+	let element = event.target;
+	if (element.nodeName != 'I') element = element.querySelector('i');
+	const root = element.closest('.comment');
+	const button = root.querySelector('#likeBtn');
+	const commentID = element.closest('.comment').id;
+	const counter = root.querySelector('#likeCounter');
+	const data = new FormData();
+	data.append('commentID', commentID);
+	try {
+		if (element.outerHTML == '<i class="fa-regular fa-heart"></i>') {
+			//liking
+			element.outerHTML = '<i class="fa-solid fa-heart"></i>';
+			counter.innerHTML++;
+		} else {
+			//unliking
+			element.outerHTML = '<i class="fa-regular fa-heart"></i>';
+			counter.innerHTML--;
+		}
+		button.enabled = false;
+	} catch (error) {
+		console.log(error);
+	}
+	fetch('api/forum/likeComment', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.type == 'like') {
+				element.outerHTML = '<i class="fa-solid fa-heart"></i>';
+			} else if (data.type == 'unlike') {
+				element.outerHTML = '<i class="fa-regular fa-heart"></i>';
+			}
+			counter.innerHTML = data.likes;
+			button.enabled = true;
+		})
+		.catch((err) => {
+			console.log(err);
+			button.enabled = true;
+		});
 }
 
 function loadComment(comment, currentUserID) {
@@ -359,7 +367,7 @@ function loadComment(comment, currentUserID) {
 				<div class="inlineForumUser">
 				<img id="postPfp" class="forumPfp" src="../images/default-pfp.jpeg"></img>
 				<a class="forumUser" href="/profile?uid=${authorID}">${SafeHTML(author)}</a>
-				<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${date.toDateString()}</p>
+				<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
 				</div>
 				
 				<p style="white-space:pre;">${SafeHTML(content)}</p>

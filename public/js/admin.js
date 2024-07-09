@@ -1,3 +1,7 @@
+const SafeHTML = (html) => {
+	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+};
+
 function checkAdmin() {
 	fetch('api/admin/isAdmin', {
 		method: 'get',
@@ -72,14 +76,14 @@ const createMemberElement = (user) => {
 		<div class="tableRow">
 		<div class="tableRowInfo">
 		<button id="dropInformation" class="tableDropBtn"> <i class="fa-solid fa-chevron-right"></i></button>
-		<p id="firstNameAdmin">${firstName}</p>
-		<p id="lastNameAdmin">${lastName}</p>
-		<p id="emailAdmin">${email}</p>
-		<p id="phoneNumberAdmin">${phoneNumber}</p>
-		<p id="stateAdmin">${state}</p>
-        <p id="cityAdmin">${city}</p>
-		<p id="addressAdmin">${address}</p>
-		<p id="zipAdmin">${zip}</p>
+		<p id="firstNameAdmin">${SafeHTML(firstName)}</p>
+		<p id="lastNameAdmin">${SafeHTML(lastName)}</p>
+		<p id="emailAdmin">${SafeHTML(email)}</p>
+		<p id="phoneNumberAdmin">${SafeHTML(phoneNumber)}</p>
+		<p id="stateAdmin">${SafeHTML(state)}</p>
+        <p id="cityAdmin">${SafeHTML(city)}</p>
+		<p id="addressAdmin">${SafeHTML(address)}</p>
+		<p id="zipAdmin">${SafeHTML(zip)}</p>
 		</div>
 		</div>
 		<div style="display:none;" id="dropdownBox">
