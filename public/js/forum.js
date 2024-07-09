@@ -370,7 +370,7 @@ function loadComment(comment, currentUserID) {
 				<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
 				</div>
 				
-				<p style="white-space:pre;">${SafeHTML(content)}</p>
+				<p style="white-space:pre; font-family: 'roboto'; font-size: 19px;">${SafeHTML(content)}</p>
 				<div class="forumBtns">
 					<p id="likeCounter">${likesCount}</p>
 					<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>

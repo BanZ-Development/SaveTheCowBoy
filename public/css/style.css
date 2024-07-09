@@ -795,18 +795,20 @@ button {
   .forumSection {
     display: flex;
     flex-direction: column;
-    width: 75%;
+    width: 55vw;
   }
 
   .forumPost {
     color: #fff;
     padding: 20px;
     border-radius: 10px;
+    font-size: 20px !important;
   }
 
   .forumPost > p {
     text-overflow: ellipsis;
     overflow-x: hidden;
+    line-height: 35px;
   }
 
   .forumTitle > h3 > a {
@@ -1060,7 +1062,7 @@ button {
  .forumDesc {
     display: flex;
     flex-direction: column;
-    width: 400px;
+    width: 17vw;
     margin-left: 20px;
     position: fixed;
     height: 85%;
@@ -1069,6 +1071,8 @@ button {
     border-radius: 10px;
     background-color: #202020;
     color: #fff;
+    overflow-y: scroll;
+    border: solid 1px #2b2b2b;
  }
 
  .faqBtn {
