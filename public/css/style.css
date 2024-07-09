@@ -1060,10 +1060,10 @@ button {
  .forumDesc {
     display: flex;
     flex-direction: column;
-    width: 316px;
+    width: 400px;
     margin-left: 20px;
     position: fixed;
-    height: 90%;
+    height: 85%;
     right: 200px;
     padding-inline: 20px;
     border-radius: 10px;
@@ -1073,7 +1073,7 @@ button {
 
  .faqBtn {
     font-family: 'Roboto';
-    color: #333;
+    color: #747474;
     text-align: left;
     font-size: 20px;
     border: none;
@@ -1084,10 +1084,13 @@ button {
     height: fit-content;
     height: 50px;
     border-radius: 10px;
+    transition: ease all 0.3s;
+    text-indent: 10px;
 }
 
 .faqBtn:hover {
     background-color: #252525;
+    color: #bdbdbd !important;
 }
 
 .faqBtn > p {
@@ -1102,6 +1105,7 @@ button {
     margin-left: auto;
     margin-right: 7.5px;
     line-height: 50px;
+    height: 100% !important;
 }
 
 .faqBtn > div {
@@ -1111,10 +1115,46 @@ button {
 
 .faqBtn > div > p {
     height: 100%;
+    margin-left: 10px;
+    text-indent: 0px;
 }
 
 .faqBtn > p > i {
     height: 20px;
+}
+
+.moderator {
+    display: flex;
+    flex-direction: row;
+    height: 64px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.moderator > img {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+    margin-right: 10px;
+    line-height: 64px;
+}
+
+.moderator > p {
+    font-size: 20px;
+    line-height: 10px;
+}
+
+#commentBtn {
+    margin-left: 0px;
+    height: 50px;
+    width: 140px;
+    font-family: 'Roboto';
+}
+
+.forumDesc > h3  {
+    margin-left: 20px;
 }
 
   @media only screen and (max-width: 1610px) {

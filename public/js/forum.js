@@ -521,3 +521,36 @@ document.querySelector('#removeImageBtn').addEventListener('click', function () 
 	document.querySelector('.imageUploadPreviewDiv').style.display = 'none';
 	document.querySelector('#removeImageBtn').style.display = 'none';
 });
+
+document.querySelectorAll('.faqBtn').forEach(button => {
+    button.addEventListener('click', openFaq);
+});
+
+function openFaq(event) {
+    let button = event.currentTarget;
+    let answer = button.querySelector('#faqAns');
+    let icon = button.querySelector('#faqIcon');
+    let answerParagraph = answer.querySelector('p');
+
+    if (window.getComputedStyle(answer).display === 'block') {
+        answer.style.display = 'none';
+		button.style.color = '#747474'
+        anime({
+            targets: icon,
+            rotateX: 0,
+            easing: 'linear',
+            duration: 300
+        });
+    } else {
+        answer.style.display = 'block';
+        answerParagraph.style.display = 'block'; // Ensure p is display block
+        button.style.height = 'fit-content'; // Set height to fit-content
+		button.style.color = '#bdbdbd'
+        anime({
+            targets: icon,
+            rotateX: 180,
+            easing: 'linear',
+            duration: 300
+        });
+    }
+}
