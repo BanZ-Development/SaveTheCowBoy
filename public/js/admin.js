@@ -2,6 +2,26 @@ const SafeHTML = (html) => {
 	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 };
 
+const LoadDailyActiveUsers = () => {
+	let ctx = document.getElementById('dailyActiveUsers').getContext('2d');
+
+	let myChart = new Chart(ctx, {
+		type: 'bar', // Specify the type of chart (e.g., 'bar', 'line', 'pie', etc.)
+		data: {
+			labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+			datasets: [
+				{
+					label: 'Daily Active Users (DAUs)',
+					data: [12, 19, 3, 5, 2, 3],
+					backgroundColor: 'lightblue',
+					borderColor: 'blue',
+					borderWidth: 1
+				}
+			]
+		}
+	});
+};
+
 function checkAdmin() {
 	fetch('api/admin/isAdmin', {
 		method: 'get',
@@ -151,8 +171,8 @@ async function applyFilterClick() {
 }
 
 async function openMembers() {
+	removeAllMembers();
 	enableView('members');
-	//removeAllMembers();
 	let members = await returnMembers();
 	members.forEach((member) => createMemberElement(member));
 	document.querySelector('#filterBtn').addEventListener('click', openFilterClick);
@@ -166,7 +186,7 @@ const updateURL = (view) => {
 
 function openAnalytics() {
 	enableView('analytics');
-	console.log('analytics');
+	LoadDailyActiveUsers();
 }
 
 async function openReports() {

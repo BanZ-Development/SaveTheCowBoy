@@ -16,6 +16,8 @@ const User = require('./model/User');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const subscription = require('./controllers/subscription');
+const Comment = require('./model/Comment');
+const Post = require('./model/Post');
 
 require('dotenv').config();
 const app = express();

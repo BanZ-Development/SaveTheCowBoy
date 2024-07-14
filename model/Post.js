@@ -33,6 +33,10 @@ const postSchema = new Schema({
 		required: false
 	},
 	comments: [Object],
+	commentsCount: {
+		type: Number,
+		default: 0
+	},
 	tags: [String]
 });
 

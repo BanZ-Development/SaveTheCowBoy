@@ -10,6 +10,12 @@ const DateText = (date) => {
 	return `${month} ${day}, ${year}`;
 };
 
+const ReturnPfp = (pfp) => {
+	let pfpText = '../images/default-pfp.jpeg';
+	if (pfp.name) pfpText = '/image/' + pfp.name;
+	return pfpText;
+};
+
 async function loadPosts() {
 	const id = returnID();
 	let loadedPosts = 0;
@@ -142,7 +148,8 @@ function returnPfp(uID, parent) {
 }
 
 function createPostElement(post, currentUserID, pfp) {
-	const { _id, title, message, username, postDate, uID, likes, comments } = post;
+	console.log(pfp);
+	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
 	div.innerHTML = `<div id="post">
@@ -160,9 +167,9 @@ function createPostElement(post, currentUserID, pfp) {
 		
 		<p style="white-space:pre;">${message}</p>
 		<div class="forumBtns">
-			<p id="likeCounter">${likes.length}</p>
+			<p id="likeCounter">${likesCount}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
-			<p id="commentCounter">${comments.length}</p>
+			<p id="commentCounter">${commentsCount}</p>
 			<button id="commentIcon" class="iconBtn"><i class="fa-regular fa-comment"></i></button>
 			<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 		</div>
@@ -182,7 +189,7 @@ function createPostElement(post, currentUserID, pfp) {
 }
 
 function loadSinglePost(post, currentUserID, pfp) {
-	const { _id, title, message, username, postDate, uID, likes, comments } = post;
+	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
 	let profilePic = '../images/default-pfp.jpeg';
@@ -204,9 +211,9 @@ function loadSinglePost(post, currentUserID, pfp) {
 		
 		<p style="white-space:pre;">${message}</p>
 		<div class="forumBtns">
-			<p id="likeCounter">${likes.length}</p>
+			<p id="likeCounter">${likesCount}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
-			<p id="commentCounter">${comments.length}</p>
+			<p id="commentCounter">${commentsCount}</p>
 			<button id="commentIcon" class="iconBtn"><i class="fa-regular fa-comment"></i></button>
 			<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 		</div>
@@ -215,7 +222,6 @@ function loadSinglePost(post, currentUserID, pfp) {
 			<h2 class="forumTitle">Comments</h2>
 			<textarea class="postText" id="comment" placeholder="Add a comment..." type="text"></textarea>
 			<button style="line-height: 0px;"id="commentBtn" class="btnLink">Comment</button>
-			<span class="line"></span>
 			<div id="commentsList" class="commentsList">
 			</div>
 		</div>
@@ -343,6 +349,8 @@ function likeComment() {
 		});
 }
 
+const returnReplyElement = (reply) => {};
+
 function loadComment(comment, currentUserID) {
 	const data = new FormData();
 	data.append('commentID', comment);
@@ -358,14 +366,18 @@ function loadComment(comment, currentUserID) {
 		.then((data) => {
 			console.log(data);
 			const com = data.comment;
-			const { _id, author, authorID, content, postDate, comments, likes, likesCount } = com;
+			const { _id, author, authorID, content, postDate, comments, likes, likesCount, commentsCount } = com;
+			console.log('Replies:', comments);
 			let date = new Date(postDate);
 			let div = document.createElement('div');
+			console.log(data.pfp);
+			let pfp = ReturnPfp(data.pfp);
 			div.innerHTML = `
 			<div>
+			<span class="line"></span>
 			<div style="padding: 10px; border-radius: 10px;" class="comment" id=${_id}>
 				<div class="inlineForumUser">
-				<img id="postPfp" class="forumPfp" src="../images/default-pfp.jpeg"></img>
+				<img id="postPfp" class="forumPfp" src="${pfp}"></img>
 				<a class="forumUser" href="/profile?uid=${authorID}">${SafeHTML(author)}</a>
 				<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
 				</div>
@@ -374,14 +386,13 @@ function loadComment(comment, currentUserID) {
 				<div class="forumBtns">
 					<p id="likeCounter">${likesCount}</p>
 					<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
-					<button id="replyBtn" class="iconBtn"><i class="fa-regular fa-comment"></i></button>
 					<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
+					<button id="replyBtn" class="iconBtn">Reply</button>
 				</div>
 				</div>
-				<span class="line"></span>
 			</div>`;
-			returnPfp(authorID, div);
 			div.querySelector('#likeBtn').addEventListener('click', likeComment);
+			div.querySelector('#replyBtn').addEventListener('click', replyClick);
 			let isLiked = likes.includes(currentUserID);
 			if (isLiked) {
 				div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
@@ -391,6 +402,133 @@ function loadComment(comment, currentUserID) {
 				const id = window.location.hash.substring(1);
 				if (id == 'commentSection') goToCommentSection();
 			}
+			if (comments.length > 0) {
+				let openReplyBtn = document.createElement('div');
+				let replyText = `Load ${commentsCount} replies`;
+				if (comments.length === 1) replyText = `Load ${commentsCount} reply`;
+				openReplyBtn.innerHTML = `<button style="text-indent: 0px; padding: 10px;"class="faqBtn" id="openReplyBtn">${replyText}</button>`;
+				openReplyBtn.querySelector('#openReplyBtn').addEventListener('click', openReplies);
+				div.querySelector('.comment').appendChild(openReplyBtn);
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+}
+
+function openReplies() {
+	let button = event.target;
+	button.onclick = null;
+	let prevText = button.innerHTML;
+	button.innerHTML = 'Loading...';
+	let commentID = button.closest('.comment').id;
+	let insert = button.closest('.comment');
+	let data = new FormData();
+	data.append('commentID', commentID);
+	fetch('api/forum/get-replies', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			if (data.status) {
+				button.closest('div').remove();
+				let replies = data.replies;
+				let currentUserID = data.uid;
+				console.log(replies);
+				replies.forEach((reply) => {
+					let contents = reply.reply;
+					let pfp = reply.pfp;
+					console.log('Pfp:', pfp);
+					let pfpText = ReturnPfp(pfp);
+					const { _id, author, authorID, content, postDate, comments, likes, likesCount, commentsCount } = contents;
+					console.log('Replies:', comments);
+					let date = new Date(postDate);
+					let div = document.createElement('div');
+					div.style.marginLeft = '5%';
+					div.innerHTML = `
+					<div>
+					<span class="line"></span>
+					<div style="padding: 10px; border-radius: 10px;" class="comment" id=${_id}>
+						<div class="inlineForumUser">
+						<img id="postPfp" class="forumPfp" src="${pfpText}"></img>
+						<a class="forumUser" href="/profile?uid=${authorID}">${SafeHTML(author)}</a>
+						<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
+						</div>
+						<p style="white-space:pre; font-family: 'roboto'; font-size: 19px;">${SafeHTML(content)}</p>
+						<div class="forumBtns">
+							<p id="likeCounter">${likesCount}</p>
+							<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
+							<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
+							<button id="replyBtn" class="iconBtn">Reply</button>
+						</div>
+						</div>
+					</div>`;
+					div.querySelector('#likeBtn').addEventListener('click', likeComment);
+					div.querySelector('#replyBtn').addEventListener('click', replyClick);
+					let isLiked = likes.includes(currentUserID);
+					if (isLiked) {
+						div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
+					}
+					if (comments.length > 0) {
+						let openReplyBtn = document.createElement('div');
+						let replyText = `Load ${commentsCount} replies`;
+						if (comments.length === 1) replyText = `Load ${commentsCount} reply`;
+						openReplyBtn.innerHTML = `<button style="text-indent: 0px; padding: 10px;"class="faqBtn" id="openReplyBtn">${replyText}</button>`;
+						openReplyBtn.querySelector('#openReplyBtn').addEventListener('click', openReplies);
+						div.querySelector('.comment').appendChild(openReplyBtn);
+					}
+					insert.insertAdjacentElement('afterend', div);
+				});
+			} else {
+				button.innerHTML = prevText;
+				button.onclick = openReplies;
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+			button.innerHTML = prevText;
+			button.onclick = openReplies;
+		});
+}
+
+function replyClick() {
+	let button = event.target;
+	let comment = button.closest('.comment');
+	let replies = comment.querySelectorAll('#replyDiv');
+	replies.forEach((reply) => reply.remove());
+	let commentID = comment.id;
+	let div = document.createElement('div');
+	div.id = 'replyDiv';
+	div.innerHTML = `<input id="replyInput" class="postText" type="text"> <button style="margin-left: auto;margin-right:5%;text-indent: 0px; padding: 10px;" class="faqBtn" placeholder="Add your reply..."id="replySubmitBtn">Reply</button>`;
+	div.querySelector('#replySubmitBtn').addEventListener('click', replySubmit);
+	comment.querySelector('.forumBtns').insertAdjacentElement('afterend', div);
+}
+
+function replySubmit() {
+	let button = event.target;
+	let parent = button.closest('div');
+	let content = parent.querySelector('#replyInput').value;
+	let commentID = button.closest('.comment').id;
+	let postID = document.querySelector('.forumPost').id;
+	const data = new FormData();
+	data.append('content', content);
+	data.append('commentID', commentID);
+	data.append('postID', postID);
+	fetch('api/forum/reply', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			location.reload();
 		})
 		.catch((err) => {
 			console.log(err);
@@ -522,35 +660,35 @@ document.querySelector('#removeImageBtn').addEventListener('click', function () 
 	document.querySelector('#removeImageBtn').style.display = 'none';
 });
 
-document.querySelectorAll('.faqBtn').forEach(button => {
-    button.addEventListener('click', openFaq);
+document.querySelectorAll('.faqBtn').forEach((button) => {
+	button.addEventListener('click', openFaq);
 });
 
 function openFaq(event) {
-    let button = event.currentTarget;
-    let answer = button.querySelector('#faqAns');
-    let icon = button.querySelector('#faqIcon');
-    let answerParagraph = answer.querySelector('p');
+	let button = event.currentTarget;
+	let answer = button.querySelector('#faqAns');
+	let icon = button.querySelector('#faqIcon');
+	let answerParagraph = answer.querySelector('p');
 
-    if (window.getComputedStyle(answer).display === 'block') {
-        answer.style.display = 'none';
-		button.style.color = '#747474'
-        anime({
-            targets: icon,
-            rotateX: 0,
-            easing: 'linear',
-            duration: 300
-        });
-    } else {
-        answer.style.display = 'block';
-        answerParagraph.style.display = 'block'; // Ensure p is display block
-        button.style.height = 'fit-content'; // Set height to fit-content
-		button.style.color = '#bdbdbd'
-        anime({
-            targets: icon,
-            rotateX: 180,
-            easing: 'linear',
-            duration: 300
-        });
-    }
+	if (window.getComputedStyle(answer).display === 'block') {
+		answer.style.display = 'none';
+		button.style.color = '#747474';
+		anime({
+			targets: icon,
+			rotateX: 0,
+			easing: 'linear',
+			duration: 300
+		});
+	} else {
+		answer.style.display = 'block';
+		answerParagraph.style.display = 'block'; // Ensure p is display block
+		button.style.height = 'fit-content'; // Set height to fit-content
+		button.style.color = '#bdbdbd';
+		anime({
+			targets: icon,
+			rotateX: 180,
+			easing: 'linear',
+			duration: 300
+		});
+	}
 }

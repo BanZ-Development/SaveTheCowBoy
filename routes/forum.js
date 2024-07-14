@@ -170,6 +170,90 @@ router.post('/likePost', async function (req, res) {
 	}
 });
 
+router.post('/reply', async (req, res) => {
+	try {
+		const { commentID, content, postID } = req.body;
+		let comment = await Comment.findById(commentID);
+		let user = req.user;
+		if (comment && user) {
+			try {
+				const newComment = new Comment({
+					content: content,
+					author: user.meta.username,
+					authorID: user.id,
+					postID: postID
+				});
+				let post = await Post.findById(postID);
+				post.commentsCount += 1;
+				await Comment.create(newComment);
+				comment.comments.push(newComment.id);
+				comment.commentsCount += 1;
+				await post.save();
+				await comment.save();
+				res.send({
+					status: true,
+					message: 'Reply created'
+				});
+			} catch (error) {
+				console.log(error);
+				res.send({
+					status: false,
+					error: error.message
+				});
+			}
+		} else {
+			res.send({
+				status: false,
+				message: 'No comment found with that ID'
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: false,
+			message: 'No comment found with that ID'
+		});
+	}
+});
+
+router.post('/get-replies', async (req, res) => {
+	try {
+		const { commentID } = req.body;
+		let comment = await Comment.findById(commentID);
+		let replyIDs = comment.comments;
+		let replies = [];
+		for (let i = 0; i < replyIDs.length; i++) {
+			let reply = await Comment.findById(replyIDs[i]);
+			let user = await User.findById(reply.authorID);
+			if (reply && user) {
+				let contents = {
+					reply: reply,
+					pfp: user.meta.pfp
+				};
+				replies.push(contents);
+			}
+		}
+		if (replies.length > 0) {
+			res.send({
+				status: true,
+				replies: replies,
+				uid: req.user.id
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'No replies found under that comment ID'
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: false,
+			message: 'No comment found with that ID'
+		});
+	}
+});
+
 router.post('/likeComment', async function (req, res) {
 	try {
 		const { commentID } = req.body;
@@ -229,10 +313,12 @@ router.post('/comment', async (req, res) => {
 				const newComment = new Comment({
 					content: content,
 					author: user.meta.username,
-					authorID: user.id
+					authorID: user.id,
+					postID: postID
 				});
 				await Comment.create(newComment);
 				post.comments.push(newComment.id);
+				post.commentsCount += 1;
 				await post.save();
 				res.send({
 					status: true,
