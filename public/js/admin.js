@@ -2,6 +2,19 @@ const SafeHTML = (html) => {
 	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 };
 
+const returnAnalytics = () => {
+	fetch('api/admin/get-analytics', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+		});
+};
+
 const LoadDailyActiveUsers = () => {
 	let ctx = document.getElementById('dailyActiveUsers').getContext('2d');
 
@@ -186,6 +199,7 @@ const updateURL = (view) => {
 
 function openAnalytics() {
 	enableView('analytics');
+	const analytics = returnAnalytics();
 	LoadDailyActiveUsers();
 }
 

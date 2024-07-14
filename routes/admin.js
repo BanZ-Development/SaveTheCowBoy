@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const multer = require('multer');
 const User = require('../model/User');
-const Post = require('../model/News');
+const Post = require('../model/Post');
 const hasher = require('../controllers/hasher');
 const validate = require('../controllers/validate');
 const passport = require('passport');
@@ -68,6 +68,23 @@ router.post('/get-members', async (req, res) => {
 	} catch (err) {
 		console.log(err);
 		res.send({ status: false, error: err.message });
+	}
+});
+
+router.post('/get-analytics', async (req, res) => {
+	try {
+		let users = await User.find();
+		let posts = await Post.find();
+		res.send({
+			status: true,
+			totalUsers: users.length,
+			totalPosts: posts.length
+		});
+	} catch (err) {
+		res.send({
+			status: false,
+			error: err.message
+		});
 	}
 });
 

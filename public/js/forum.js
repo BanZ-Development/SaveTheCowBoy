@@ -416,9 +416,21 @@ function loadComment(comment, currentUserID) {
 		});
 }
 
+function hideReplies() {
+	let button = event.target;
+	let parent = button.closest('.comment').parentElement;
+	let replies = parent.querySelectorAll('#reply');
+	replies.forEach((reply) => reply.remove());
+	let replyText = `Load ${replies.length} replies`;
+	if (replies.length === 1) replyText = `Load ${replies.length} reply`;
+	button.innerHTML = replyText;
+	button.removeEventListener('click', hideReplies);
+	button.addEventListener('click', openReplies);
+}
+
 function openReplies() {
 	let button = event.target;
-	button.onclick = null;
+	button.removeEventListener('click', openReplies);
 	let prevText = button.innerHTML;
 	button.innerHTML = 'Loading...';
 	let commentID = button.closest('.comment').id;
@@ -435,19 +447,21 @@ function openReplies() {
 		.then((res) => res.json())
 		.then((data) => {
 			if (data.status) {
-				button.closest('div').remove();
+				//button.closest('div').remove();
+				button.innerHTML = 'Hide Replies';
+				button.removeEventListener('click', openReplies);
+				button.addEventListener('click', hideReplies);
 				let replies = data.replies;
 				let currentUserID = data.uid;
 				console.log(replies);
 				replies.forEach((reply) => {
 					let contents = reply.reply;
 					let pfp = reply.pfp;
-					console.log('Pfp:', pfp);
 					let pfpText = ReturnPfp(pfp);
 					const { _id, author, authorID, content, postDate, comments, likes, likesCount, commentsCount } = contents;
-					console.log('Replies:', comments);
 					let date = new Date(postDate);
 					let div = document.createElement('div');
+					div.id = 'reply';
 					div.style.marginLeft = '5%';
 					div.innerHTML = `
 					<div>
@@ -495,17 +509,31 @@ function openReplies() {
 		});
 }
 
+function closeReplyClick() {
+	console.log('close');
+	let button = event.target;
+	let comment = button.closest('.comment');
+	let replies = comment.querySelectorAll('#replyDiv');
+	replies.forEach((reply) => reply.remove());
+	button.innerHTML = 'Reply';
+	button.removeEventListener('click', closeReplyClick);
+	button.addEventListener('click', replyClick);
+}
+
 function replyClick() {
 	let button = event.target;
+	button.innerHTML = 'Close';
 	let comment = button.closest('.comment');
 	let replies = comment.querySelectorAll('#replyDiv');
 	replies.forEach((reply) => reply.remove());
 	let commentID = comment.id;
 	let div = document.createElement('div');
 	div.id = 'replyDiv';
-	div.innerHTML = `<input id="replyInput" class="postText" type="text"> <button style="margin-left: auto;margin-right:5%;text-indent: 0px; padding: 10px;" class="faqBtn" placeholder="Add your reply..."id="replySubmitBtn">Reply</button>`;
+	div.innerHTML = `<input id="replyInput" placeholder="Add your reply..."class="postText" type="text"><button style="margin-left: auto;margin-right:5%;text-indent: 0px; padding: 10px;" class="faqBtn" id="replySubmitBtn">Reply</button>`;
 	div.querySelector('#replySubmitBtn').addEventListener('click', replySubmit);
 	comment.querySelector('.forumBtns').insertAdjacentElement('afterend', div);
+	button.removeEventListener('click', replyClick);
+	button.addEventListener('click', closeReplyClick);
 }
 
 function replySubmit() {
