@@ -35,6 +35,64 @@ const LoadDailyActiveUsers = () => {
 	});
 };
 
+const LoadTotalUsers = () => {
+	let ctx = document.getElementById('totalUsers').getContext('2d');
+	let myChart = new Chart(ctx, {
+		type: 'line', // Specify the type of chart (e.g., 'bar', 'line', 'pie', etc.)
+		data: {
+			labels: 0,
+			datasets: [{
+			  label: 'My First Dataset',
+			  data: [65, 59, 80, 81, 56, 55, 40],
+			  fill: false,
+			  borderColor: 'rgb(247, 82, 82)',
+			  tension: 0.1
+			}]
+		  },
+		options: {
+			legend: {
+			display: false
+			},
+			tooltips: {
+			enabled: false
+			},
+			x: {
+				grid: {
+				  display: false
+				}
+			  },
+			  y: {
+				grid: {
+				  display: false
+				}
+			  }
+		},
+	});
+};
+
+const LoadDatabasePercent = () => {
+	let ctx = document.getElementById('databasePercent').getContext('2d');
+
+	let myChart = new Chart(ctx, {
+		type: 'doughnut',
+		data: {
+			labels: [
+			  'Used',
+			  'Not Used'
+			],
+			datasets: [{
+			  label: 'My First Dataset',
+			  data: [65, 35],
+			  backgroundColor: [
+				'rgb(39, 130, 242)',
+				'rgb(255, 255, 255)',
+			  ],
+			  hoverOffset: 4
+			}]
+		  }
+		});
+	}
+
 function checkAdmin() {
 	fetch('api/admin/isAdmin', {
 		method: 'get',
@@ -201,6 +259,8 @@ function openAnalytics() {
 	enableView('analytics');
 	const analytics = returnAnalytics();
 	LoadDailyActiveUsers();
+	LoadTotalUsers();
+	LoadDatabasePercent();
 }
 
 async function openReports() {

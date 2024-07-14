@@ -1166,6 +1166,15 @@ button {
     flex-direction: row;
 }
 
+.graphSec {
+    margin-inline: 10px;
+    margin-block: 30px;
+    width: 47%;
+    padding: 10px;
+    border: solid 1px #333;
+    border-radius: 20px;
+}
+
   @media only screen and (max-width: 1610px) {
 
     .settingSidebarBtn {
