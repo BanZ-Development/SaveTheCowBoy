@@ -37,36 +37,48 @@ const LoadDailyActiveUsers = () => {
 
 const LoadTotalUsers = () => {
 	let ctx = document.getElementById('totalUsers').getContext('2d');
-	let myChart = new Chart(ctx, {
-		type: 'line', // Specify the type of chart (e.g., 'bar', 'line', 'pie', etc.)
+	var myChart = new Chart(ctx, {
+		type: 'line',
 		data: {
-			labels: 0,
+			labels: [0, 1, 2, 3, 4, 5, 6],
 			datasets: [{
-			  label: 'My First Dataset',
-			  data: [65, 59, 80, 81, 56, 55, 40],
-			  fill: false,
-			  borderColor: 'rgb(247, 82, 82)',
-			  tension: 0.1
+				label: 'My First Dataset',
+				data: [65, 59, 80, 81, 56, 55, 40],
+				fill: false,
+				borderColor: 'rgb(247, 82, 82)',
+				tension: 0.1
 			}]
-		  },
-		options: {
-			legend: {
-			display: false
-			},
-			tooltips: {
-			enabled: false
-			},
-			x: {
-				grid: {
-				  display: false
-				}
-			  },
-			  y: {
-				grid: {
-				  display: false
-				}
-			  }
 		},
+		options: {
+			scales: {
+				x: {
+					grid: {
+						display: false,
+						drawOnChartArea: false
+					},
+					ticks: {
+						display: false
+					}
+				},
+				y: {
+					grid: {
+						display: false,
+						drawOnChartArea: false
+					},
+					ticks: {
+						display: false
+					}
+				}
+			},
+			plugins: {
+				legend: {
+					display: false
+				},
+				tooltip: {
+					enabled: false
+				}
+			}
+		}
 	});
 };
 
