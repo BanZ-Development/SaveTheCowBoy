@@ -21,68 +21,83 @@ const LoadDailyActiveUsers = () => {
 	let myChart = new Chart(ctx, {
 		type: 'bar', // Specify the type of chart (e.g., 'bar', 'line', 'pie', etc.)
 		data: {
-			labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-			datasets: [
-				{
-					label: 'Daily Active Users (DAUs)',
-					data: [12, 19, 3, 5, 2, 3],
-					backgroundColor: 'lightblue',
-					borderColor: 'blue',
-					borderWidth: 1
-				}
-			]
-		}
-	});
-};
-
-const LoadTotalUsers = () => {
-	let ctx = document.getElementById('totalUsers').getContext('2d');
-	var myChart = new Chart(ctx, {
-		type: 'line',
-		data: {
-			labels: [0, 1, 2, 3, 4, 5, 6],
+			labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
 			datasets: [{
-				label: 'My First Dataset',
-				data: [65, 59, 80, 81, 56, 55, 40],
-				fill: false,
-				borderColor: 'rgb(247, 82, 82)',
-				tension: 0.1
+				label: 'Sales',
+				data: [20, 30, 10, 20, 30, 10, 40],
+				fill: true,
+				borderRadius: 20,
+				borderSkipped: false,
+				borderColor: '#5eb8ff',
+				backgroundColor: '#5eb8ff',
+				datalabels: {
+					display: false
+				}
 			}]
 		},
 		options: {
+			barThickness: 30,
+			plugins: {
+				legend: {
+					display: false
+				}
+			},
 			scales: {
 				x: {
 					grid: {
-						display: false,
-						drawOnChartArea: false
-					},
-					ticks: {
 						display: false
 					}
 				},
 				y: {
-					grid: {
-						display: false,
-						drawOnChartArea: false
-					},
-					ticks: {
-						display: false
-					}
-				}
-			},
-			plugins: {
-				legend: {
-					display: false
-				},
-				tooltip: {
-					enabled: false
+					beginAtZero: true // Added for clarity and proper scaling
 				}
 			}
 		}
 	});
 };
 
-const LoadDatabasePercent = () => {
+const LoadTotalUsers = () => {
+    let ctx = document.getElementById('totalUsers').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
+            datasets: [{
+                label: 'My First Dataset',
+                data: [80, 70, 90, 50, 60], // Data points
+                borderColor: 'rgb(247, 82, 82)',
+                backgroundColor: 'rgba(247, 82, 82, 0.1)', // Optional: Adding a background color for better visibility
+                fill: false, // Ensures no area fill below the line
+				tension: 0.5
+            }]
+        },
+        options: {
+			scales: {
+				y: {
+					display: false, // Hide Y axis labels
+					stacked: false
+				},
+				x: {
+					beginAtZero: true,
+					display: false // Hide X axis labels
+				}
+			},
+            plugins: {
+                legend: {
+                    display: false
+                },
+            },
+            elements: {
+                point: {
+                    radius: 3
+                }
+            },
+        }
+    });
+    myChart.update();
+};
+
+ const LoadDatabasePercent = () => {
 	let ctx = document.getElementById('databasePercent').getContext('2d');
 
 	let myChart = new Chart(ctx, {
@@ -103,6 +118,7 @@ const LoadDatabasePercent = () => {
 			}]
 		  }
 		});
+		myChart.update();
 	}
 
 function checkAdmin() {
@@ -243,10 +259,6 @@ const returnMembers = async () => {
 	});
 };
 
-function openFilterClick() {
-	document.querySelector('#filterPopup').style.display = 'block';
-}
-
 async function applyFilterClick() {
 	let members = await returnMembers();
 	removeAllMembers();
@@ -258,7 +270,6 @@ async function openMembers() {
 	enableView('members');
 	let members = await returnMembers();
 	members.forEach((member) => createMemberElement(member));
-	document.querySelector('#filterBtn').addEventListener('click', openFilterClick);
 	document.querySelector('#applyFilterBtn').addEventListener('click', applyFilterClick);
 }
 
@@ -284,4 +295,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#membersBtn').addEventListener('click', openMembers);
 	document.querySelector('#analyticsBtn').addEventListener('click', openAnalytics);
 	document.querySelector('#reportsBtn').addEventListener('click', openReports);
+});
+
+document.querySelector('#dropInformation').addEventListener('click', () => {
+	console.log('clicked');
+	let button = event.target;
+	let parent = button.closest('.tableRowInfo').parentElement;
+	parent.style.height = '120px';
 });

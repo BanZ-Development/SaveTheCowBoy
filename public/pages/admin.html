@@ -14,7 +14,7 @@
     <script src="../js/anime.min.js"></script>
     <script type="module" src="../js/admin.js"></script>
     <script type="module" src="../js/navbar.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="settings">
@@ -27,29 +27,46 @@
             <div id="members" class="settingSection">
                 <div class="settingColumn">
                     <h1>Members</h1>
-                    <div id="filterPopup" style="background-color: rgb(27, 27, 27); border: white 2px; border-radius: 5px; width: 50%; height: 110%;">
-                        <h1 style="margin-bottom: 3px;"><i class="fa-solid fa-arrow-up-wide-short"></i> Filter</h1>
-                        <span class="line"></span>
-                        <h4 style="margin-bottom: 3px; margin-top: 5px;">Username</h4>
-                        <input type="text" id="usernameInput">
-                        <h4 style="margin-bottom: 3px;">First Name</h4>
-                        <input type="text" id="fnInput">
-                        <h4 style="margin-bottom: 3px;">Last Name</h4>
-                        <input type="text" id="lnInput">
-                        <h4 style="margin-bottom: 3px;">Phone Number</h4>
-                        <input type="text" id="pnInput">
-                        <h4 style="margin-bottom: 3px;">State</h4>
-                        <input type="text" id="stateInput">
-                        <h4 style="margin-bottom: 3px;">City</h4>
-                        <input type="text" id="cityInput">
-                        <h4 style="margin-bottom: 3px;">Address</h4>
-                        <input type="text" id="addressInput">
-                        <h4 style="margin-bottom: 3px;">Zip Code</h4>
-                        <input type="text" id="zipInput">
-                        <button id="applyFilterBtn">Apply Filter</button>
-                    </div>
-                    <div style="margin-block: 20px; display: flex; flex-direction: row;">
-                        <button id="filterBtn"class="filterBtn"><i class="fa-solid fa-arrow-up-wide-short"></i> Filter</button>
+                    <span class="line"></span>
+                    <div style="margin-block: 20px; display: flex; flex-direction: row; justify-content: end;">
+                        <div id="filterBtn" class="filterBtn"><p><i class="fa-solid fa-arrow-up-wide-short"></i> Filter</p>
+                        <div id="filterPopup" class="filterDrop">
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px; margin-top: 5px;">Username</h4>
+                                <input type="text" id="usernameInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">First Name</h4>
+                                <input type="text" id="fnInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">Last Name</h4>
+                                <input type="text" id="lnInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">Phone Number</h4>
+                                <input type="text" id="pnInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">State</h4>
+                                <input type="text" id="stateInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">City</h4>
+                                <input type="text" id="cityInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">Address</h4>
+                                <input type="text" id="addressInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">Zip Code</h4>
+                                <input type="text" id="zipInput">
+                            </div>
+                            <button style="height: 50px" class="btnLink" id="applyFilterBtn">Apply Filter</button>
+                        </div>
+                        </div>
+                        <button id="editBtn" class="filterBtn"><i class="fa-solid fa-user-pen"></i> Edit</button>
                     </div>
                     <span class="line"></span>
                     <div id="members" class="membersTable">
@@ -72,9 +89,10 @@
                 <div class="settingColumn" id="memberColumn">
                     <h1>Analytics</h1>
                     <span class="line"></span>
-                    <div class="settingColumn">
+                    <div style="width: 95%;" class="settingColumn">
                         <div class="inlineGraphs">
                             <div class="graphSec">
+                                <h4>Daily Active Users</h4>
                                 <canvas id="dailyActiveUsers" width="600" height="400"></canvas>
                             </div>
                             <div class="graphSec" style="width: 45%;">
@@ -85,7 +103,7 @@
                                                 <h4>Total Users</h4>
                                                 <h1>1000+</h1>
                                             </div>
-                                            <div>
+                                            <div style=" margin-left: 30px; display: flex; align-items: center;">
                                                 <canvas id="totalUsers" width="150" height="100"></canvas>
                                             </div>
                                         </div>
@@ -110,7 +128,7 @@
                         <div class="inlineGraphs">
                             <div class="graphSec">
                                 <h1 style="text-align: center;">Percent of Database Used</h1>
-                                <canvas id="databasePercent" width="600" height="600"></canvas>
+                                <canvas id="databasePercent" width="400" height="400"></canvas>
                             </div>
                         </div>
                     </div>

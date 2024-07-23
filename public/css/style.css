@@ -443,6 +443,10 @@ button {
     margin-inline: 10px;
     text-align: left;
     width: 120px;
+    height: 19px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   #firstNameAdmin {
@@ -475,9 +479,9 @@ button {
     padding: 10px;
     font-size: 17px;
     border-radius: 10px;
-    margin-left: auto;
     cursor: pointer;
     width: 120px;
+    margin-inline: 5px;
   }
 
   .filterBtn:hover {
@@ -713,10 +717,12 @@ button {
     flex-direction: column;
     background-color: #1e1e1e;
     width: 80%;
-    height: unset;
+    min-height: 100%;
+    max-height: fit-content;
     color: #fff;
     padding-inline: 30px;
     padding-left: 20%;
+    padding-bottom: 120px;
 }
 
 .line {
@@ -1171,8 +1177,69 @@ button {
     margin-block: 30px;
     width: 47%;
     padding: 10px;
-    border: solid 1px #333;
+    background-color: #1c1c1c;
     border-radius: 20px;
+}
+
+#filterBtn {
+    position: relative;
+    height: 30px;
+    line-height: 30px;
+    width: fit-content;
+    padding-inline: 30px;
+}
+
+#filterBtn > p {
+    margin: 0px;
+}
+
+.filterDrop {
+    top: 50px;
+    left: 0;
+    width: 340px;
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    background-color: #1a1a1a;
+    border: solid 1px #333;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+#filterBtn:hover > .filterDrop {
+    display: flex;
+}
+
+.filterDropSearch {
+    display: flex;
+    flex-direction: row;
+    padding-block: 15px;
+    border-bottom: 1px solid #333;
+    align-items: center;
+}
+
+.filterDropSearch > h4 {
+    margin-right: 5px;
+    margin-block: 0px !important;
+}
+
+.filterDropSearch > input {
+    height: 25px;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    border: solid 1px #333;
+    color: #fff;
+    text-indent: 10px;
+    font-size: 15px;
+    font-family: 'Roboto';
+    outline: none;
+    margin-left: auto;
+    transition: ease all 0.3s;
+}
+
+.filterDropSearch > input:focus {
+    border: solid 1px #2374d1;
+    box-shadow: #2374d162 0px 8px 24px;
 }
 
   @media only screen and (max-width: 1610px) {
