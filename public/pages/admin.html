@@ -63,7 +63,7 @@
                                 <h4 style="margin-bottom: 3px;">Zip Code</h4>
                                 <input type="text" id="zipInput">
                             </div>
-                            <button style="height: 50px" class="btnLink" id="applyFilterBtn">Apply Filter</button>
+                            <button style="height: 50px; font-family: 'Roboto';" class="btnLink" id="applyFilterBtn">Apply Filter</button>
                         </div>
                         </div>
                         <button id="editBtn" class="filterBtn"><i class="fa-solid fa-user-pen"></i> Edit</button>
@@ -98,37 +98,88 @@
                             <div class="graphSec" style="width: 45%;">
                                 <div class="inlineGraphs">
                                     <div style="margin-inline: 10px; width: 50%;">
-                                        <div class="inlineGraphs">
-                                            <div>
+                                        <div style="height: 80%;" class="inlineGraphs">
+                                            <div style="height: 70%;">
                                                 <h4>Total Users</h4>
                                                 <h1>1000+</h1>
                                             </div>
-                                            <div style=" margin-left: 30px; display: flex; align-items: center;">
-                                                <canvas id="totalUsers" width="150" height="100"></canvas>
+                                            <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
+                                                <div>
+                                                    <canvas id="totalUsers" width="50%" height="70"></canvas>
+                                                </div>
                                             </div>
                                         </div>
+                                        <p><b style="color: #f75252;">12%</b> vs preview . 28 days</p>
                                     </div>
                                     <div style="margin-inline: 10px; width: 50%;">
-                                        <h4>Total Posts</h4>
-                                        <h1>1000+</h1>
+                                        <div style="height: 80%;" class="inlineGraphs">
+                                            <div style="height: 70%;">
+                                                <h4>Total Posts</h4>
+                                                <h1>1000+</h1>
+                                            </div>
+                                            <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
+                                                <div>
+                                                    <canvas id="totalPosts" width="50%" height="70"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p><b style="color: #3dd598;">12%</b> vs preview . 28 days</p>
                                     </div>
                                 </div>
                                 <div class="inlineGraphs">
                                     <div style="margin-inline: 10px; width: 50%;">
-                                        <h4>New Members</h4>
-                                        <h1>1000+</h1>
+                                        <div style="height: 80%;" class="inlineGraphs">
+                                            <div style="height: 70%;">
+                                                <h4>New Members</h4>
+                                                <h1>1000+</h1>
+                                            </div>
+                                            <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
+                                                <div>
+                                                    <canvas id="newMembers" width="50%" height="70"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p><b style="color: #f75252;">12%</b> vs preview . 28 days</p>
                                     </div>
                                     <div style="margin-inline: 10px; width: 50%;">
-                                        <h4>Page Visits</h4>
-                                        <h1>1000+</h1>
+                                        <div style="height: 80%;" class="inlineGraphs">
+                                            <div style="height: 70%;">
+                                                <h4>Page Visits</h4>
+                                                <h1>1000+</h1>
+                                            </div>
+                                            <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
+                                                <div>
+                                                    <canvas id="pageVisits" width="50%" height="70"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p><b style="color: #3dd598;">12%</b> vs preview . 28 days</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="inlineGraphs">
                             <div class="graphSec">
-                                <h1 style="text-align: center;">Percent of Database Used</h1>
-                                <canvas id="databasePercent" width="400" height="400"></canvas>
+                                <h4>Percent of Database Used</h4>
+                                <div style="display: flex; flex-direction: row;">
+                                    <div style=" margin-left: 15px; width: 45%;">
+                                        <div style="display: flex; flex-direction: row;">
+                                            <span style="height: 15px; width: 15px; background-color: #2782f2; display: inline-block; border-radius: 50%; margin-block: auto; margin-right: 10px;"></span>
+                                            <p style="font-size: 20px;">Used (65%)</p>
+                                        </div>
+                                        <div style="display: flex; flex-direction: row;">
+                                            <span style="height: 15px; width: 15px; background-color: #ffffff; display: inline-block; border-radius: 50%; margin-block: auto; margin-right: 10px;"></span>
+                                            <p style="font-size: 20px;">Not Used (35%)</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <canvas id="databasePercent" width="300" height="300"></canvas>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="graphSec">
+                                <h4 style="text-align: center;">Percent of Database Used</h4>
                             </div>
                         </div>
                     </div>

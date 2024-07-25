@@ -1070,8 +1070,9 @@ button {
     flex-direction: column;
     width: 17vw;
     margin-left: 20px;
-    position: fixed;
-    height: 85%;
+    top: 120px;
+    position: sticky;
+    height: 100%;
     right: 200px;
     padding-inline: 20px;
     border-radius: 10px;
@@ -1170,11 +1171,17 @@ button {
 .inlineGraphs {
     display: flex;
     flex-direction: row;
+    height: 50%;
+}
+
+.inlineGraphs > div > h1 {
+    font-size: 2.4vw;
 }
 
 .graphSec {
     margin-inline: 10px;
     margin-block: 30px;
+    padding: 50px;
     width: 47%;
     padding: 10px;
     background-color: #1c1c1c;

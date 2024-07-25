@@ -17,7 +17,7 @@ const returnAnalytics = () => {
 
 const LoadDailyActiveUsers = () => {
 	let ctx = document.getElementById('dailyActiveUsers').getContext('2d');
-
+	Chart.defaults.font.family = 'Montserrat'
 	let myChart = new Chart(ctx, {
 		type: 'bar', // Specify the type of chart (e.g., 'bar', 'line', 'pie', etc.)
 		data: {
@@ -28,8 +28,8 @@ const LoadDailyActiveUsers = () => {
 				fill: true,
 				borderRadius: 20,
 				borderSkipped: false,
-				borderColor: '#5eb8ff',
-				backgroundColor: '#5eb8ff',
+				borderColor: '#2782f2',
+				backgroundColor: '#2782f2',
 				datalabels: {
 					display: false
 				}
@@ -58,6 +58,8 @@ const LoadDailyActiveUsers = () => {
 
 const LoadTotalUsers = () => {
     let ctx = document.getElementById('totalUsers').getContext('2d');
+	ctx.canvas.parentNode.style.height = '70%';
+	ctx.canvas.parentNode.style.width = '100%';
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -89,7 +91,93 @@ const LoadTotalUsers = () => {
             },
             elements: {
                 point: {
-                    radius: 3
+                    radius: 1
+                }
+            },
+        }
+    });
+    myChart.update();
+};
+
+const LoadNewMembers = () => {
+    let ctx = document.getElementById('newMembers').getContext('2d');
+	ctx.canvas.parentNode.style.height = '70%';
+	ctx.canvas.parentNode.style.width = '100%';
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
+            datasets: [{
+                label: 'My First Dataset',
+                data: [80, 70, 90, 50, 60], // Data points
+                borderColor: 'rgb(247, 82, 82)',
+                backgroundColor: 'rgba(247, 82, 82, 0.1)', // Optional: Adding a background color for better visibility
+                fill: false, // Ensures no area fill below the line
+				tension: 0.5
+            }]
+        },
+        options: {
+			scales: {
+				y: {
+					display: false, // Hide Y axis labels
+					stacked: false
+				},
+				x: {
+					beginAtZero: true,
+					display: false // Hide X axis labels
+				}
+			},
+            plugins: {
+                legend: {
+                    display: false
+                },
+            },
+            elements: {
+                point: {
+                    radius: 1
+                }
+            },
+        }
+    });
+    myChart.update();
+};
+
+const LoadTotalPosts = () => {
+    let ctx = document.getElementById('totalPosts').getContext('2d');
+	ctx.canvas.parentNode.style.height = '70%';
+	ctx.canvas.parentNode.style.width = '100%';
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
+            datasets: [{
+                label: 'My First Dataset',
+                data: [60, 65, 80, 70, 90], // Data points
+                borderColor: 'rgba(61, 213, 152, 0.945)',
+                backgroundColor: 'rgba(61, 213, 152, 0.945)', // Optional: Adding a background color for better visibility
+                fill: false, // Ensures no area fill below the line
+				tension: 0.5
+            }]
+        },
+        options: {
+			scales: {
+				y: {
+					display: false, // Hide Y axis labels
+					stacked: false
+				},
+				x: {
+					beginAtZero: true,
+					display: false // Hide X axis labels
+				}
+			},
+            plugins: {
+                legend: {
+                    display: false
+                },
+            },
+            elements: {
+                point: {
+                    radius: 1
                 }
             },
         }
@@ -99,7 +187,8 @@ const LoadTotalUsers = () => {
 
  const LoadDatabasePercent = () => {
 	let ctx = document.getElementById('databasePercent').getContext('2d');
-
+	ctx.canvas.parentNode.style.height = '300px';
+	ctx.canvas.parentNode.style.width = '300px';
 	let myChart = new Chart(ctx, {
 		type: 'doughnut',
 		data: {
@@ -108,7 +197,7 @@ const LoadTotalUsers = () => {
 			  'Not Used'
 			],
 			datasets: [{
-			  label: 'My First Dataset',
+			  label: 'Database Used',
 			  data: [65, 35],
 			  backgroundColor: [
 				'rgb(39, 130, 242)',
@@ -116,10 +205,60 @@ const LoadTotalUsers = () => {
 			  ],
 			  hoverOffset: 4
 			}]
+		  },
+		  options: {
+			plugins: {
+                legend: {
+                    display: false
+                },
+            },
 		  }
 		});
 		myChart.update();
 	}
+
+	const LoadPageVisits = () => {
+		let ctx = document.getElementById('pageVisits').getContext('2d');
+		ctx.canvas.parentNode.style.height = '70%';
+		ctx.canvas.parentNode.style.width = '100%';
+		var myChart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
+				datasets: [{
+					label: 'My First Dataset',
+					data: [60, 65, 80, 70, 90], // Data points
+					borderColor: 'rgba(61, 213, 152, 0.945)',
+					backgroundColor: 'rgba(61, 213, 152, 0.945)', // Optional: Adding a background color for better visibility
+					fill: false, // Ensures no area fill below the line
+					tension: 0.5
+				}]
+			},
+			options: {
+				scales: {
+					y: {
+						display: false, // Hide Y axis labels
+						stacked: false
+					},
+					x: {
+						beginAtZero: true,
+						display: false // Hide X axis labels
+					}
+				},
+				plugins: {
+					legend: {
+						display: false
+					},
+				},
+				elements: {
+					point: {
+						radius: 1
+					}
+				},
+			}
+		});
+		myChart.update();
+	};
 
 function checkAdmin() {
 	fetch('api/admin/isAdmin', {
@@ -283,6 +422,9 @@ function openAnalytics() {
 	const analytics = returnAnalytics();
 	LoadDailyActiveUsers();
 	LoadTotalUsers();
+	LoadTotalPosts();
+	LoadNewMembers();
+	LoadPageVisits();
 	LoadDatabasePercent();
 }
 
