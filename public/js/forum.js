@@ -154,7 +154,7 @@ function createPostElement(post, currentUserID, pfp) {
 	let date = new Date(postDate);
 	div.innerHTML = `<div id="post">
 		<span class="line"></span>
-		<div class="forumPost" id=${_id}>
+		<div class="forumPost" href="/forum?id=${_id}" id=${_id}>
 		<div class="inlineForumUser">
 			<img class="forumPfp" src="/image/${pfp}"></img>
 			<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>

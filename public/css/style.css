@@ -668,6 +668,7 @@ button {
 }
 
 .settingSidebar {
+    max-width: 350px;
     padding-top: 30px;
     display: flex;
     flex-direction: column;
@@ -1072,7 +1073,7 @@ button {
     margin-left: 20px;
     top: 120px;
     position: sticky;
-    height: 100%;
+    height: calc(100vh - 180px);
     right: 200px;
     padding-inline: 20px;
     border-radius: 10px;

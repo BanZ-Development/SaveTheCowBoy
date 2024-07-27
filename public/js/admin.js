@@ -197,7 +197,7 @@ const LoadTotalPosts = () => {
 			  'Not Used'
 			],
 			datasets: [{
-			  label: 'Database Used',
+			  label: 'Database Storage',
 			  data: [65, 35],
 			  backgroundColor: [
 				'rgb(39, 130, 242)',
@@ -207,6 +207,7 @@ const LoadTotalPosts = () => {
 			}]
 		  },
 		  options: {
+			hover: {mode: null},
 			plugins: {
                 legend: {
                     display: false
