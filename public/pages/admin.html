@@ -94,6 +94,14 @@
                         <div class="inlineGraphs">
                             <div class="graphSec">
                                 <h4>Daily Active Users</h4>
+                                <label for="typeSelector">View the past </label>
+                                <input type="number" id="timeframeSelector" placeholder="Choose a timeframe...">
+                                <select id="typeSelector">
+                                    <option value="days">Days</option>
+                                    <option value="months">Months</option>
+                                    <option value="years">Years</option>
+                                </select>
+                                <button id="updateDauBtn">Go</button>
                                 <canvas id="dailyActiveUsers" width="600" height="400"></canvas>
                             </div>
                             <div class="graphSec" style="width: 45%; padding-inline: 25px;">
@@ -102,7 +110,7 @@
                                         <div style="height: 80%;" class="inlineGraphs">
                                             <div style="height: 70%;">
                                                 <h4>Total Users</h4>
-                                                <h1>1,000+</h1>
+                                                <h1 id="totalUsersNum"></h1>
                                             </div>
                                             <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
                                                 <div>
@@ -116,7 +124,7 @@
                                         <div style="height: 80%;" class="inlineGraphs">
                                             <div style="height: 70%;">
                                                 <h4>Total Posts</h4>
-                                                <h1>1,000+</h1>
+                                                <h1 id="totalPostsNum"></h1>
                                             </div>
                                             <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
                                                 <div>

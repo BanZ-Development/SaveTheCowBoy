@@ -4,6 +4,7 @@ const User = require('../model/User');
 const Post = require('../model/Post');
 const hasher = require('../controllers/hasher');
 const validate = require('../controllers/validate');
+const analytics = require('../controllers/analytics');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
@@ -73,12 +74,15 @@ router.post('/get-members', async (req, res) => {
 
 router.post('/get-analytics', async (req, res) => {
 	try {
+		analytics.setupAnalyticsInstance();
 		let users = await User.find();
 		let posts = await Post.find();
+		let analytic = await analytics.getAnalytics();
 		res.send({
 			status: true,
 			totalUsers: users.length,
-			totalPosts: posts.length
+			totalPosts: posts.length,
+			dailyActiveUsers: analytic.dailyActiveUsers
 		});
 	} catch (err) {
 		res.send({

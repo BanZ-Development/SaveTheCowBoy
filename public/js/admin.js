@@ -2,7 +2,11 @@ const SafeHTML = (html) => {
 	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 };
 
-const returnAnalytics = () => {
+const updateDAU = () => {
+	let chartStatus = Chart.getChart('dailyActiveUsers'); // <canvas> id
+	if (chartStatus != undefined) {
+		chartStatus.destroy();
+	}
 	fetch('api/admin/get-analytics', {
 		method: 'post',
 		headers: {
@@ -12,28 +16,173 @@ const returnAnalytics = () => {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
+			const { dailyActiveUsers } = data;
+			let timeframe = parseInt(document.querySelector('#timeframeSelector').value);
+			let type = document.querySelector('#typeSelector').value;
+			LoadDailyActiveUsers(dailyActiveUsers, timeframe, type);
 		});
 };
 
-const LoadDailyActiveUsers = () => {
-	let ctx = document.getElementById('dailyActiveUsers').getContext('2d');
-	Chart.defaults.font.family = 'Montserrat'
-	let myChart = new Chart(ctx, {
-		type: 'bar', // Specify the type of chart (e.g., 'bar', 'line', 'pie', etc.)
-		data: {
-			labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-			datasets: [{
-				label: 'Sales',
-				data: [20, 30, 10, 20, 30, 10, 40],
-				fill: true,
-				borderRadius: 20,
-				borderSkipped: false,
-				borderColor: '#2782f2',
-				backgroundColor: '#2782f2',
-				datalabels: {
-					display: false
+const LoadAnalytics = () => {
+	fetch('api/admin/get-analytics', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			const { totalUsers, totalPosts, dailyActiveUsers } = data;
+			LoadDailyActiveUsers(dailyActiveUsers, 14, 'days');
+			LoadTotalUsers(totalUsers);
+			LoadTotalPosts(totalPosts);
+			LoadNewMembers();
+			LoadPageVisits();
+			LoadDatabasePercent();
+		});
+};
+
+const returnDate = (dau, year, month, day) => {
+	try {
+		if (dau[`${year}`][`${month}`][`${day}`] == undefined) {
+			return 0;
+		} else {
+			return dau[`${year}`][`${month}`][`${day}`];
+		}
+	} catch (err) {
+		return 0;
+	}
+};
+
+function daysInMonth(month, year) {
+	return new Date(year, month, 0).getDate();
+}
+
+const returnDauData = (dau, time, type) => {
+	let labels = [];
+	let data = [];
+
+	while (data.length <= time) {
+		switch (type) {
+			case 'days': {
+				let date = new Date();
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				let day = date.getDate();
+				while (day > 0) {
+					labels.unshift(`${month}/${day}`);
+					data.unshift(returnDate(dau, year, month, day));
+					day--;
+					if (data.length >= time) return { labels, data };
 				}
-			}]
+				month--;
+				while (month > 0) {
+					day = daysInMonth(month, year);
+					while (day > 0) {
+						labels.unshift(`${month}/${day}`);
+						data.unshift(returnDate(dau, year, month, day));
+						day--;
+						if (data.length >= time) return { labels, data };
+					}
+					month--;
+				}
+				year--;
+				while (year > 0) {
+					month = 12;
+					while (month > 0) {
+						day = daysInMonth(month, year);
+						while (day > 0) {
+							labels.unshift(`${month}/${day}`);
+							data.unshift(returnDate(dau, year, month, day));
+							day--;
+							if (data.length >= time) return { labels, data };
+						}
+						month--;
+					}
+					year--;
+				}
+			}
+			case 'months': {
+				let date = new Date();
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				while (month > 0) {
+					let monthName = new Date(year, month, 0).toLocaleString('default', { month: 'long' });
+					let days = daysInMonth(month, year);
+					let sum = 0;
+					for (let i = 1; i <= days; i++) {
+						sum += returnDate(dau, year, month, i);
+					}
+					labels.unshift(monthName);
+					data.unshift(sum);
+					month--;
+					if (data.length >= time) return { labels, data };
+				}
+				year--;
+				while (year > 0) {
+					month = 12;
+					while (month > 0) {
+						let monthName = new Date(year, month, 0).toLocaleString('default', { month: 'long' });
+						let days = daysInMonth(month, year);
+						let sum = 0;
+						for (let i = 1; i <= days; i++) {
+							sum += returnDate(dau, year, month, i);
+						}
+						labels.unshift(monthName);
+						data.unshift(sum);
+						month--;
+						if (data.length >= time) return { labels, data };
+					}
+					year--;
+				}
+			}
+			case 'years': {
+				let date = new Date();
+				let year = date.getFullYear();
+				while (year > 0) {
+					let sum = 0;
+					let month = 12;
+					while (month > 0) {
+						let days = daysInMonth(month, year);
+						for (let i = 1; i <= days; i++) {
+							sum += returnDate(dau, year, month, i);
+						}
+						month--;
+					}
+					labels.unshift(year);
+					data.unshift(sum);
+					if (data.length >= time) return { labels, data };
+					year--;
+				}
+			}
+		}
+	}
+};
+
+const LoadDailyActiveUsers = (dailyActiveUsers, time, type) => {
+	let ctx = document.getElementById('dailyActiveUsers').getContext('2d');
+	const { labels, data } = returnDauData(dailyActiveUsers, time, type);
+	console.log(labels, data);
+	Chart.defaults.font.family = 'Montserrat';
+	let myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: labels,
+			datasets: [
+				{
+					label: 'DAUs',
+					data: data,
+					fill: false,
+					borderRadius: 20,
+					borderSkipped: false,
+					borderColor: '#2782f2',
+					backgroundColor: '#2782f2',
+					datalabels: {
+						display: false
+					}
+				}
+			]
 		},
 		options: {
 			barThickness: 30,
@@ -56,24 +205,27 @@ const LoadDailyActiveUsers = () => {
 	});
 };
 
-const LoadTotalUsers = () => {
-    let ctx = document.getElementById('totalUsers').getContext('2d');
+const LoadTotalUsers = (totalUsers) => {
+	document.querySelector('#totalUsersNum').innerHTML = totalUsers;
+	let ctx = document.getElementById('totalUsers').getContext('2d');
 	ctx.canvas.parentNode.style.height = '70%';
 	ctx.canvas.parentNode.style.width = '100%';
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
-            datasets: [{
-                label: 'My First Dataset',
-                data: [80, 70, 90, 50, 60], // Data points
-                borderColor: 'rgb(247, 82, 82)',
-                backgroundColor: 'rgba(247, 82, 82, 0.1)', // Optional: Adding a background color for better visibility
-                fill: false, // Ensures no area fill below the line
-				tension: 0.5
-            }]
-        },
-        options: {
+	var myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
+			datasets: [
+				{
+					label: 'My First Dataset',
+					data: [80, 70, 90, 50, 60], // Data points
+					borderColor: 'rgb(247, 82, 82)',
+					backgroundColor: 'rgba(247, 82, 82, 0.1)', // Optional: Adding a background color for better visibility
+					fill: false, // Ensures no area fill below the line
+					tension: 0.5
+				}
+			]
+		},
+		options: {
 			scales: {
 				y: {
 					display: false, // Hide Y axis labels
@@ -84,182 +236,185 @@ const LoadTotalUsers = () => {
 					display: false // Hide X axis labels
 				}
 			},
-            plugins: {
-                legend: {
-                    display: false
-                },
-            },
-            elements: {
-                point: {
-                    radius: 1
-                }
-            },
-        }
-    });
-    myChart.update();
+			plugins: {
+				legend: {
+					display: false
+				}
+			},
+			elements: {
+				point: {
+					radius: 1
+				}
+			}
+		}
+	});
+	myChart.update();
 };
 
 const LoadNewMembers = () => {
-    let ctx = document.getElementById('newMembers').getContext('2d');
+	let ctx = document.getElementById('newMembers').getContext('2d');
 	ctx.canvas.parentNode.style.height = '70%';
 	ctx.canvas.parentNode.style.width = '100%';
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
-            datasets: [{
-                label: 'My First Dataset',
-                data: [80, 70, 90, 50, 60], // Data points
-                borderColor: 'rgb(247, 82, 82)',
-                backgroundColor: 'rgba(247, 82, 82, 0.1)', // Optional: Adding a background color for better visibility
-                fill: false, // Ensures no area fill below the line
-				tension: 0.5
-            }]
-        },
-        options: {
-			scales: {
-				y: {
-					display: false, // Hide Y axis labels
-					stacked: false
-				},
-				x: {
-					beginAtZero: true,
-					display: false // Hide X axis labels
-				}
-			},
-            plugins: {
-                legend: {
-                    display: false
-                },
-            },
-            elements: {
-                point: {
-                    radius: 1
-                }
-            },
-        }
-    });
-    myChart.update();
-};
-
-const LoadTotalPosts = () => {
-    let ctx = document.getElementById('totalPosts').getContext('2d');
-	ctx.canvas.parentNode.style.height = '70%';
-	ctx.canvas.parentNode.style.width = '100%';
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
-            datasets: [{
-                label: 'My First Dataset',
-                data: [60, 65, 80, 70, 90], // Data points
-                borderColor: 'rgba(61, 213, 152, 0.945)',
-                backgroundColor: 'rgba(61, 213, 152, 0.945)', // Optional: Adding a background color for better visibility
-                fill: false, // Ensures no area fill below the line
-				tension: 0.5
-            }]
-        },
-        options: {
-			scales: {
-				y: {
-					display: false, // Hide Y axis labels
-					stacked: false
-				},
-				x: {
-					beginAtZero: true,
-					display: false // Hide X axis labels
-				}
-			},
-            plugins: {
-                legend: {
-                    display: false
-                },
-            },
-            elements: {
-                point: {
-                    radius: 1
-                }
-            },
-        }
-    });
-    myChart.update();
-};
-
- const LoadDatabasePercent = () => {
-	let ctx = document.getElementById('databasePercent').getContext('2d');
-	ctx.canvas.parentNode.style.height = '300px';
-	ctx.canvas.parentNode.style.width = '300px';
-	let myChart = new Chart(ctx, {
-		type: 'doughnut',
+	var myChart = new Chart(ctx, {
+		type: 'line',
 		data: {
-			labels: [
-			  'Used',
-			  'Not Used'
-			],
-			datasets: [{
-			  label: 'Database Storage',
-			  data: [65, 35],
-			  backgroundColor: [
-				'rgb(39, 130, 242)',
-				'rgb(255, 255, 255)',
-			  ],
-			  hoverOffset: 4
-			}]
-		  },
-		  options: {
-			hover: {mode: null},
+			labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
+			datasets: [
+				{
+					label: 'My First Dataset',
+					data: [80, 70, 90, 50, 60], // Data points
+					borderColor: 'rgb(247, 82, 82)',
+					backgroundColor: 'rgba(247, 82, 82, 0.1)', // Optional: Adding a background color for better visibility
+					fill: false, // Ensures no area fill below the line
+					tension: 0.5
+				}
+			]
+		},
+		options: {
+			scales: {
+				y: {
+					display: false, // Hide Y axis labels
+					stacked: false
+				},
+				x: {
+					beginAtZero: true,
+					display: false // Hide X axis labels
+				}
+			},
 			plugins: {
-                legend: {
-                    display: false
-                },
-            },
-		  }
-		});
-		myChart.update();
-	}
+				legend: {
+					display: false
+				}
+			},
+			elements: {
+				point: {
+					radius: 1
+				}
+			}
+		}
+	});
+	myChart.update();
+};
 
-	const LoadPageVisits = () => {
-		let ctx = document.getElementById('pageVisits').getContext('2d');
-		ctx.canvas.parentNode.style.height = '70%';
-		ctx.canvas.parentNode.style.width = '100%';
-		var myChart = new Chart(ctx, {
-			type: 'line',
-			data: {
-				labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
-				datasets: [{
+const LoadTotalPosts = (totalPosts) => {
+	document.querySelector('#totalPostsNum').innerHTML = totalPosts;
+	let ctx = document.getElementById('totalPosts').getContext('2d');
+	ctx.canvas.parentNode.style.height = '70%';
+	ctx.canvas.parentNode.style.width = '100%';
+	var myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
+			datasets: [
+				{
 					label: 'My First Dataset',
 					data: [60, 65, 80, 70, 90], // Data points
 					borderColor: 'rgba(61, 213, 152, 0.945)',
 					backgroundColor: 'rgba(61, 213, 152, 0.945)', // Optional: Adding a background color for better visibility
 					fill: false, // Ensures no area fill below the line
 					tension: 0.5
-				}]
+				}
+			]
+		},
+		options: {
+			scales: {
+				y: {
+					display: false, // Hide Y axis labels
+					stacked: false
+				},
+				x: {
+					beginAtZero: true,
+					display: false // Hide X axis labels
+				}
 			},
-			options: {
-				scales: {
-					y: {
-						display: false, // Hide Y axis labels
-						stacked: false
-					},
-					x: {
-						beginAtZero: true,
-						display: false // Hide X axis labels
-					}
-				},
-				plugins: {
-					legend: {
-						display: false
-					},
-				},
-				elements: {
-					point: {
-						radius: 1
-					}
-				},
+			plugins: {
+				legend: {
+					display: false
+				}
+			},
+			elements: {
+				point: {
+					radius: 1
+				}
 			}
-		});
-		myChart.update();
-	};
+		}
+	});
+	myChart.update();
+};
+
+const LoadDatabasePercent = () => {
+	let ctx = document.getElementById('databasePercent').getContext('2d');
+	ctx.canvas.parentNode.style.height = '300px';
+	ctx.canvas.parentNode.style.width = '300px';
+	let myChart = new Chart(ctx, {
+		type: 'doughnut',
+		data: {
+			labels: ['Used', 'Not Used'],
+			datasets: [
+				{
+					label: 'Database Storage',
+					data: [65, 35],
+					backgroundColor: ['rgb(39, 130, 242)', 'rgb(255, 255, 255)'],
+					hoverOffset: 4
+				}
+			]
+		},
+		options: {
+			hover: { mode: null },
+			plugins: {
+				legend: {
+					display: false
+				}
+			}
+		}
+	});
+	myChart.update();
+};
+
+const LoadPageVisits = () => {
+	let ctx = document.getElementById('pageVisits').getContext('2d');
+	ctx.canvas.parentNode.style.height = '70%';
+	ctx.canvas.parentNode.style.width = '100%';
+	var myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
+			datasets: [
+				{
+					label: 'My First Dataset',
+					data: [60, 65, 80, 70, 90], // Data points
+					borderColor: 'rgba(61, 213, 152, 0.945)',
+					backgroundColor: 'rgba(61, 213, 152, 0.945)', // Optional: Adding a background color for better visibility
+					fill: false, // Ensures no area fill below the line
+					tension: 0.5
+				}
+			]
+		},
+		options: {
+			scales: {
+				y: {
+					display: false, // Hide Y axis labels
+					stacked: false
+				},
+				x: {
+					beginAtZero: true,
+					display: false // Hide X axis labels
+				}
+			},
+			plugins: {
+				legend: {
+					display: false
+				}
+			},
+			elements: {
+				point: {
+					radius: 1
+				}
+			}
+		}
+	});
+	myChart.update();
+};
 
 function checkAdmin() {
 	fetch('api/admin/isAdmin', {
@@ -420,13 +575,7 @@ const updateURL = (view) => {
 
 function openAnalytics() {
 	enableView('analytics');
-	const analytics = returnAnalytics();
-	LoadDailyActiveUsers();
-	LoadTotalUsers();
-	LoadTotalPosts();
-	LoadNewMembers();
-	LoadPageVisits();
-	LoadDatabasePercent();
+	LoadAnalytics();
 }
 
 async function openReports() {
@@ -438,6 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#membersBtn').addEventListener('click', openMembers);
 	document.querySelector('#analyticsBtn').addEventListener('click', openAnalytics);
 	document.querySelector('#reportsBtn').addEventListener('click', openReports);
+	document.querySelector('#updateDauBtn').addEventListener('click', updateDAU);
 });
 
 document.querySelector('#dropInformation').addEventListener('click', () => {
