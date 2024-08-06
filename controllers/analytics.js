@@ -102,7 +102,7 @@ function addDAU(obj, arr, val) {
 		addDAU(tmpObj, arr, val);
 	} else {
 		if (typeof obj[arr[0]] != 'number') obj[arr[0]] = 0;
-		else obj[arr[0]] += val;
+		obj[arr[0]] += val;
 	}
 	return obj;
 }
