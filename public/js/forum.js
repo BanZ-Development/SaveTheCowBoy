@@ -700,6 +700,7 @@ function openFaq(event) {
 
 	if (window.getComputedStyle(answer).display === 'block') {
 		answer.style.display = 'none';
+		button.style.height = '50px';
 		button.style.color = '#747474';
 		anime({
 			targets: icon,

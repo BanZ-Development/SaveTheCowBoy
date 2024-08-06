@@ -166,7 +166,7 @@ const LoadDailyActiveUsers = (dailyActiveUsers, time, type) => {
 	console.log(labels, data);
 	Chart.defaults.font.family = 'Montserrat';
 	let myChart = new Chart(ctx, {
-		type: 'line',
+		type: 'bar',
 		data: {
 			labels: labels,
 			datasets: [
