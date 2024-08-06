@@ -1,4 +1,5 @@
 const Analytic = require('../model/Analytic');
+const User = require('../model/User');
 
 exports.setupAnalyticsInstance = async () => {
 	let analytics = Analytic.find();
@@ -15,7 +16,8 @@ exports.getAnalytics = async () => {
 
 const createInstance = async () => {
 	let options = {
-		dailyActiveUsers: {}
+		dailyActiveUsers: {},
+		usersCalendar: {}
 	};
 	let analytics = await Analytic.create(options);
 };
@@ -27,7 +29,59 @@ exports.addDailyActiveUser = async (date) => {
 	checkForDateAndCreate(year, month + 1, day);
 };
 
-function addProps(obj, arr, val) {
+exports.addTodayToUsersCalendar = async (date) => {
+	let year = date.getFullYear();
+	let month = date.getMonth();
+	let day = date.getDate();
+	initUsersCalendar(year, month + 1, day);
+};
+
+exports.addTodayToPostsCalendar = async (date) => {
+	let year = date.getFullYear();
+	let month = date.getMonth();
+	let day = date.getDate();
+	initPostsCalendar(year, month + 1, day);
+};
+
+async function initUsersCalendar(year, month, day) {
+	let dateString = `${year}.${month}.${day}`;
+	let analytics = await Analytic.find();
+	let doc = analytics[0];
+	let id = doc.id;
+	let usersCalendar = doc.usersCalendar;
+	let newUsersCalendar = await updateCalendar(usersCalendar, dateString);
+	await Analytic.findByIdAndUpdate(id, { usersCalendar: newUsersCalendar });
+}
+
+async function initPostsCalendar(year, month, day) {
+	let dateString = `${year}.${month}.${day}`;
+	let analytics = await Analytic.find();
+	let doc = analytics[0];
+	let id = doc.id;
+	let postsCalendar = doc.postsCalendar;
+	let newPostsCalendar = await updateCalendar(postsCalendar, dateString);
+	await Analytic.findByIdAndUpdate(id, { postsCalendar: newPostsCalendar });
+}
+
+async function updateCalendar(obj, arr) {
+	if (typeof arr == 'string') arr = arr.split('.');
+	obj[arr[0]] = obj[arr[0]] || {};
+
+	var tmpObj = obj[arr[0]];
+
+	if (arr.length > 1) {
+		arr.shift();
+		await updateCalendar(tmpObj, arr);
+	} else {
+		if (typeof obj[arr[0]] != 'number') {
+			let users = await User.find();
+			obj[arr[0]] = users.length;
+		}
+	}
+	return obj;
+}
+
+function addDAU(obj, arr, val) {
 	if (typeof arr == 'string') arr = arr.split('.');
 
 	obj[arr[0]] = obj[arr[0]] || {};
@@ -36,7 +90,7 @@ function addProps(obj, arr, val) {
 
 	if (arr.length > 1) {
 		arr.shift();
-		addProps(tmpObj, arr, val);
+		addDAU(tmpObj, arr, val);
 	} else {
 		if (typeof obj[arr[0]] != 'number') obj[arr[0]] = 0;
 		obj[arr[0]] += val;
@@ -46,24 +100,10 @@ function addProps(obj, arr, val) {
 
 async function checkForDateAndCreate(year, month, day) {
 	let dateString = `${year}.${month}.${day}`;
-	console.log(dateString);
 	let analytics = await Analytic.find();
 	let doc = analytics[0];
 	let id = doc.id;
-	console.log('Doc:', doc);
 	let dau = doc.dailyActiveUsers;
-	let newDAU = addProps(dau, dateString, 1);
-	console.log('New DAU:', newDAU);
-	await Analytic.findByIdAndUpdate(id, {
-		dailyActiveUsers: newDAU
-	});
-	/*if (!analytics[`${year}`] || !analytics[`${year}.${month}`] || !analytics[`${year}.${month}.${day}`]) {
-		await Analytic.findByIdAndUpdate(id, {
-			[`${year}`]: {
-				[`${month}`]: {
-					[`${day}`]: 1
-				}
-			}
-		});
-	}*/
+	let newDAU = addDAU(dau, dateString, 1);
+	await Analytic.findByIdAndUpdate(id, { dailyActiveUsers: newDAU });
 }

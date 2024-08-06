@@ -8,6 +8,8 @@ const crypto = require('crypto');
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const axios = require('axios');
 const analytics = require('../controllers/analytics');
+const mailgun = require('mailgun-js');
+const mg = mailgun({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
 require('../controllers/local');
 
 router.post('/login', async (req, res) => {
@@ -58,6 +60,8 @@ router.post('/isLoggedIn', async (req, res) => {
 			} else {
 				console.log('same day');
 			}
+			let b = analytics.addTodayToUsersCalendar(date);
+			let c = analytics.addTodayToPostsCalendar(date);
 			res.send(params);
 		} else {
 			res.send({
@@ -243,6 +247,20 @@ router.post('/forgot-password', async (req, res) => {
 		if (user) {
 			user.updateOne(update).then(async () => {
 				//send email
+				const data = {
+					from: `Jack Gimre <mailgun@sandbox9b624a1c063b4ec2ad41113c8587b4c3.mailgun.org>`,
+					to: [email],
+					subject: 'Reset Password',
+					text: `Your code is: ${token}`
+				};
+
+				mg.messages().send(data, function (error, body) {
+					if (error) {
+						console.log('Error:', error);
+					} else {
+						console.log('Email sent:', body);
+					}
+				});
 			});
 		} else {
 			res.send({

@@ -82,7 +82,9 @@ router.post('/get-analytics', async (req, res) => {
 			status: true,
 			totalUsers: users.length,
 			totalPosts: posts.length,
-			dailyActiveUsers: analytic.dailyActiveUsers
+			dailyActiveUsers: analytic.dailyActiveUsers,
+			usersCalendar: analytic.usersCalendar,
+			postsCalendar: analytic.postsCalendar
 		});
 	} catch (err) {
 		res.send({
