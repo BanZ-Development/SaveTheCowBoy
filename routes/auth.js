@@ -60,6 +60,8 @@ router.post('/isLoggedIn', async (req, res) => {
 			} else {
 				console.log('same day');
 			}
+			let b = analytics.addTodayToUsersCalendar(date);
+			let c = analytics.addTodayToPostsCalendar(date);
 			res.send(params);
 		} else {
 			res.send({

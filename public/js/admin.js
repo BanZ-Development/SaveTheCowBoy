@@ -33,22 +33,22 @@ const LoadAnalytics = () => {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
-			const { totalUsers, totalPosts, dailyActiveUsers } = data;
+			const { totalUsers, totalPosts, dailyActiveUsers, usersCalendar, postsCalendar } = data;
 			LoadDailyActiveUsers(dailyActiveUsers, 14, 'days');
-			LoadTotalUsers(totalUsers);
-			LoadTotalPosts(totalPosts);
+			LoadTotalUsers(totalUsers, usersCalendar);
+			LoadTotalPosts(totalPosts, postsCalendar);
 			LoadNewMembers();
 			LoadPageVisits();
 			LoadDatabasePercent();
 		});
 };
 
-const returnDate = (dau, year, month, day) => {
+const searchCalendar = (calendar, year, month, day) => {
 	try {
-		if (dau[`${year}`][`${month}`][`${day}`] == undefined) {
+		if (calendar[`${year}`][`${month}`][`${day}`] == undefined) {
 			return 0;
 		} else {
-			return dau[`${year}`][`${month}`][`${day}`];
+			return calendar[`${year}`][`${month}`][`${day}`];
 		}
 	} catch (err) {
 		return 0;
@@ -58,6 +58,52 @@ const returnDate = (dau, year, month, day) => {
 function daysInMonth(month, year) {
 	return new Date(year, month, 0).getDate();
 }
+
+const returnCalendarData = (calendar) => {
+	//return last 30 days
+	let time = 31;
+	let labels = [];
+	let data = [];
+	let date = new Date();
+	let year = date.getFullYear();
+	let month = date.getMonth() + 1;
+	let day = date.getDate();
+	while (data.length <= time) {
+		while (day > 0) {
+			labels.unshift(`${month}/${day}`);
+			data.unshift(searchCalendar(calendar, year, month, day));
+			day--;
+			if (data.length >= time) return { labels, data };
+		}
+		month--;
+		while (month > 0) {
+			day = daysInMonth(month, year);
+			while (day > 0) {
+				labels.unshift(`${month}/${day}`);
+				data.unshift(searchCalendar(calendar, year, month, day));
+				day--;
+				if (data.length >= time) return { labels, data };
+			}
+			month--;
+		}
+		year--;
+		while (year > 0) {
+			month = 12;
+			while (month > 0) {
+				day = daysInMonth(month, year);
+				while (day > 0) {
+					labels.unshift(`${month}/${day}`);
+					data.unshift(searchCalendar(calendar, year, month, day));
+					day--;
+					if (data.length >= time) return { labels, data };
+				}
+				month--;
+			}
+			year--;
+		}
+	}
+	return { labels, data };
+};
 
 const returnDauData = (dau, time, type) => {
 	let labels = [];
@@ -72,7 +118,7 @@ const returnDauData = (dau, time, type) => {
 				let day = date.getDate();
 				while (day > 0) {
 					labels.unshift(`${month}/${day}`);
-					data.unshift(returnDate(dau, year, month, day));
+					data.unshift(searchCalendar(dau, year, month, day));
 					day--;
 					if (data.length >= time) return { labels, data };
 				}
@@ -81,7 +127,7 @@ const returnDauData = (dau, time, type) => {
 					day = daysInMonth(month, year);
 					while (day > 0) {
 						labels.unshift(`${month}/${day}`);
-						data.unshift(returnDate(dau, year, month, day));
+						data.unshift(searchCalendar(dau, year, month, day));
 						day--;
 						if (data.length >= time) return { labels, data };
 					}
@@ -94,7 +140,7 @@ const returnDauData = (dau, time, type) => {
 						day = daysInMonth(month, year);
 						while (day > 0) {
 							labels.unshift(`${month}/${day}`);
-							data.unshift(returnDate(dau, year, month, day));
+							data.unshift(searchCalendar(dau, year, month, day));
 							day--;
 							if (data.length >= time) return { labels, data };
 						}
@@ -112,7 +158,7 @@ const returnDauData = (dau, time, type) => {
 					let days = daysInMonth(month, year);
 					let sum = 0;
 					for (let i = 1; i <= days; i++) {
-						sum += returnDate(dau, year, month, i);
+						sum += searchCalendar(dau, year, month, i);
 					}
 					labels.unshift(monthName);
 					data.unshift(sum);
@@ -127,7 +173,7 @@ const returnDauData = (dau, time, type) => {
 						let days = daysInMonth(month, year);
 						let sum = 0;
 						for (let i = 1; i <= days; i++) {
-							sum += returnDate(dau, year, month, i);
+							sum += searchCalendar(dau, year, month, i);
 						}
 						labels.unshift(monthName);
 						data.unshift(sum);
@@ -146,7 +192,7 @@ const returnDauData = (dau, time, type) => {
 					while (month > 0) {
 						let days = daysInMonth(month, year);
 						for (let i = 1; i <= days; i++) {
-							sum += returnDate(dau, year, month, i);
+							sum += searchCalendar(dau, year, month, i);
 						}
 						month--;
 					}
@@ -205,19 +251,20 @@ const LoadDailyActiveUsers = (dailyActiveUsers, time, type) => {
 	});
 };
 
-const LoadTotalUsers = (totalUsers) => {
+const LoadTotalUsers = (totalUsers, usersCalendar) => {
 	document.querySelector('#totalUsersNum').innerHTML = totalUsers;
+	const { labels, data } = returnCalendarData(usersCalendar);
 	let ctx = document.getElementById('totalUsers').getContext('2d');
 	ctx.canvas.parentNode.style.height = '70%';
 	ctx.canvas.parentNode.style.width = '100%';
 	var myChart = new Chart(ctx, {
 		type: 'line',
 		data: {
-			labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
+			labels: labels, // Adjusted to match the number of data points
 			datasets: [
 				{
-					label: 'My First Dataset',
-					data: [80, 70, 90, 50, 60], // Data points
+					label: 'Users',
+					data: data, // Data points
 					borderColor: 'rgb(247, 82, 82)',
 					backgroundColor: 'rgba(247, 82, 82, 0.1)', // Optional: Adding a background color for better visibility
 					fill: false, // Ensures no area fill below the line
@@ -296,19 +343,20 @@ const LoadNewMembers = () => {
 	myChart.update();
 };
 
-const LoadTotalPosts = (totalPosts) => {
+const LoadTotalPosts = (totalPosts, postsCalendar) => {
 	document.querySelector('#totalPostsNum').innerHTML = totalPosts;
+	const { labels, data } = returnCalendarData(postsCalendar);
 	let ctx = document.getElementById('totalPosts').getContext('2d');
 	ctx.canvas.parentNode.style.height = '70%';
 	ctx.canvas.parentNode.style.width = '100%';
 	var myChart = new Chart(ctx, {
 		type: 'line',
 		data: {
-			labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
+			labels: labels, // Adjusted to match the number of data points
 			datasets: [
 				{
-					label: 'My First Dataset',
-					data: [60, 65, 80, 70, 90], // Data points
+					label: 'Posts',
+					data: data, // Data points
 					borderColor: 'rgba(61, 213, 152, 0.945)',
 					backgroundColor: 'rgba(61, 213, 152, 0.945)', // Optional: Adding a background color for better visibility
 					fill: false, // Ensures no area fill below the line
