@@ -45,35 +45,26 @@ exports.addTodayToPostsCalendar = async (date) => {
 
 async function initUsersCalendar(year, month, day) {
 	let dateString = `${year}.${month}.${day}`;
-	console.log('Init running');
 	let analytics = await Analytic.find();
 	let doc = analytics[0];
 	let id = doc.id;
-	console.log('Doc:', doc);
 	let usersCalendar = doc.usersCalendar;
 	let newUsersCalendar = await updateCalendar(usersCalendar, dateString);
-	console.log(newUsersCalendar);
 	await Analytic.findByIdAndUpdate(id, { usersCalendar: newUsersCalendar });
 }
 
 async function initPostsCalendar(year, month, day) {
 	let dateString = `${year}.${month}.${day}`;
-	console.log('Init running');
 	let analytics = await Analytic.find();
 	let doc = analytics[0];
 	let id = doc.id;
-	console.log('Doc:', doc);
 	let postsCalendar = doc.postsCalendar;
-	console.log('Loading posts...:', postsCalendar, doc.postsCalendar, doc);
-	console.log(doc['postsCalendar']);
 	let newPostsCalendar = await updateCalendar(postsCalendar, dateString);
-	console.log(postsCalendar);
 	await Analytic.findByIdAndUpdate(id, { postsCalendar: newPostsCalendar });
 }
 
 async function updateCalendar(obj, arr) {
 	if (typeof arr == 'string') arr = arr.split('.');
-	console.log('Object before fail:', obj);
 	obj[arr[0]] = obj[arr[0]] || {};
 
 	var tmpObj = obj[arr[0]];
@@ -109,13 +100,10 @@ function addDAU(obj, arr, val) {
 
 async function checkForDateAndCreate(year, month, day) {
 	let dateString = `${year}.${month}.${day}`;
-	console.log(dateString);
 	let analytics = await Analytic.find();
 	let doc = analytics[0];
 	let id = doc.id;
-	console.log('Doc:', doc);
 	let dau = doc.dailyActiveUsers;
 	let newDAU = addDAU(dau, dateString, 1);
-	console.log('New DAU:', newDAU);
 	await Analytic.findByIdAndUpdate(id, { dailyActiveUsers: newDAU });
 }
