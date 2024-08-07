@@ -198,36 +198,8 @@
                 <div class="settingColumn" id="memberColumn">
                     <h1>Reports</h1>
                     <span class="line"></span>
-                    <div style="border: solid 1px #333; padding: 10px; border-radius: 5px; margin-top: 20px;">
-                        <div id="post">
-                            <div class="forumPost" href="/forum?id=${_id}" id=${_id}>
-                            <div class="inlineForumUser">
-                                <img class="forumPfp" src="/image/${pfp}"></img>
-                                <a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
-                                <p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
-                            </div>
-                            <div class="forumTitle">
-                                <h3><a id="title" href="/forum?id=${_id}">${SafeHTML(title)}</a></h3>
-                            </div>
-                            
-                            
-                            <p style="white-space:pre;">${message}</p>
-                            <div class="forumBtns">
-                                <p id="likeCounter">${likesCount}</p>
-                                <button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
-                                <p id="commentCounter">${commentsCount}</p>
-                                <button id="commentIcon" class="iconBtn"><i class="fa-regular fa-comment"></i></button>
-                                <button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
-                            </div>
-                            </div>
-                            <span class="line"></span>
-                            <p>Reported for: Harrassment, Burgers, and fries!</p>
-                            <p>Report says: Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat molestiae ipsa quod nam! Sequi sunt a doloremque voluptate minima alias soluta, nulla rerum quod praesentium similique? Quos odit esse corrupti!</p>
-                            <div class="inlineButtons">
-                                <button style="height: 50px;" id="deleteBtn" class="btnLink">Delete</button>
-                                <button style="height: 50px;" id="ignoreBtn" class="btnLink">Ignore</button>
-                            </div>
-                        </div>
+                    <div id="reportHolder">
+
                     </div>
                 </div>
             </div>

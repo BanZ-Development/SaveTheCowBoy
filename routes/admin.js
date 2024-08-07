@@ -2,6 +2,7 @@ const router = require('express').Router();
 const multer = require('multer');
 const User = require('../model/User');
 const Post = require('../model/Post');
+const Report = require('../model/Report');
 const hasher = require('../controllers/hasher');
 const validate = require('../controllers/validate');
 const analytics = require('../controllers/analytics');
@@ -87,6 +88,20 @@ router.post('/get-analytics', async (req, res) => {
 			postsCalendar: analytic.postsCalendar
 		});
 	} catch (err) {
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
+router.post('/get-reports', async (req, res) => {
+	try {
+		let response = [];
+		let reports = await Report.find();
+		res.send({ status: true, reports: reports });
+	} catch (err) {
+		console.log(err);
 		res.send({
 			status: false,
 			error: err.message

@@ -2,6 +2,21 @@ const SafeHTML = (html) => {
 	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 };
 
+const DateText = (date) => {
+	const options = { month: 'long' };
+	const month = new Intl.DateTimeFormat('en-US', options).format(date);
+	const day = date.getDate();
+	const year = date.getFullYear();
+	return `${month} ${day}, ${year}`;
+};
+
+Object.defineProperty(String.prototype, 'capitalize', {
+	value: function () {
+		return this.charAt(0).toUpperCase() + this.slice(1);
+	},
+	enumerable: false
+});
+
 const updateDAU = () => {
 	let chartStatus = Chart.getChart('dailyActiveUsers'); // <canvas> id
 	if (chartStatus != undefined) {
@@ -60,8 +75,8 @@ function daysInMonth(month, year) {
 }
 
 const returnCalendarData = (calendar) => {
-	//return last 30 days
-	let time = 31;
+	//return last 8 days
+	let time = 8;
 	let labels = [];
 	let data = [];
 	let date = new Date();
@@ -244,7 +259,7 @@ const LoadDailyActiveUsers = (dailyActiveUsers, time, type) => {
 					},
 
 					categoryPercentage: 1.0,
-            		barPercentage: 1.0
+					barPercentage: 1.0
 				},
 				y: {
 					beginAtZero: true
@@ -629,9 +644,102 @@ function openAnalytics() {
 	LoadAnalytics();
 }
 
+const reasonsToSentence = (string) => {
+	return string.replaceAll(',', ', ');
+};
+
+const createReportObject = (message, reasons, post, pfp, postID) => {
+	let date = new Date(post.postDate);
+	let div = document.createElement('div');
+	console.log(post._id);
+	console.log(postID);
+	div.id = 'report';
+	div.innerHTML = `
+		<div style="border: solid 1px #333; padding: 10px; border-radius: 5px; margin-top: 20px;">
+		<div id="post>
+        <div class="forumPost" href="/forum?id=${postID}" id=${postID}>
+        <div class="inlineForumUser">
+            <img class="forumPfp" src="/image/${pfp.name}"></img>
+            <a class="forumUser" href="/profile?uid=${post.uID}">${SafeHTML(post.username)}</a>
+            <p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
+        </div>
+            <div class="forumTitle">
+                <h3><a id="title" href="/forum?id=${post.id}">${SafeHTML(post.title)}</a></h3>
+            </div>
+                            
+                            
+        <p style="white-space:pre;">${post.message}</p>
+        <div class="forumBtns">
+            <p id="likeCounter">${post.likesCount}</p>
+            <button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
+            <p id="commentCounter">${post.commentsCount}</p>
+            <button id="commentIcon" class="iconBtn"><i class="fa-regular fa-comment"></i></button>
+            <button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
+        </div>
+        </div>
+        <span class="line"></span>
+        <p>Report category: ${reasonsToSentence(reasons).capitalize()}</p>
+        <p>Report message: ${SafeHTML(message)}</p>
+        <div class="inlineButtons">
+        <button style="height: 50px;" id="deleteBtn" class="btnLink">Delete</button>
+        <button style="height: 50px;" id="ignoreBtn" class="btnLink">Ignore</button>
+        </div>
+		</div>
+		</div>
+	`;
+	document.querySelector('#reportHolder').appendChild(div);
+};
+
+const deleteReportObjects = () => {
+	let reports = document.querySelectorAll('#report');
+	reports.forEach((report) => {
+		report.remove();
+	});
+};
+
+const initReportObject = (report) => {
+	const { message, reasons, postID, reporterID } = report;
+	const data = new FormData();
+	data.append('id', postID);
+	fetch('api/forum/loadPost', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				const { post, pfp } = data;
+				createReportObject(message, reasons, post, pfp, postID);
+			} else {
+				console.log('error!');
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
 async function openReports() {
 	enableView('reports');
-	console.log('reports');
+	deleteReportObjects();
+	fetch('api/admin/get-reports', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			data.reports.forEach((report) => {
+				initReportObject(report);
+			});
+		});
+	//create report objects
 }
 
 document.addEventListener('DOMContentLoaded', () => {
