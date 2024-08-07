@@ -8,8 +8,6 @@ const crypto = require('crypto');
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const axios = require('axios');
 const analytics = require('../controllers/analytics');
-const mailgun = require('mailgun-js');
-const mg = mailgun({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
 require('../controllers/local');
 
 router.post('/login', async (req, res) => {

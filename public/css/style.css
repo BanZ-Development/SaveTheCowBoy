@@ -881,10 +881,12 @@ button {
     position: fixed;
     left: 0;
     right: 0;
+    top: 110px;
     margin-inline: auto;
     padding: 20px;
     width: 80%;
-    height: 70%;
+    height: 75vh;
+    overflow-y: scroll;
     background-color: #fff;
     display: flex;
     flex-direction: column;
@@ -1388,6 +1390,10 @@ button {
 
   @media only screen and (max-width: 1060px) {
 
+    .forumTitle > h3 > a {
+        font-size: 20px;
+    }
+
     .allForum {
         width: 90%;
     }
@@ -1729,6 +1735,7 @@ button {
         height: 60%;
         max-height: 100px;
         line-height: 100px;
+        margin-left: 10px;
     }
 
     .navLogo {
@@ -1766,4 +1773,22 @@ button {
         transform: scale(0.85);
     }
 
+  }
+
+  @media only screen and (max-width: 856px) {
+    .forumDate, .forumUser {
+        font-size: 16.5px;
+    }
+
+    #forumHeader {
+        flex-direction: column !important;
+    }
+
+    #showPopup {
+        margin-left: 15px !important;
+    }
+
+    .forumTitle > a {
+        margin-inline: auto;
+    }
   }

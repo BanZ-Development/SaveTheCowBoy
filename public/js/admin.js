@@ -241,10 +241,13 @@ const LoadDailyActiveUsers = (dailyActiveUsers, time, type) => {
 				x: {
 					grid: {
 						display: false
-					}
+					},
+
+					categoryPercentage: 1.0,
+            		barPercentage: 1.0
 				},
 				y: {
-					beginAtZero: true // Added for clarity and proper scaling
+					beginAtZero: true
 				}
 			}
 		}
