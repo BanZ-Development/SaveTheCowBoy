@@ -1,4 +1,5 @@
 const Analytic = require('../model/Analytic');
+const Post = require('../model/Post');
 const User = require('../model/User');
 
 exports.setupAnalyticsInstance = async () => {
@@ -49,7 +50,7 @@ async function initUsersCalendar(year, month, day) {
 	let doc = analytics[0];
 	let id = doc.id;
 	let usersCalendar = doc.usersCalendar;
-	let newUsersCalendar = await updateCalendar(usersCalendar, dateString);
+	let newUsersCalendar = await updateCalendar(usersCalendar, dateString, 'user');
 	await Analytic.findByIdAndUpdate(id, { usersCalendar: newUsersCalendar });
 }
 
@@ -59,11 +60,11 @@ async function initPostsCalendar(year, month, day) {
 	let doc = analytics[0];
 	let id = doc.id;
 	let postsCalendar = doc.postsCalendar;
-	let newPostsCalendar = await updateCalendar(postsCalendar, dateString);
+	let newPostsCalendar = await updateCalendar(postsCalendar, dateString, 'post');
 	await Analytic.findByIdAndUpdate(id, { postsCalendar: newPostsCalendar });
 }
 
-async function updateCalendar(obj, arr) {
+async function updateCalendar(obj, arr, type) {
 	if (typeof arr == 'string') arr = arr.split('.');
 	obj[arr[0]] = obj[arr[0]] || {};
 
@@ -74,8 +75,13 @@ async function updateCalendar(obj, arr) {
 		await updateCalendar(tmpObj, arr);
 	} else {
 		if (typeof obj[arr[0]] != 'number') {
-			let users = await User.find();
-			obj[arr[0]] = users.length;
+			if (type == 'user') {
+				let collection = await User.find();
+				obj[arr[0]] = collection.length;
+			} else if (type == 'post') {
+				let collection = await Post.find();
+				obj[arr[0]] = collection.length;
+			}
 		}
 	}
 	return obj;
