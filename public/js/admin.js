@@ -565,6 +565,15 @@ const createMemberElement = (user) => {
 		<p id="addressAdmin">${SafeHTML(address)}</p>
 		<p id="zipAdmin">${SafeHTML(zip)}</p>
 		</div>
+		<div style="display: flex; flex-direction: row;">
+		<p style="margin-inline: 5px; font-size: 17px;">Admin: ${admin},</p>
+		<p style="margin-inline: 5px; font-size: 17px;">address: ${address},</p>
+		<p style="margin-inline: 5px; font-size: 17px;"	>email: ${email}</p>
+		</div>
+		<div class="tableRowBtns">
+		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteBtn" class="btnLink">Delete</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="editBtn" class="btnLink">Edit</button>
+		</div>
 		</div>
 		<div style="display:none;" id="dropdownBox">
 		<a>Profile</a>
@@ -749,9 +758,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#updateDauBtn').addEventListener('click', updateDAU);
 });
 
-document.querySelector('#dropInformation').addEventListener('click', () => {
-	console.log('clicked');
-	let button = event.target;
-	let parent = button.closest('.tableRowInfo').parentElement;
-	parent.style.height = '120px';
+document.addEventListener("click", function(event) {
+    if (event.target.closest("#dropInformation")) {
+        var button = event.target.closest("#dropInformation");
+        var tableRow = button.closest(".tableRow");
+
+        if (tableRow.style.height === "200px") {
+            tableRow.style.height = "60px"; // Change to the original height
+            button.querySelector("i").classList.replace("fa-chevron-down", "fa-chevron-right");
+        } else {
+            tableRow.style.height = "200px"; // Expand to fit content
+            button.querySelector("i").classList.replace("fa-chevron-right", "fa-chevron-down");
+        }
+    }
 });

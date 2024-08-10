@@ -433,6 +433,7 @@ button {
     padding-inline: 5px;
     height: 60px;
     margin-block: 10px;
+    overflow: hidden;
   }
 
   .tableRowInfo {
@@ -444,11 +445,13 @@ button {
     width: fit-content;
     margin-inline: 10px;
     text-align: left;
-    width: 120px;
+    width: 90px;
     height: 19px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex-shrink: 0;
+    scale: 0.85;
   }
 
   #firstNameAdmin {
@@ -456,11 +459,11 @@ button {
   }
 
   #emailAdmin {
-    width: 250px;
+    max-width: 250px;
   }
 
   #addressAdmin {
-    width: 200px;
+    max-width: 200px;
   }
 
   .tableDropBtn {
@@ -472,6 +475,10 @@ button {
     border: solid 1px #fff;
     color: #fff;
     cursor: pointer;
+  }
+
+  .tableDropBtn > i {
+    width: 15px;
   }
 
   .filterBtn {
@@ -1216,6 +1223,7 @@ button {
     border: solid 1px #333;
     padding: 20px;
     border-radius: 15px;
+    z-index: 3;
 }
 
 #filterBtn:hover > .filterDrop {
@@ -1252,6 +1260,11 @@ button {
 .filterDropSearch > input:focus {
     border: solid 1px #2374d1;
     box-shadow: #2374d162 0px 8px 24px;
+}
+
+#reportHolder {
+    display: flex;
+    flex-direction: column-reverse;
 }
 
   @media only screen and (max-width: 1610px) {
