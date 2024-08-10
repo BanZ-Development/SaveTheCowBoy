@@ -660,8 +660,11 @@ const reasonsToSentence = (string) => {
 const createReportObject = (message, reasons, post, pfp, postID) => {
 	let date = new Date(post.postDate);
 	let div = document.createElement('div');
-	console.log(post._id);
-	console.log(postID);
+
+	let uid = post.uID || post.authorID;
+	let username = post.username || post.author;
+	let title = post.title || post.content;
+	let text = post.message != null ? post.message : '';
 	div.id = 'report';
 	div.innerHTML = `
 		<div style="border: solid 1px #333; padding: 10px; border-radius: 5px; margin-top: 20px;">
@@ -669,15 +672,15 @@ const createReportObject = (message, reasons, post, pfp, postID) => {
         <div class="forumPost" href="/forum?id=${postID}" id=${postID}>
         <div class="inlineForumUser">
             <img class="forumPfp" src="/image/${pfp.name}"></img>
-            <a class="forumUser" href="/profile?uid=${post.uID}">${SafeHTML(post.username)}</a>
+            <a class="forumUser" href="/profile?uid=${uid}">${SafeHTML(username)}</a>
             <p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
         </div>
             <div class="forumTitle">
-                <h3><a id="title" href="/forum?id=${post.id}">${SafeHTML(post.title)}</a></h3>
+                <h3><a id="title" href="/forum?id=${post.id}">${SafeHTML(title)}</a></h3>
             </div>
                             
                             
-        <p style="white-space:pre;">${post.message}</p>
+        <p style="white-space:pre;">${text}</p>
         <div class="forumBtns">
             <p id="likeCounter">${post.likesCount}</p>
             <button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
