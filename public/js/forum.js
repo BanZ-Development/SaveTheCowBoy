@@ -393,6 +393,7 @@ function loadComment(comment, currentUserID) {
 			</div>`;
 			div.querySelector('#likeBtn').addEventListener('click', likeComment);
 			div.querySelector('#replyBtn').addEventListener('click', replyClick);
+			div.querySelector('#reportBtn').addEventListener('click', reportComment);
 			let isLiked = likes.includes(currentUserID);
 			if (isLiked) {
 				div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
@@ -483,6 +484,7 @@ function openReplies() {
 					</div>`;
 					div.querySelector('#likeBtn').addEventListener('click', likeComment);
 					div.querySelector('#replyBtn').addEventListener('click', replyClick);
+					div.querySelector('#reportBtn').addEventListener('click', reportComment);
 					let isLiked = likes.includes(currentUserID);
 					if (isLiked) {
 						div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
@@ -636,6 +638,17 @@ function forumReport() {
 	const postID = post.id;
 	const authorName = post.querySelector('.forumUser').innerHTML;
 	document.querySelector('#reportTitle').innerHTML = `Report <a href="/forum?id=${postID}">${authorName}'s Post</a>`;
+	document.querySelector('#makeReport').style.display = 'flex';
+	document.querySelector('#reportInformation').style.display = 'flex';
+}
+
+function reportComment() {
+	const button = event.target;
+	const comment = button.closest('.comment');
+	const commentID = comment.id;
+	const authorName = post.querySelector('.forumUser').innerHTML;
+	document.querySelector('#reportTitle').innerHTML = `Report <a href="/forum?id=${commentID}">${authorName}'s Comment</a>`;
+	document.querySelector('#reportTitle').name = commentID;
 	document.querySelector('#makeReport').style.display = 'flex';
 	document.querySelector('#reportInformation').style.display = 'flex';
 }
