@@ -1267,6 +1267,26 @@ button {
     flex-direction: column-reverse;
 }
 
+.backBtn {
+    display: flex;
+    justify-content: center;
+    background-color: #cccccc65;
+    color: #333;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    padding: 5px;
+    position: absolute;
+    bottom: 25px;
+    left: -40px;
+    text-decoration: none;
+}
+
+.backBtn > i {
+    font-size: 19px;
+    width: 15px;
+}
+
   @media only screen and (max-width: 1610px) {
 
     .settingSidebarBtn {

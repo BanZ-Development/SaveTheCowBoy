@@ -592,10 +592,14 @@ const createMemberElement = (user) => {
 		</div>
 		<div style="display: flex; flex-direction: row;">
 		</div>
+		<div class="tableRowInfo">
+		<p style="width: fit-content;">Email: ${SafeHTML(email)},</p>
+		<p style="width: fit-content;">Address: ${SafeHTML(address)}</p>
+		</div>
 		<div class="tableRowBtns">
-		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteBtn" class="btnLink">Delete</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="editBtn" class="btnLink">Edit</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="profileBtn" class="btnLink">View Profile</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteBtn" class="btnLink">Delete</button>
 		</div>
 		</div>
 		<div style="display:none;" id="dropdownBox">
@@ -884,11 +888,11 @@ document.addEventListener('click', function (event) {
 		var button = event.target.closest('#dropInformation');
 		var tableRow = button.closest('.tableRow');
 
-		if (tableRow.style.height === '120px') {
+		if (tableRow.style.height === '200px') {
 			tableRow.style.height = '60px'; // Change to the original height
 			button.querySelector('i').classList.replace('fa-chevron-down', 'fa-chevron-right');
 		} else {
-			tableRow.style.height = '120px'; // Expand to fit content
+			tableRow.style.height = '200px'; // Expand to fit content
 			button.querySelector('i').classList.replace('fa-chevron-right', 'fa-chevron-down');
 		}
 	}
