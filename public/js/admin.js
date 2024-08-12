@@ -272,6 +272,7 @@ const LoadDailyActiveUsers = (dailyActiveUsers, time, type) => {
 const LoadTotalUsers = (totalUsers, usersCalendar) => {
 	document.querySelector('#totalUsersNum').innerHTML = totalUsers;
 	const { labels, data } = returnCalendarData(usersCalendar);
+	let color = SetPreview(data, 'totalUsers');
 	let ctx = document.getElementById('totalUsers').getContext('2d');
 	ctx.canvas.parentNode.style.height = '70%';
 	ctx.canvas.parentNode.style.width = '100%';
@@ -283,8 +284,8 @@ const LoadTotalUsers = (totalUsers, usersCalendar) => {
 				{
 					label: 'Users',
 					data: data, // Data points
-					borderColor: 'rgb(247, 82, 82)',
-					backgroundColor: 'rgba(247, 82, 82, 0.1)', // Optional: Adding a background color for better visibility
+					borderColor: color,
+					backgroundColor: color, // Optional: Adding a background color for better visibility
 					fill: false, // Ensures no area fill below the line
 					tension: 0.5
 				}
@@ -361,9 +362,32 @@ const LoadNewMembers = () => {
 	myChart.update();
 };
 
+const SetPreview = (data, title) => {
+	let first = data[0];
+	let last = data[data.length - 1];
+	let ratio = last / first;
+	let total = Math.round(ratio * 100);
+	let num = total - 100;
+	let percent = Math.abs(num);
+	let color = '#3dd598';
+	let sign = '+';
+	if (percent < 0) {
+		color = '#f75252';
+		sign = '-';
+	}
+	if (percent == 0) sign = '';
+	document.querySelector(`#${title}Preview`).innerHTML = `<b style="color: ${color};">${sign}${percent}%</b> this week`;
+	if (percent < 0) {
+		return '#f75252';
+	} else {
+		return '#3dd598';
+	}
+};
+
 const LoadTotalPosts = (totalPosts, postsCalendar) => {
 	document.querySelector('#totalPostsNum').innerHTML = totalPosts;
 	const { labels, data } = returnCalendarData(postsCalendar);
+	SetPreview(data, 'totalPosts');
 	let ctx = document.getElementById('totalPosts').getContext('2d');
 	ctx.canvas.parentNode.style.height = '70%';
 	ctx.canvas.parentNode.style.width = '100%';
@@ -822,7 +846,6 @@ function deleteReport() {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
-			decreaseReportsTitle();
 		});
 }
 

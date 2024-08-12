@@ -118,11 +118,28 @@ router.post('/delete-report', async (req, res) => {
 	try {
 		let { reportID } = req.body;
 		let report = await Report.findByIdAndDelete(reportID);
+		let { postID } = report;
+		let post = await Post.findByIdAndDelete(postID);
 		if (report) {
-			res.send({
-				status: true,
-				message: 'Report deleted'
-			});
+			if (post) {
+				res.send({
+					status: true,
+					message: 'Report and post deleted'
+				});
+			} else {
+				let comment = await Comment.findByIdAndDelete(postID);
+				if (comment) {
+					res.send({
+						status: true,
+						message: 'Report and comment deleted'
+					});
+				} else {
+					res.send({
+						status: false,
+						message: 'No post or comment found with that ID'
+					});
+				}
+			}
 		} else {
 			res.send({
 				status: false,
