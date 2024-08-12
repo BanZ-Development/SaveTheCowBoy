@@ -64,6 +64,10 @@
                                 <h4 style="margin-bottom: 3px;">Zip Code</h4>
                                 <input type="text" id="zipInput">
                             </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">Admin</h4>
+                                <input type="text" id="adminInput">
+                            </div>
                             <button style="height: 50px; font-family: 'Roboto';" class="btnLink" id="applyFilterBtn">Apply Filter</button>
                         </div>
                         </div>
@@ -81,6 +85,7 @@
                                 <p id="cityAdmin">City</p>
                                 <p id="addressAdmin">Address</p>
                                 <p id="zipAdmin">Zip</p>
+                                <p id="adminAdmin">Admin</p>
                             </div>
                         </div>
                     </div>
@@ -198,9 +203,16 @@
                 <div class="settingColumn" id="memberColumn">
                     <h1>Reports</h1>
                     <span class="line"></span>
-                    <button>Current Reports</button>
-                    <button>Ignored Reports</button>
-                    <button><i class="fa-solid fa-arrow-up-wide-short"></i> Filter</button>
+                    <div style="display: flex; flex-direction: row;">
+                        <div style="justify-content: left;">
+                            <h2 id="loadedReportsTitle"></h1>
+                        </div>
+                    </div>
+                    <div style="justify-content: end; margin-bottom: 20px;">
+                        <button class="filterBtn" id="currentReportsBtn" style="background-color: #353535;">Current Reports</button>
+                        <button class="filterBtn" id="ignoredReportsBtn">Ignored Reports</button>
+                    </div>
+                    <span class="line"></span>
                     <div id="reportHolder"></div>
                 </div>
             </div>

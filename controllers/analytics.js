@@ -72,7 +72,7 @@ async function updateCalendar(obj, arr, type) {
 
 	if (arr.length > 1) {
 		arr.shift();
-		await updateCalendar(tmpObj, arr);
+		await updateCalendar(tmpObj, arr, type);
 	} else {
 		if (typeof obj[arr[0]] != 'number') {
 			if (type == 'user') {

@@ -365,7 +365,8 @@ router.post('/report', async (req, res) => {
 			reasons: reasons,
 			message: message,
 			postID: postID,
-			reporterID: uid
+			reporterID: uid,
+			ignored: false
 		})
 			.then((report) => {
 				console.log(report._id);

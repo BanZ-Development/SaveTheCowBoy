@@ -97,9 +97,57 @@ router.post('/get-analytics', async (req, res) => {
 
 router.post('/get-reports', async (req, res) => {
 	try {
-		let response = [];
-		let reports = await Report.find();
-		res.send({ status: true, reports: reports });
+		let { id } = req.body;
+		let filter = {};
+		if (id == 'currentReportsBtn') filter.ignored = false;
+		else if (id == 'ignoredReportsBtn') filter.ignored = true;
+		else filter.ignored = false;
+		let reports = await Report.find(filter);
+		let type = filter.ignored ? 'Ignored' : 'Current';
+		res.send({ status: true, reports: reports, type: type });
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
+router.post('/delete-report', async (req, res) => {
+	try {
+		let { reportID } = req.body;
+		let report = await Report.findByIdAndDelete(reportID);
+		if (report) {
+			res.send({
+				status: true,
+				message: 'Report deleted'
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'No report found with that ID'
+			});
+		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
+router.post('/ignore-report', async (req, res) => {
+	try {
+		let { reportID } = req.body;
+		let report = await Report.findById(reportID);
+		report.ignored = !report.ignored;
+		report.save();
+		res.send({
+			status: true,
+			message: 'Report has switched its visibility setting'
+		});
 	} catch (err) {
 		console.log(err);
 		res.send({

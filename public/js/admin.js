@@ -564,15 +564,14 @@ const createMemberElement = (user) => {
         <p id="cityAdmin">${SafeHTML(city)}</p>
 		<p id="addressAdmin">${SafeHTML(address)}</p>
 		<p id="zipAdmin">${SafeHTML(zip)}</p>
+		<p id="adminAdmin">${admin}</p>
 		</div>
 		<div style="display: flex; flex-direction: row;">
-		<p style="margin-inline: 5px; font-size: 17px;">Admin: ${admin},</p>
-		<p style="margin-inline: 5px; font-size: 17px;">address: ${address},</p>
-		<p style="margin-inline: 5px; font-size: 17px;"	>email: ${email}</p>
 		</div>
 		<div class="tableRowBtns">
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteBtn" class="btnLink">Delete</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="editBtn" class="btnLink">Edit</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="profileBtn" class="btnLink">View Profile</button>
 		</div>
 		</div>
 		<div style="display:none;" id="dropdownBox">
@@ -599,6 +598,8 @@ const returnMembers = async () => {
 	let city = document.querySelector('#cityInput').value;
 	let address = document.querySelector('#addressInput').value;
 	let zip = document.querySelector('#zipInput').value;
+	let admin = document.querySelector('#adminInput').value;
+	console.log(admin);
 	if (username != '') filter['meta.username'] = { $regex: username, $options: 'i' };
 	if (firstName != '') filter['meta.firstName'] = { $regex: firstName, $options: 'i' };
 	if (lastName != '') filter['meta.lastName'] = { $regex: lastName, $options: 'i' };
@@ -607,6 +608,7 @@ const returnMembers = async () => {
 	if (city != '') filter['meta.shipping.city'] = { $regex: city, $options: 'i' };
 	if (address != '') filter['meta.shipping.address'] = { $regex: address, $options: 'i' };
 	if (zip != '') filter['meta.shipping.zip'] = zip;
+	if (admin != '') filter['admin'] = /^true$/i.test(admin);
 	console.log(filter);
 	let data = new FormData();
 	data.append('filter', JSON.stringify(filter));
@@ -657,7 +659,7 @@ const reasonsToSentence = (string) => {
 	return string.replaceAll(',', ', ');
 };
 
-const createReportObject = (message, reasons, post, pfp, postID) => {
+const createReportObject = (message, reasons, post, pfp, postID, _id, ignored) => {
 	let date = new Date(post.postDate);
 	let div = document.createElement('div');
 
@@ -665,9 +667,10 @@ const createReportObject = (message, reasons, post, pfp, postID) => {
 	let username = post.username || post.author;
 	let title = post.title || post.content;
 	let text = post.message != null ? post.message : '';
+	let ignoredText = !ignored ? 'Ignore' : 'Unignore';
 	div.id = 'report';
 	div.innerHTML = `
-		<div style="border: solid 1px #333; padding: 10px; border-radius: 5px; margin-top: 20px;">
+		<div id="${_id}" style="border: solid 1px #333; padding: 10px; border-radius: 5px; margin-top: 20px;">
 		<div id="post>
         <div class="forumPost" href="/forum?id=${postID}" id=${postID}>
         <div class="inlineForumUser">
@@ -694,11 +697,13 @@ const createReportObject = (message, reasons, post, pfp, postID) => {
         <p>Report message: ${SafeHTML(message)}</p>
         <div class="inlineButtons">
         <button style="height: 50px;" id="deleteBtn" class="btnLink">Delete</button>
-        <button style="height: 50px;" id="ignoreBtn" class="btnLink">Ignore</button>
+        <button style="height: 50px;" id="ignoreBtn" class="btnLink">${ignoredText}</button>
         </div>
 		</div>
 		</div>
 	`;
+	div.querySelector('#deleteBtn').addEventListener('click', deleteReport);
+	div.querySelector('#ignoreBtn').addEventListener('click', ignoreReport);
 	document.querySelector('#reportHolder').appendChild(div);
 };
 
@@ -710,7 +715,7 @@ const deleteReportObjects = () => {
 };
 
 const initReportObject = (report) => {
-	const { message, reasons, postID, reporterID } = report;
+	const { message, reasons, postID, reporterID, _id, ignored } = report;
 	const data = new FormData();
 	data.append('id', postID);
 	fetch('api/forum/loadPost', {
@@ -725,7 +730,7 @@ const initReportObject = (report) => {
 			console.log(data);
 			if (data.status) {
 				const { post, pfp } = data;
-				createReportObject(message, reasons, post, pfp, postID);
+				createReportObject(message, reasons, post, pfp, postID, _id, ignored);
 			} else {
 				console.log('error!');
 			}
@@ -738,20 +743,108 @@ const initReportObject = (report) => {
 async function openReports() {
 	enableView('reports');
 	deleteReportObjects();
+	let data = new FormData();
+	data.append('id', '');
 	fetch('api/admin/get-reports', {
 		method: 'post',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
-		}
+		},
+		body: new URLSearchParams(data)
 	})
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
+			document.querySelector('#loadedReportsTitle').innerHTML = `Loaded ${data.reports.length} ${data.type} Reports`;
 			data.reports.forEach((report) => {
 				initReportObject(report);
 			});
 		});
-	//create report objects
+}
+
+async function clickReportsButton() {
+	deleteReportObjects();
+	let button = event.target;
+	let id = button.id;
+	if (id == 'currentReportsBtn') {
+		document.querySelector('#currentReportsBtn').style.backgroundColor = '#353535';
+		document.querySelector('#ignoredReportsBtn').style.backgroundColor = '#1e1e1e';
+	} else if (id == 'ignoredReportsBtn') {
+		document.querySelector('#ignoredReportsBtn').style.backgroundColor = '#353535';
+		document.querySelector('#currentReportsBtn').style.backgroundColor = '#1e1e1e';
+	}
+
+	let data = new FormData();
+	data.append('id', id);
+	fetch('api/admin/get-reports', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			document.querySelector('#loadedReportsTitle').innerHTML = `Loaded ${data.reports.length} ${data.type} Reports`;
+			data.reports.forEach((report) => {
+				initReportObject(report);
+			});
+		});
+}
+
+function decreaseReportsTitle() {
+	let title = document.querySelector('#loadedReportsTitle');
+	let string = title.innerHTML;
+	let arr = string.split(' ');
+	let numStr = arr[1];
+	let num = parseInt(numStr);
+	num--;
+	let newString = string.replace(numStr, num);
+	title.innerHTML = newString;
+}
+
+function deleteReport() {
+	let button = event.target;
+	let report = button.closest('#report');
+	let reportID = report.querySelector('div').id;
+	report.remove();
+	decreaseReportsTitle();
+	let data = new FormData();
+	data.append('reportID', reportID);
+	fetch('api/admin/delete-report', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			decreaseReportsTitle();
+		});
+}
+
+function ignoreReport() {
+	let button = event.target;
+	let report = button.closest('#report');
+	let reportID = report.querySelector('div').id;
+	report.remove();
+	decreaseReportsTitle();
+	let data = new FormData();
+	data.append('reportID', reportID);
+	fetch('api/admin/ignore-report', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+		});
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -759,19 +852,21 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#analyticsBtn').addEventListener('click', openAnalytics);
 	document.querySelector('#reportsBtn').addEventListener('click', openReports);
 	document.querySelector('#updateDauBtn').addEventListener('click', updateDAU);
+	document.querySelector('#currentReportsBtn').addEventListener('click', clickReportsButton);
+	document.querySelector('#ignoredReportsBtn').addEventListener('click', clickReportsButton);
 });
 
-document.addEventListener("click", function(event) {
-    if (event.target.closest("#dropInformation")) {
-        var button = event.target.closest("#dropInformation");
-        var tableRow = button.closest(".tableRow");
+document.addEventListener('click', function (event) {
+	if (event.target.closest('#dropInformation')) {
+		var button = event.target.closest('#dropInformation');
+		var tableRow = button.closest('.tableRow');
 
-        if (tableRow.style.height === "200px") {
-            tableRow.style.height = "60px"; // Change to the original height
-            button.querySelector("i").classList.replace("fa-chevron-down", "fa-chevron-right");
-        } else {
-            tableRow.style.height = "200px"; // Expand to fit content
-            button.querySelector("i").classList.replace("fa-chevron-right", "fa-chevron-down");
-        }
-    }
+		if (tableRow.style.height === '120px') {
+			tableRow.style.height = '60px'; // Change to the original height
+			button.querySelector('i').classList.replace('fa-chevron-down', 'fa-chevron-right');
+		} else {
+			tableRow.style.height = '120px'; // Expand to fit content
+			button.querySelector('i').classList.replace('fa-chevron-right', 'fa-chevron-down');
+		}
+	}
 });
