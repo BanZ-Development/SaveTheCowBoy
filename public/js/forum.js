@@ -181,7 +181,14 @@ function createPostElement(post, currentUserID, pfp) {
 	if (isLiked) {
 		div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
 	}
-
+	if (currentUserID == uID) {
+		let button = document.createElement('button');
+		button.id = 'deleteBtn';
+		button.className = 'iconBtn';
+		button.innerHTML = '<i class="fa-regular fa-trash-can"></i>';
+		button.addEventListener('click', deletePostConfirm);
+		div.querySelector('.forumBtns').appendChild(button);
+	}
 	div.querySelector('#commentIcon').addEventListener('click', openPostComments);
 	div.querySelector('#likeBtn').addEventListener('click', likePost);
 	div.querySelector('#reportBtn').addEventListener('click', forumReport);
@@ -194,6 +201,7 @@ function loadSinglePost(post, currentUserID, pfp) {
 	let date = new Date(postDate);
 	let profilePic = '../images/default-pfp.jpeg';
 	if (pfp.name) profilePic = `/image/${pfp.name}`;
+	document.querySelector('.backBtn').style.display = 'flex';
 
 	div.innerHTML = `<div id="post">
 		<span class="line"></span>
@@ -232,6 +240,14 @@ function loadSinglePost(post, currentUserID, pfp) {
 	if (isLiked) {
 		div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
 	}
+	if (currentUserID == uID) {
+		let button = document.createElement('button');
+		button.id = 'deleteBtn';
+		button.className = 'iconBtn';
+		button.innerHTML = '<i class="fa-regular fa-trash-can"></i>';
+		button.addEventListener('click', deletePostConfirm);
+		div.querySelector('.forumBtns').appendChild(button);
+	}
 	div.querySelector('#reportBtn').addEventListener('click', forumReport);
 	div.querySelector('#commentIcon').addEventListener('click', goToCommentSection);
 	div.querySelector('#likeBtn').addEventListener('click', likePost);
@@ -240,6 +256,68 @@ function loadSinglePost(post, currentUserID, pfp) {
 	comments.forEach((comment) => {
 		loadComment(comment, currentUserID);
 	});
+}
+
+function deletePostConfirm() {
+	let button = event.target;
+	let postID = button.closest('.forumPost').id;
+	const data = new FormData();
+	data.append('postID', postID);
+
+	fetch('api/forum/delete-post', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				console.log('success');
+				window.location.replace(`/forum`);
+			} else {
+				if (data.message == 'Please make sure all the fields are filled in') {
+					//red border around
+				}
+				console.log('error!');
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+}
+
+function deleteCommentConfirm() {
+	let button = event.target;
+	let commentID = button.closest('.comment').id;
+	const data = new FormData();
+	data.append('commentID', commentID);
+
+	fetch('api/forum/delete-comment', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				console.log('success');
+				window.location.reload();
+			} else {
+				if (data.message == 'Please make sure all the fields are filled in') {
+					//red border around
+				}
+				console.log('error!');
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+		});
 }
 
 function createPost() {
@@ -398,6 +476,14 @@ function loadComment(comment, currentUserID) {
 			if (isLiked) {
 				div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
 			}
+			if (currentUserID == authorID) {
+				let button = document.createElement('button');
+				button.id = 'deleteBtn';
+				button.className = 'iconBtn';
+				button.innerHTML = '<i class="fa-regular fa-trash-can"></i>';
+				button.addEventListener('click', deleteCommentConfirm);
+				div.querySelector('.forumBtns').appendChild(button);
+			}
 			document.querySelector('#commentsList').appendChild(div);
 			if (window.location.hash) {
 				const id = window.location.hash.substring(1);
@@ -488,6 +574,14 @@ function openReplies() {
 					let isLiked = likes.includes(currentUserID);
 					if (isLiked) {
 						div.querySelector('#likeBtn').querySelector('i').outerHTML = '<i class="fa-solid fa-heart"></i>';
+					}
+					if (currentUserID == authorID) {
+						let button = document.createElement('button');
+						button.id = 'deleteBtn';
+						button.className = 'iconBtn';
+						button.innerHTML = '<i class="fa-regular fa-trash-can"></i>';
+						button.addEventListener('click', deleteCommentConfirm);
+						div.querySelector('.forumBtns').appendChild(button);
 					}
 					if (comments.length > 0) {
 						let openReplyBtn = document.createElement('div');

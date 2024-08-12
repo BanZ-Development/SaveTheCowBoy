@@ -49,7 +49,7 @@ const LoadAnalytics = () => {
 		.then((data) => {
 			console.log(data);
 			const { totalUsers, totalPosts, dailyActiveUsers, usersCalendar, postsCalendar } = data;
-			LoadDailyActiveUsers(dailyActiveUsers, 14, 'days');
+			LoadDailyActiveUsers(dailyActiveUsers, 10, 'days');
 			LoadTotalUsers(totalUsers, usersCalendar);
 			LoadTotalPosts(totalPosts, postsCalendar);
 			LoadNewMembers();
@@ -365,29 +365,27 @@ const LoadNewMembers = () => {
 const SetPreview = (data, title) => {
 	let first = data[0];
 	let last = data[data.length - 1];
+	console.log('First / Last: ', first, last);
 	let ratio = last / first;
+	console.log('Ratio:', ratio);
 	let total = Math.round(ratio * 100);
-	let num = total - 100;
-	let percent = Math.abs(num);
-	let color = '#3dd598';
-	let sign = '+';
-	if (percent < 0) {
-		color = '#f75252';
-		sign = '-';
+	console.log('Total:', total);
+	let percent = total - 100;
+	console.log('Percent:', percent);
+	let color = '#f75252';
+	let sign = '';
+	if (percent >= 0) {
+		sign = '+';
+		color = '#3dd598';
 	}
-	if (percent == 0) sign = '';
 	document.querySelector(`#${title}Preview`).innerHTML = `<b style="color: ${color};">${sign}${percent}%</b> this week`;
-	if (percent < 0) {
-		return '#f75252';
-	} else {
-		return '#3dd598';
-	}
+	return color;
 };
 
 const LoadTotalPosts = (totalPosts, postsCalendar) => {
 	document.querySelector('#totalPostsNum').innerHTML = totalPosts;
 	const { labels, data } = returnCalendarData(postsCalendar);
-	SetPreview(data, 'totalPosts');
+	let color = SetPreview(data, 'totalPosts');
 	let ctx = document.getElementById('totalPosts').getContext('2d');
 	ctx.canvas.parentNode.style.height = '70%';
 	ctx.canvas.parentNode.style.width = '100%';
@@ -399,8 +397,8 @@ const LoadTotalPosts = (totalPosts, postsCalendar) => {
 				{
 					label: 'Posts',
 					data: data, // Data points
-					borderColor: 'rgba(61, 213, 152, 0.945)',
-					backgroundColor: 'rgba(61, 213, 152, 0.945)', // Optional: Adding a background color for better visibility
+					borderColor: color,
+					backgroundColor: color, // Optional: Adding a background color for better visibility
 					fill: false, // Ensures no area fill below the line
 					tension: 0.5
 				}

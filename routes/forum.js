@@ -391,4 +391,47 @@ router.post('/report', async (req, res) => {
 	}
 });
 
+router.post('/delete-post', async (req, res) => {
+	try {
+		const { postID } = req.body;
+		let post = await Post.findById(postID);
+		if (req.user.id == post.uID) {
+			await Post.findByIdAndDelete(postID);
+			res.send({
+				status: true,
+				message: 'Post deleted'
+			});
+		} else {
+			res.send({
+				status: true,
+				message: 'You do not own this post'
+			});
+		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
+router.post('/delete-comment', async (req, res) => {
+	try {
+		const { commentID } = req.body;
+		let comment = await Comment.findById(commentID);
+		//find a way to recursively delete
+		res.send({
+			status: true,
+			message: 'Comment deleted'
+		});
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
 module.exports = router;
