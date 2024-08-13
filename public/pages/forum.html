@@ -23,6 +23,12 @@
           <a href='/forum' style="display: none;" class="backBtn"><i class="fa-solid fa-arrow-left"></i></a>
           <h1 class="forumTitle"style="color: #fff;"><a style="text-decoration: none; color: white;"class="forumTitle"href="/forum">Save the Cowboy Forums</a></h1>
       </div>
+      <div id="sorting">
+        <h3 style="margin-bottom: 5px; color: white;">Sort by</h3>
+        <button class="filterBtn" id="sortClicked" style="background-color: rgb(53, 53, 53);">Newest</button>
+        <button class="filterBtn" id="sortUnclicked">Popular</button>
+        <button class="filterBtn" id="sortUnclicked">Most Liked</button>
+      </div>
       <div>
           <div id="makePost" style="display: none;" class="popupPost"></div>
           <div style="display: none;" id="postInformation" class="postInformation">
@@ -81,6 +87,8 @@
           </div>
       </div>
       <div id="posts"></div>
+      <span class="line"></span>  
+      <button id="loadMoreBtn" class="btnLink" style="display: none; height: fit-content; width: 50%; margin: auto; margin-top: 10px;">Load More</button>
       <div id="morePosts">
           
       </div>

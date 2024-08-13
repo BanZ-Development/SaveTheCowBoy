@@ -16,12 +16,22 @@ const ReturnPfp = (pfp) => {
 	return pfpText;
 };
 
+const returnSortType = () => {
+	document.querySelector('#sorting').style.display = 'block';
+	let sortType = document.querySelector('#sortClicked').innerHTML;
+	if (sortType != 'Newest' && sortType != 'Popular' && sortType != 'Most Liked') return 'Newest';
+	else return sortType;
+};
+
 async function loadPosts() {
 	const id = returnID();
 	let loadedPosts = 0;
 	loadedPosts = document.querySelectorAll('#post').length;
+	let sortType = returnSortType();
+
 	const data = new FormData();
 	data.append('loadedPosts', loadedPosts);
+	data.append('sortType', sortType);
 	if (!id) {
 		fetch('api/forum/loadPosts', {
 			method: 'post',
@@ -35,6 +45,15 @@ async function loadPosts() {
 				loadCreatePostButton();
 				if (data.status) {
 					console.log(data);
+					if (data.hasMore) {
+						let loadMoreBtn = document.querySelector('#loadMoreBtn');
+						loadMoreBtn.style.display = 'flex';
+						loadMoreBtn.addEventListener('click', loadPosts);
+					} else {
+						let loadMoreBtn = document.querySelector('#loadMoreBtn');
+						loadMoreBtn.style.display = 'none';
+						loadMoreBtn.addEventListener('click', loadPosts);
+					}
 					data.posts.forEach((post) => {
 						createPostElement(post, data.currentUserID, data.pfp);
 					});
@@ -148,7 +167,6 @@ function returnPfp(uID, parent) {
 }
 
 function createPostElement(post, currentUserID, pfp) {
-	console.log(pfp);
 	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
@@ -202,6 +220,7 @@ function loadSinglePost(post, currentUserID, pfp) {
 	let profilePic = '../images/default-pfp.jpeg';
 	if (pfp.name) profilePic = `/image/${pfp.name}`;
 	document.querySelector('.backBtn').style.display = 'flex';
+	document.querySelector('#sorting').style.display = 'none';
 
 	div.innerHTML = `<div id="post">
 		<span class="line"></span>
@@ -692,6 +711,9 @@ function submitReport() {
 loadPosts();
 
 function loadCreatePostButton() {
+	document.querySelectorAll('#showPopup').forEach((btn) => {
+		btn.remove();
+	});
 	let button = document.createElement('button');
 	button.style.cssText = 'margin-left: auto; padding-block: 0px; height: 40px;';
 	button.id = 'showPopup';
@@ -754,7 +776,6 @@ function closeReport() {
 
 document.querySelector('#makeReport').addEventListener('click', closeReport);
 document.querySelector('#submitReportButton').addEventListener('click', submitReport);
-//document.querySelector('#showMorePosts').addEventListener('click', loadPosts);
 function MCEtoMessage(mce) {
 	let message = '';
 	mce.children.forEach((child) => {
@@ -828,3 +849,26 @@ function openFaq(event) {
 		});
 	}
 }
+
+async function clearPosts() {
+	let posts = document.querySelector('#posts');
+	document.querySelector('#loadMoreBtn').style.display = 'none';
+	posts.innerHTML = '';
+}
+
+async function sorterClick() {
+	let button = event.target;
+	let sorters = document.querySelectorAll('.filterBtn');
+	sorters.forEach((btn) => {
+		btn.style.backgroundColor = '#1e1e1e';
+		btn.id = 'sortUnclicked';
+	});
+	button.style.backgroundColor = '#353535';
+	button.id = 'sortClicked';
+	clearPosts();
+	loadPosts();
+}
+
+document.querySelectorAll('.filterBtn').forEach((btn) => {
+	btn.addEventListener('click', sorterClick);
+});

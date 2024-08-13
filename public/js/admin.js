@@ -570,8 +570,19 @@ function returnView() {
 	return id;
 }
 
+function formatPhoneNumber(phoneNumberString) {
+	var cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+	var match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+	if (match) {
+		var intlCode = match[1] ? '+1 ' : '';
+		return [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
+	}
+	return null;
+}
+
 const createMemberElement = (user) => {
 	let { address, admin, city, customer, email, firstName, lastName, pfp, phoneNumber, state, uid, zip } = user;
+	let formattedPhoneNumber = formatPhoneNumber(phoneNumber);
 	let div = document.createElement('div');
 	div.id = 'memberElement';
 	div.innerHTML = `
@@ -581,7 +592,7 @@ const createMemberElement = (user) => {
 		<p id="firstNameAdmin">${SafeHTML(firstName)}</p>
 		<p id="lastNameAdmin">${SafeHTML(lastName)}</p>
 		<p id="emailAdmin">${SafeHTML(email)}</p>
-		<p id="phoneNumberAdmin">${SafeHTML(phoneNumber)}</p>
+		<p id="phoneNumberAdmin">${SafeHTML(formattedPhoneNumber)}</p>
 		<p id="stateAdmin">${SafeHTML(state)}</p>
         <p id="cityAdmin">${SafeHTML(city)}</p>
 		<p id="addressAdmin">${SafeHTML(address)}</p>
@@ -590,9 +601,11 @@ const createMemberElement = (user) => {
 		</div>
 		<div style="display: flex; flex-direction: row;">
 		</div>
-		<div class="tableRowInfo">
-		<p style="width: fit-content;">Email: ${SafeHTML(email)},</p>
-		<p style="width: fit-content;">Address: ${SafeHTML(address)}</p>
+		<div style="flex-direction: column;" class="tableRowInfo">
+		<p style="width: 100%;"><b>Full Name:</b> ${SafeHTML(firstName)} ${SafeHTML(lastName)}</p>
+		<p style="width: 100%;"><b>Email:</b> ${SafeHTML(email)}</p>
+		<p style="width: 100%;"><b>Phone Number:</b> ${SafeHTML(formattedPhoneNumber)}</p>
+		<p style="width: 100%;"><b>Address:</b> ${SafeHTML(address)}, ${SafeHTML(city)}, ${SafeHTML(state)}, ${SafeHTML(zip)}</p>
 		</div>
 		<div class="tableRowBtns">
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="editBtn" class="btnLink">Edit</button>
@@ -886,11 +899,11 @@ document.addEventListener('click', function (event) {
 		var button = event.target.closest('#dropInformation');
 		var tableRow = button.closest('.tableRow');
 
-		if (tableRow.style.height === '200px') {
+		if (tableRow.style.height === '315px') {
 			tableRow.style.height = '60px'; // Change to the original height
 			button.querySelector('i').classList.replace('fa-chevron-down', 'fa-chevron-right');
 		} else {
-			tableRow.style.height = '200px'; // Expand to fit content
+			tableRow.style.height = '315px'; // Expand to fit content
 			button.querySelector('i').classList.replace('fa-chevron-right', 'fa-chevron-down');
 		}
 	}

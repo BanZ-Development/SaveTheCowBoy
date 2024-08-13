@@ -5,38 +5,60 @@ const Report = require('../model/Report');
 const Comment = require('../model/Comment');
 
 router.post('/loadPosts', async function (req, res) {
-	const { loadedPosts } = req.body;
+	const { loadedPosts, sortType } = req.body;
 	try {
+		const totalCount = await Post.countDocuments();
+		let toLoad = totalCount - loadedPosts;
+		let hasMore = toLoad > 10;
+		// Load the next 10 posts, starting after the already loaded ones
 		let posts;
-		const count = await Post.countDocuments();
-		const difference = count - loadedPosts;
-		console.log('Count: ' + count);
-		console.log('Difference: ' + difference);
-		if (count < 10) {
-			posts = await Post.find();
-		} else if (difference < 10) {
-			console.log(await Post.find());
-			posts = await Post.find()
-				.skip(10 - difference)
-				.limit(difference);
-		} else {
-			posts = await Post.find()
-				.skip(difference - 10)
-				.limit(10);
+		switch (sortType) {
+			case 'Newest':
+				posts = await Post.find({})
+					.sort({ postDate: -1 }) // Sort by most recent
+					.skip(loadedPosts)
+					.limit(10);
+				break;
+			case 'Popular':
+				//Sorting by most popular (popular = likes / time since post);
+				posts = await Post.find({});
+
+				posts = posts.sort((firstItem, secondItem) => {
+					const firstItemPopularity = (firstItem.likesCount * 1e8) / (new Date() - new Date(firstItem.postDate).valueOf());
+					const secondItemPopularity = (secondItem.likesCount * 1e8) / (new Date() - new Date(secondItem.postDate).valueOf());
+					console.log('Post:', firstItem, '\nFirst popularity:', firstItemPopularity);
+					console.log('Post:', secondItem, '\nSecond popularity:', secondItemPopularity);
+					return secondItemPopularity - firstItemPopularity; // Sort in descending order
+				});
+				posts = posts.slice(loadedPosts, loadedPosts + 10);
+				break;
+			case 'Most Liked':
+				posts = await Post.find({})
+					.sort({ likesCount: -1 }) // Sort by most recent
+					.skip(loadedPosts)
+					.limit(10);
+				break;
+			default:
+				posts = await Post.find({})
+					.sort({ postDate: -1 }) // Sort by most recent
+					.skip(loadedPosts)
+					.limit(10);
+				break;
 		}
-		if (posts) {
-			res.send({
-				status: true,
-				message: `${posts.length} Posts loaded`,
-				posts: posts,
-				currentUserID: req.user.id
-			});
-		}
+
+		res.send({
+			status: true,
+			message: `${posts.length} Posts loaded`,
+			posts: posts,
+			currentUserID: req.user.id,
+			hasMore: hasMore
+		});
 	} catch (error) {
 		console.log(error);
 		res.send({
 			status: false,
-			message: 'No posts found'
+			message: 'No posts found',
+			hasMore: false
 		});
 	}
 });
