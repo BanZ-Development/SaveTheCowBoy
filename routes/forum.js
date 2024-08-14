@@ -24,8 +24,8 @@ router.post('/loadPosts', async function (req, res) {
 				posts = await Post.find({});
 
 				posts = posts.sort((firstItem, secondItem) => {
-					const firstItemPopularity = (firstItem.likesCount * 1e8) / (new Date() - new Date(firstItem.postDate).valueOf());
-					const secondItemPopularity = (secondItem.likesCount * 1e8) / (new Date() - new Date(secondItem.postDate).valueOf());
+					const firstItemPopularity = ((firstItem.likesCount + firstItem.commentsCount) * 1e8) / (new Date() - new Date(firstItem.postDate).valueOf());
+					const secondItemPopularity = ((secondItem.likesCount + secondItem.commentsCount) * 1e8) / (new Date() - new Date(secondItem.postDate).valueOf());
 					console.log('Post:', firstItem, '\nFirst popularity:', firstItemPopularity);
 					console.log('Post:', secondItem, '\nSecond popularity:', secondItemPopularity);
 					return secondItemPopularity - firstItemPopularity; // Sort in descending order
@@ -438,11 +438,29 @@ router.post('/delete-post', async (req, res) => {
 	}
 });
 
+async function deleteChildren(commentID, sum) {
+	//pass in commentID
+	let comment = await Comment.findById(commentID);
+	sum += comment.comments.length;
+	for (let i = 0; i < comment.comments.length; i++) {
+		let childID = comment.comments[i];
+		sum = await deleteChildren(childID, sum);
+	}
+	//delete comment
+	await Comment.findByIdAndDelete(commentID);
+	return sum;
+}
+
 router.post('/delete-comment', async (req, res) => {
 	try {
 		const { commentID } = req.body;
 		let comment = await Comment.findById(commentID);
-		//find a way to recursively delete
+		let postID = comment.postID;
+		let sum = await deleteChildren(commentID, 1);
+		console.log('Sum:', sum);
+		let post = await Post.findById(postID);
+		post.commentsCount -= sum;
+		post.save();
 		res.send({
 			status: true,
 			message: 'Comment deleted'
