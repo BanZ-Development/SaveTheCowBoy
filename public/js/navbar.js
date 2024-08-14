@@ -33,9 +33,9 @@ function load() {
                 <i class="material-icons">keyboard_arrow_down</i>
             <div class="navDrop">
                 <a style="border-radius: 4px 4px 0px 0px;" href="forum" class="dropLink"><i class="fa-regular fa-comments" disabled></i> Forum</a>
-                <a href="" class="dropLink"><i class="fa-regular fa-calendar"></i> Daily Devotions</a>
-                <a href="" class="dropLink"><i class="fa-solid fa-book-bible"></i> Bible Plans</a>
-                <a style="border-radius: 0px 0px 4px 4px" href="" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
+                <a href="daily-devotions" class="dropLink"><i class="fa-regular fa-calendar"></i> Daily Devotions</a>
+                <a href="bible-plans" class="dropLink"><i class="fa-solid fa-book-bible"></i> Bible Plans</a>
+                <a style="border-radius: 0px 0px 4px 4px" href="cowboy-stories" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
             </div>
         </div>
             <a id="signupNav" href="signup" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i></a>
@@ -146,9 +146,12 @@ function checkForPfpCookie() {
 }
 checkForPfpCookie();
 
-/* COMMENT OUT ON TEST (CONSTRUCTION BANNER)
+//COMMENT OUT ON TEST (CONSTRUCTION BANNER)
+let available = ['forum', 'settings', 'admin'];
 document.addEventListener('DOMContentLoaded', function () {
 	for (let i = 0; i < document.querySelectorAll('.dropLink').length; i++) {
+		console.log(document.querySelectorAll('.dropLink')[i].getAttribute('href'));
+		if (available.includes(document.querySelectorAll('.dropLink')[i].getAttribute('href'))) continue;
 		document.querySelectorAll('.dropLink')[i].addEventListener('click', (event) => {
 			event.preventDefault();
 			document.querySelector('.construction').style = 'display: block !important;';
@@ -162,15 +165,16 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 		});
 	}
-});*/
+});
 
 document.addEventListener('DOMContentLoaded', function () {
 	document.querySelector('#profile').setAttribute('href', '');
 	document.querySelector('#profile').addEventListener('click', construction);
 	document.querySelector('#navSub').addEventListener('click', construction);
 });
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-function construction(event) {
+async function construction(event) {
 	event.preventDefault();
 	document.querySelector('.construction').style = 'display: block !important;';
 	document.querySelector('#nav').style = 'margin-top: 51px;';
@@ -181,4 +185,7 @@ function construction(event) {
 		opacity: [0, 1],
 		duration: 200
 	});
+	await delay(5000);
+	document.querySelector('.construction').style.display = 'none';
+	document.querySelector('#nav').style = 'margin-top: 0px;';
 }
