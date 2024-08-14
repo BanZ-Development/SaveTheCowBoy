@@ -29,7 +29,7 @@ const postSchema = new Schema({
 		default: 0
 	},
 	reports: {
-		type: Number,
+		type: Array,
 		required: false
 	},
 	comments: [Object],

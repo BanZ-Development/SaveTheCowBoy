@@ -22,7 +22,6 @@ router.post('/loadPosts', async function (req, res) {
 			case 'Popular':
 				//Sorting by most popular (popular = likes / time since post);
 				posts = await Post.find({});
-
 				posts = posts.sort((firstItem, secondItem) => {
 					const firstItemPopularity = ((firstItem.likesCount + firstItem.commentsCount) * 1e8) / (new Date() - new Date(firstItem.postDate).valueOf());
 					const secondItemPopularity = ((secondItem.likesCount + secondItem.commentsCount) * 1e8) / (new Date() - new Date(secondItem.postDate).valueOf());
@@ -390,8 +389,10 @@ router.post('/report', async (req, res) => {
 			reporterID: uid,
 			ignored: false
 		})
-			.then((report) => {
-				console.log(report._id);
+			.then(async (report) => {
+				let post = await Post.findById(postID);
+				post.reports.push(report._id);
+				post.save();
 				res.send({
 					status: true,
 					message: 'Report sent'
@@ -418,6 +419,7 @@ router.post('/delete-post', async (req, res) => {
 		const { postID } = req.body;
 		let post = await Post.findById(postID);
 		if (req.user.id == post.uID) {
+			await deletePostReports(postID);
 			await Post.findByIdAndDelete(postID);
 			res.send({
 				status: true,
@@ -447,8 +449,25 @@ async function deleteChildren(commentID, sum) {
 		sum = await deleteChildren(childID, sum);
 	}
 	//delete comment
+	await deleteCommentReports(commentID);
 	await Comment.findByIdAndDelete(commentID);
 	return sum;
+}
+
+async function deleteCommentReports(commentID) {
+	let comment = await Comment.findById(commentID);
+	if (!comment.reports) return;
+	for (let i = 0; i < comment.reports.length; i++) {
+		await Report.findByIdAndDelete(comment.reports[i]);
+	}
+}
+
+async function deletePostReports(postID) {
+	let post = await Post.findById(postID);
+	if (!post.reports) return;
+	for (let i = 0; i < post.reports.length; i++) {
+		await Report.findByIdAndDelete(post.reports[i]);
+	}
 }
 
 router.post('/delete-comment', async (req, res) => {
