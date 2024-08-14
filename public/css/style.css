@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
 :root {
     --slate-gray: #6d8a96ff;
     --dark-goldenrod: #a98743ff;
@@ -409,6 +411,110 @@ button {
     text-indent: 10px;
 }
 
+.signupDivSec > h3 {
+    color: #333;
+    margin-inline: auto;
+    width: 70%;
+}
+
+.membersTable {
+    border: 0;
+  }
+
+  #tableDescription > p {
+    line-height: 20px;
+  }
+
+  .tableRow {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    background-color: #fff0;
+    padding-inline: 5px;
+    height: 60px;
+    margin-block: 10px;
+    overflow: hidden;
+  }
+
+  .tableRowInfo {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .tableRowInfo > p {
+    width: fit-content;
+    margin-inline: 10px;
+    text-align: left;
+    width: 90px;
+    height: 19px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+    scale: 0.85;
+  }
+
+  #firstNameAdmin {
+    margin-left: 25px;
+  }
+
+  #emailAdmin {
+    max-width: 250px;
+  }
+
+  #addressAdmin {
+    max-width: 200px;
+  }
+
+  .tableDropBtn {
+    margin-block: auto;
+    width: 25px;
+    height: 25px;
+    background-color: #fff0;
+    border-radius: 50%;
+    border: solid 1px #fff;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .tableDropBtn > i {
+    width: 15px;
+  }
+
+  .filterBtn {
+    color: #fff;
+    background-color: #1e1e1e;
+    border: 2px solid #303030;
+    padding: 10px;
+    font-size: 17px;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 120px;
+    margin-inline: 5px;
+  }
+
+  .filterBtn:hover {
+    background-color: #353535;
+  }
+
+  .searchInput {
+    background-color: #fff;
+    color: #333;
+    padding: 5px;
+    padding-inline: 15px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .searchInput > input {
+    color: #333;
+    border: none;
+    height: 100%;
+    outline: none;
+    font-size: 19px;
+    font-family: 'Roboto';
+  }
+
 .signupDivSec {
     display: flex;
     flex-direction: column;
@@ -571,6 +677,7 @@ button {
 }
 
 .settingSidebar {
+    max-width: 350px;
     padding-top: 30px;
     display: flex;
     flex-direction: column;
@@ -620,10 +727,12 @@ button {
     flex-direction: column;
     background-color: #1e1e1e;
     width: 80%;
-    height: unset;
+    min-height: 100%;
+    max-height: fit-content;
     color: #fff;
     padding-inline: 30px;
     padding-left: 20%;
+    padding-bottom: 120px;
 }
 
 .line {
@@ -700,22 +809,22 @@ button {
   }
 
   .forumSection {
-    padding-block: 120px;
     display: flex;
     flex-direction: column;
-    width: 80%;
-    margin-inline: auto;
+    width: 60vw;
   }
 
   .forumPost {
     color: #fff;
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 10px;
+    font-size: 20px !important;
   }
 
   .forumPost > p {
     text-overflow: ellipsis;
     overflow-x: hidden;
+    line-height: 35px;
   }
 
   .forumTitle > h3 > a {
@@ -753,6 +862,7 @@ button {
     text-decoration: none;
     line-height: 40px;
     margin-inline: 20px;
+    margin-right: 0px;
   }
 
   .forumUser:hover {
@@ -778,10 +888,12 @@ button {
     position: fixed;
     left: 0;
     right: 0;
+    top: 110px;
     margin-inline: auto;
     padding: 20px;
     width: 80%;
-    height: 70%;
+    height: 75vh;
+    overflow-y: scroll;
     background-color: #fff;
     display: flex;
     flex-direction: column;
@@ -808,7 +920,7 @@ button {
 
   #posts {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 
   .forumBtns {
@@ -835,6 +947,7 @@ button {
     flex-direction: column;
     height: fit-content;
     background-color: #1e1e1e;
+    display: none;
   }
 
   #navSep {
@@ -925,6 +1038,255 @@ button {
     border: solid 2px #fff0 !important;
  }
 
+ #phoneNumberAdmin {
+    width: 120px;
+ }
+
+ #stateAdmin {
+    width: 50px;
+ }
+
+ #zipAdmin {
+    width: 70px;
+ }
+
+ #forumDate {
+    margin-block: 0px !important;
+    margin-left: 24px;
+    position: relative;
+ }
+
+ #forumDate > i {
+    font-size: 4px;
+    line-height: 40px;
+    margin-inline: 10px;
+    position: absolute;
+    left: -25px;
+ }
+
+ #forumDate:hover {
+    color: #626262;
+ }
+
+ .allForum {
+    display: flex;
+    flex-direction: row;
+    width: 85%;
+    margin-inline: auto;
+    padding-block: 120px;
+    position: relative;
+    justify-content: center;
+ }
+
+ .forumDesc {
+    display: flex;
+    flex-direction: column;
+    width: 17vw;
+    margin-left: auto;
+    top: 120px;
+    position: sticky;
+    height: calc(100vh - 180px);
+    padding-inline: 20px;
+    border-radius: 10px;
+    background-color: #202020;
+    color: #fff;
+    overflow-y: scroll;
+    border: solid 1px #2b2b2b;
+ }
+
+ .faqBtn {
+    font-family: 'Roboto';
+    color: #747474;
+    text-align: left;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    background-color: #202020;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    height: 50px;
+    border-radius: 10px;
+    transition: ease all 0.3s;
+    text-indent: 10px;
+}
+
+.faqBtn:hover {
+    background-color: #252525;
+    color: #bdbdbd !important;
+}
+
+.faqBtn > p {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-block: 0px;
+    line-height: 50px;
+}
+
+.faqBtn > p > i {
+    margin-left: auto;
+    margin-right: 7.5px;
+    line-height: 50px;
+    height: 100% !important;
+}
+
+.faqBtn > div {
+    display: none;
+    overflow: hidden;
+}
+
+.faqBtn > div > p {
+    height: 100%;
+    margin-left: 10px;
+    text-indent: 0px;
+}
+
+.faqBtn > p > i {
+    height: 20px;
+}
+
+.moderator {
+    display: flex;
+    flex-direction: row;
+    height: 64px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.moderator > img {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+    margin-right: 10px;
+    line-height: 64px;
+}
+
+.moderator > p {
+    font-size: 20px;
+    line-height: 10px;
+}
+
+#commentBtn {
+    margin-left: 0px;
+    height: 50px;
+    width: 140px;
+    font-family: 'Roboto';
+}
+
+.forumDesc > h3  {
+    margin-left: 20px;
+}
+
+.inlineGraphs {
+    display: flex;
+    flex-direction: row;
+    height: 50%;
+}
+
+.inlineGraphs > div > h1 {
+    font-size: 2.4vw;
+}
+
+.graphSec {
+    margin-inline: 10px;
+    margin-block: 30px;
+    padding: 50px;
+    width: 47%;
+    padding: 10px;
+    background-color: #1c1c1c;
+    border-radius: 20px;
+}
+
+#filterBtn {
+    position: relative;
+    height: 30px;
+    line-height: 30px;
+    width: fit-content;
+    padding-inline: 30px;
+}
+
+#filterBtn > p {
+    margin: 0px;
+}
+
+.filterDrop {
+    top: 50px;
+    left: 0;
+    width: 340px;
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    background-color: #1a1a1a;
+    border: solid 1px #333;
+    padding: 20px;
+    border-radius: 15px;
+    z-index: 3;
+}
+
+#filterBtn:hover > .filterDrop {
+    display: flex;
+}
+
+.filterDropSearch {
+    display: flex;
+    flex-direction: row;
+    padding-block: 15px;
+    border-bottom: 1px solid #333;
+    align-items: center;
+}
+
+.filterDropSearch > h4 {
+    margin-right: 5px;
+    margin-block: 0px !important;
+}
+
+.filterDropSearch > input {
+    height: 25px;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    border: solid 1px #333;
+    color: #fff;
+    text-indent: 10px;
+    font-size: 15px;
+    font-family: 'Roboto';
+    outline: none;
+    margin-left: auto;
+    transition: ease all 0.3s;
+}
+
+.filterDropSearch > input:focus {
+    border: solid 1px #2374d1;
+    box-shadow: #2374d162 0px 8px 24px;
+}
+
+#reportHolder {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.backBtn {
+    display: flex;
+    justify-content: center;
+    background-color: #cccccc65;
+    color: #333;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    padding: 5px;
+    position: absolute;
+    bottom: 25px;
+    left: -40px;
+    text-decoration: none;
+}
+
+.backBtn > i {
+    font-size: 19px;
+    width: 15px;
+}
+
   @media only screen and (max-width: 1610px) {
 
     .settingSidebarBtn {
@@ -955,6 +1317,24 @@ button {
   }
 
   @media only screen and (max-width: 1478px) {
+
+    .faqBtn > p {
+        font-size: 16.5px;
+    }
+
+    .faqBtn > div > p {
+        font-size: 16.5px;
+    }
+
+    .moderator > p {
+        font-size: 16.5px;
+        line-height: 1px;
+    }
+
+    .moderator > img {
+        height: 35px;
+        width: 35px;
+    }
 
     .settingSidebar {
         width: 100px;
@@ -1042,6 +1422,26 @@ button {
   }
 
   @media only screen and (max-width: 1060px) {
+
+    .forumTitle > h3 > a {
+        font-size: 20px;
+    }
+
+    .allForum {
+        width: 90%;
+    }
+
+    .forumDesc {
+        width: 22vw;
+    }
+
+    .forumTitle {
+        font-size: 20px;
+    }
+
+    .moderator, #moderatorHeader {
+        display: none;
+    }
 
     #logoutBtn1 {
         display: none !important;
@@ -1197,6 +1597,14 @@ button {
   }
 
   @media only screen and (max-width: 856px) {
+
+    .forumDesc {
+        display: none !important;
+    }
+
+    .forumSection {
+        width: 100%;
+    }
 
     #popupBox {
         width: 80% !important;
@@ -1360,6 +1768,7 @@ button {
         height: 60%;
         max-height: 100px;
         line-height: 100px;
+        margin-left: 10px;
     }
 
     .navLogo {
@@ -1397,4 +1806,22 @@ button {
         transform: scale(0.85);
     }
 
+  }
+
+  @media only screen and (max-width: 856px) {
+    .forumDate, .forumUser {
+        font-size: 16.5px;
+    }
+
+    #forumHeader {
+        flex-direction: column !important;
+    }
+
+    #showPopup {
+        margin-left: 15px !important;
+    }
+
+    .forumTitle > a {
+        margin-inline: auto;
+    }
   }

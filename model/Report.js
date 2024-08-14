@@ -17,6 +17,10 @@ const reportSchema = new Schema({
 	reporterID: {
 		type: String,
 		required: true
+	},
+	ignored: {
+		type: Boolean,
+		default: false
 	}
 });
 

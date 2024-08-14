@@ -48,7 +48,8 @@ const userSchema = new Schema({
 		token: String,
 		expirationDate: Date
 	},
-	posts: [String]
+	posts: [String],
+	activeDate: Date
 });
 
 module.exports = mongoose.model('User', userSchema);

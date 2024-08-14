@@ -29,10 +29,14 @@ const postSchema = new Schema({
 		default: 0
 	},
 	reports: {
-		type: Number,
+		type: Array,
 		required: false
 	},
 	comments: [Object],
+	commentsCount: {
+		type: Number,
+		default: 0
+	},
 	tags: [String]
 });
 

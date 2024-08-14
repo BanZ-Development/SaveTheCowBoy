@@ -14,8 +14,218 @@
     <script src="../js/anime.min.js"></script>
     <script type="module" src="../js/admin.js"></script>
     <script type="module" src="../js/navbar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-    
+<body style="overflow-x: auto;">
+    <div class="settings">
+        <div class="settingSidebar">
+            <button id="membersBtn" class="settingSidebarBtn"><i class="fa-solid fa-users"></i> <p>Members</p></button>
+            <button id="analyticsBtn" class="settingSidebarBtn"><i class="fa-solid fa-chart-simple"></i> <p>Analytics</p></button>
+            <button id="reportsBtn" class="settingSidebarBtn"><i class="fa-solid fa-flag"></i> <p>Reports</p></button>
+            <button id="reportsBtn" class="settingSidebarBtn"><i class="fa-regular fa-calendar"></i> <p>Daily Devotions</p></button>
+        </div>
+        <div class="settingMainContent">
+            <div id="members" class="settingSection">
+                <div class="settingColumn">
+                    <h1>Members</h1>
+                    <span class="line"></span>
+                    <div style="margin-block: 20px; display: flex; flex-direction: row; justify-content: end;">
+                        <div id="filterBtn" class="filterBtn"><p><i class="fa-solid fa-arrow-up-wide-short"></i> Filter</p>
+                        <div id="filterPopup" class="filterDrop">
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px; margin-top: 5px;">Username</h4>
+                                <input type="text" id="usernameInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">First Name</h4>
+                                <input type="text" id="fnInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">Last Name</h4>
+                                <input type="text" id="lnInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">Phone Number</h4>
+                                <input type="text" id="pnInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">State</h4>
+                                <input type="text" id="stateInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">City</h4>
+                                <input type="text" id="cityInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">Address</h4>
+                                <input type="text" id="addressInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">Zip Code</h4>
+                                <input type="text" id="zipInput">
+                            </div>
+                            <div class="filterDropSearch">
+                                <h4 style="margin-bottom: 3px;">Admin</h4>
+                                <input type="text" id="adminInput">
+                            </div>
+                            <button style="height: 50px; font-family: 'Roboto';" class="btnLink" id="applyFilterBtn">Apply Filter</button>
+                        </div>
+                        </div>
+                        <button id="editBtn" class="filterBtn"><i class="fa-solid fa-user-pen"></i> Edit</button>
+                    </div>
+                    <span class="line"></span>
+                    <div id="members" class="membersTable">
+                        <div id="tableDescription" style="height: 50px; background-color: #242424; flex-direction: row;" class="tableRow">
+                            <div class="tableRowInfo">
+                                <p style="margin-left: 50px;" id="firstNameAdmin">First Name</p>
+                                <p id="lastNameAdmin">Last Name</p>
+                                <p id="emailAdmin">Email</p>
+                                <p id="phoneNumberAdmin">Phone</p>
+                                <p id="stateAdmin">State</p>
+                                <p id="cityAdmin">City</p>
+                                <p id="addressAdmin">Address</p>
+                                <p id="zipAdmin">Zip</p>
+                                <p id="adminAdmin">Admin</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="analytics" class="settingSection">
+                <div class="settingColumn" id="memberColumn">
+                    <h1>Analytics</h1>
+                    <span class="line"></span>
+                    <div style="width: 95%;" class="settingColumn">
+                        <div class="inlineGraphs">
+                            <div class="graphSec">
+                                <h4>Daily Active Users</h4>
+                                <label for="typeSelector">View the past </label>
+                                <input type="number" id="timeframeSelector" placeholder="10 (default)" value="">
+                                <select id="typeSelector">
+                                    <option value="days">Days</option>
+                                    <option value="months">Months</option>
+                                    <option value="years">Years</option>
+                                </select>
+                                <button id="updateDauBtn">Go</button>
+                                <canvas id="dailyActiveUsers" width="600" height="400"></canvas>
+                            </div>
+                            <div class="graphSec" style="width: 45%; padding-inline: 25px;">
+                                <div class="inlineGraphs">
+                                    <div style="padding: 10px; width: 50%; border-right: solid 4px #1e1e1e; border-bottom: solid 4px #1e1e1e;">
+                                        <div style="height: 80%;" class="inlineGraphs">
+                                            <div style="height: 70%;">
+                                                <h4>Total Users</h4>
+                                                <h1 id="totalUsersNum"></h1>
+                                            </div>
+                                            <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
+                                                <div>
+                                                    <canvas id="totalUsers" width="50%" height="45"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p id="totalUsersPreview"><b style="color: #f75252;">12%</b> vs preview . 28 days</p>
+                                    </div>
+                                    <div style="padding: 10px; width: 50%; border-left: solid 4px #1e1e1e; border-bottom: solid 4px #1e1e1e;">
+                                        <div style="height: 80%;" class="inlineGraphs">
+                                            <div style="height: 70%;">
+                                                <h4>Total Posts</h4>
+                                                <h1 id="totalPostsNum"></h1>
+                                            </div>
+                                            <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
+                                                <div>
+                                                    <canvas id="totalPosts" width="50%" height="70"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p id="totalPostsPreview"><b style="color: #3dd598;">12%</b> vs preview . 28 days</p>
+                                    </div>
+                                </div>
+                                <div class="inlineGraphs">
+                                    <div style="padding: 10px; width: 50%; border-right: solid 4px #1e1e1e; border-top: solid 4px #1e1e1e;">
+                                        <div style="height: 80%;" class="inlineGraphs">
+                                            <div style="height: 70%;">
+                                                <h4>New Members</h4>
+                                                <h1>1,000+</h1>
+                                            </div>
+                                            <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
+                                                <div>
+                                                    <canvas id="newMembers" width="50%" height="70"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p><b style="color: #f75252;">12%</b> vs preview . 28 days</p>
+                                    </div>
+                                    <div style="padding: 10px; width: 50%; border-left: solid 4px #1e1e1e; border-top: solid 4px #1e1e1e;">
+                                        <div style="height: 80%;" class="inlineGraphs">
+                                            <div style="height: 70%;">
+                                                <h4>Page Visits</h4>
+                                                <h1>1,000+</h1>
+                                            </div>
+                                            <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
+                                                <div>
+                                                    <canvas id="pageVisits" width="50%" height="70"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p><b style="color: #3dd598;">12%</b> vs preview . 28 days</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inlineGraphs">
+                            <div class="graphSec">
+                                <h4>Percent of Database Used</h4>
+                                <div style="display: flex; flex-direction: row; padding-block: 20px;">
+                                    <div style=" margin-left: 15px; width: 45%;">
+                                        <div style="display: flex; flex-direction: row;">
+                                            <span style="height: 15px; width: 15px; background-color: #2782f2; display: inline-block; border-radius: 50%; margin-block: auto; margin-right: 10px;"></span>
+                                            <p style="font-size: 20px;">Used (65%)</p>
+                                        </div>
+                                        <div style="display: flex; flex-direction: row;">
+                                            <span style="height: 15px; width: 15px; background-color: #ffffff; display: inline-block; border-radius: 50%; margin-block: auto; margin-right: 10px;"></span>
+                                            <p style="font-size: 20px;">Not Used (35%)</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <canvas id="databasePercent" width="300" height="300"></canvas>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="graphSec">
+                                <h4>Extra spot for analytics</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="reports" class="settingSection">
+                <div class="settingColumn" id="memberColumn">
+                    <h1>Reports</h1>
+                    <span class="line"></span>
+                    <div style="display: flex; flex-direction: row;">
+                        <div style="justify-content: left;">
+                            <h2 id="loadedReportsTitle"></h1>
+                        </div>
+                    </div>
+                    <div style="justify-content: end; margin-bottom: 20px;">
+                        <button class="filterBtn" id="currentReportsBtn" style="background-color: #353535;">Current Reports</button>
+                        <button class="filterBtn" id="ignoredReportsBtn">Ignored Reports</button>
+                    </div>
+                    <span class="line"></span>
+                    <div id="reportHolder"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .btnLink {
+            font-family: 'Roboto';
+        }
+
+        #deleteBtn:hover {
+            background-color: #f75252 !important;
+        }
+    </style>
 </body>
 </html>
