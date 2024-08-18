@@ -604,16 +604,17 @@ const createMemberElement = (user) => {
 		</div>
 		<div style="display: flex; flex-direction: row;">
 		</div>
-		<div style="flex-direction: column;" class="tableRowInfo">
-		<p style="width: 100%;"><b>Full Name:</b> ${SafeHTML(firstName)} ${SafeHTML(lastName)}</p>
-		<p style="width: 100%;"><b>Email:</b> ${SafeHTML(email)}</p>
-		<p style="width: 100%;"><b>Phone Number:</b> ${SafeHTML(formattedPhoneNumber)}</p>
-		<p style="width: 100%;"><b>Address:</b> ${SafeHTML(address)}, ${SafeHTML(city)}, ${SafeHTML(state)}, ${SafeHTML(zip)}</p>
+		<div style="flex-direction: row; align-items: start; flex-wrap: wrap;" class="tableRowInfo">
+		<p class="userInfoTag" style="width: 100%;"><b>Full Name:</b> ${SafeHTML(firstName)} ${SafeHTML(lastName)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>Email:</b> ${SafeHTML(email)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>Phone Number:</b> ${SafeHTML(formattedPhoneNumber)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>Address:</b> ${SafeHTML(address)}, ${SafeHTML(city)}, ${SafeHTML(state)}, ${SafeHTML(zip)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>UID:</b> ${SafeHTML(uid)}</p>
 		</div>
 		<div class="tableRowBtns">
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="editBtn" class="btnLink">Edit</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="profileBtn" class="btnLink">View Profile</button>
-		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteBtn" class="btnLink">Delete Account</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteMemberBtn" class="btnLink deleteBtn">Delete</button>
 		</div>
 		</div>
 		<div style="display:none;" id="dropdownBox">
@@ -958,3 +959,23 @@ function createDevotion() {
 			}
 		});
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+	const deleteButtons = document.querySelectorAll('.deleteBtn');
+	console.log(deleteButtons); // Check if the buttons are being selected
+
+	deleteButtons.forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			console.log('Delete button clicked'); // Check if the event is firing
+			const optionBackground = document.getElementById('optionBackground');
+			const deleteButtons = document.getElementById('deleteButtons');
+
+			if (optionBackground && deleteButtons) {
+				optionBackground.style.display = 'flex';
+				deleteButtons.style.display = 'flex';
+			} else {
+				console.log('Elements not found');
+			}
+		});
+	});
+});

@@ -1313,6 +1313,23 @@ button {
     width: 15px;
 }
 
+.userInfoTag {
+    color: #aaa;
+    background-color: #1d1d1d;
+    border: solid 1px #333;
+    padding: 10px;
+    border-radius: 8px;
+    width: fit-content !important;
+    white-space: wrap !important;
+    scale: 1 !important;
+    font-size: 12.5px !important;
+}
+
+.userInfoTag > b {
+    color: #fff;
+    font-weight: 500;
+}
+
   @media only screen and (max-width: 1610px) {
 
     .settingSidebarBtn {
@@ -1448,6 +1465,16 @@ button {
   }
 
   @media only screen and (max-width: 1060px) {
+
+    .tableRow {
+        overflow-x: scroll;
+    }
+
+    .backBtn {
+        position: static !important;
+        margin-top: 10px;
+        margin-right: 10px;
+    }
 
     .forumTitle > h3 > a {
         font-size: 20px;
@@ -1623,6 +1650,10 @@ button {
   }
 
   @media only screen and (max-width: 856px) {
+
+    .postInformation {
+        width: 86vw;
+    }
 
     .forumDesc {
         display: none !important;
