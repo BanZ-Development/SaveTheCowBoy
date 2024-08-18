@@ -548,6 +548,9 @@ const openView = (view) => {
 		case 'reports':
 			openReports();
 			break;
+		case 'devotions':
+			openDevotions();
+			break;
 		default:
 			openMembers();
 			break;
@@ -601,16 +604,17 @@ const createMemberElement = (user) => {
 		</div>
 		<div style="display: flex; flex-direction: row;">
 		</div>
-		<div style="flex-direction: column;" class="tableRowInfo">
-		<p style="width: 100%;"><b>Full Name:</b> ${SafeHTML(firstName)} ${SafeHTML(lastName)}</p>
-		<p style="width: 100%;"><b>Email:</b> ${SafeHTML(email)}</p>
-		<p style="width: 100%;"><b>Phone Number:</b> ${SafeHTML(formattedPhoneNumber)}</p>
-		<p style="width: 100%;"><b>Address:</b> ${SafeHTML(address)}, ${SafeHTML(city)}, ${SafeHTML(state)}, ${SafeHTML(zip)}</p>
+		<div style="flex-direction: row; align-items: start; flex-wrap: wrap;" class="tableRowInfo">
+		<p class="userInfoTag" style="width: 100%;"><b>Full Name:</b> ${SafeHTML(firstName)} ${SafeHTML(lastName)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>Email:</b> ${SafeHTML(email)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>Phone Number:</b> ${SafeHTML(formattedPhoneNumber)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>Address:</b> ${SafeHTML(address)}, ${SafeHTML(city)}, ${SafeHTML(state)}, ${SafeHTML(zip)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>UID:</b> ${SafeHTML(uid)}</p>
 		</div>
 		<div class="tableRowBtns">
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="editBtn" class="btnLink">Edit</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="profileBtn" class="btnLink">View Profile</button>
-		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteBtn" class="btnLink">Delete</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteMemberBtn" class="btnLink deleteBtn">Delete</button>
 		</div>
 		</div>
 		<div style="display:none;" id="dropdownBox">
@@ -735,7 +739,7 @@ const createReportObject = (message, reasons, post, pfp, postID, _id, ignored) =
         <p>Report category: ${reasonsToSentence(reasons).capitalize()}</p>
         <p>Report message: ${SafeHTML(message)}</p>
         <div class="inlineButtons">
-        <button style="height: 50px;" id="deleteBtn" class="btnLink">Delete</button>
+        <button style="height: 50px;" id="deleteBtn" class="btnLink">Delete Post</button>
         <button style="height: 50px;" id="ignoreBtn" class="btnLink">${ignoredText}</button>
         </div>
 		</div>
@@ -799,6 +803,17 @@ async function openReports() {
 				initReportObject(report);
 			});
 		});
+}
+
+async function openDevotions() {
+	enableView('devotions');
+	console.log('devotions');
+	document.querySelector('#createDevotionBtn').addEventListener('click', showDevotionPopup);
+	document.querySelector('#devotionPopupContents').addEventListener('click', (event) => {
+		event.stopPropagation();
+	});
+	document.querySelector('#popupOverlay').addEventListener('click', hideDevotionsPopup);
+	document.querySelector('#scheduleDevotionBtn').addEventListener('click', createDevotion);
 }
 
 async function clickReportsButton() {
@@ -889,6 +904,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#membersBtn').addEventListener('click', openMembers);
 	document.querySelector('#analyticsBtn').addEventListener('click', openAnalytics);
 	document.querySelector('#reportsBtn').addEventListener('click', openReports);
+	document.querySelector('#devotionsBtn').addEventListener('click', openDevotions);
 	document.querySelector('#updateDauBtn').addEventListener('click', updateDAU);
 	document.querySelector('#currentReportsBtn').addEventListener('click', clickReportsButton);
 	document.querySelector('#ignoredReportsBtn').addEventListener('click', clickReportsButton);
@@ -907,4 +923,59 @@ document.addEventListener('click', function (event) {
 			button.querySelector('i').classList.replace('fa-chevron-right', 'fa-chevron-down');
 		}
 	}
+});
+
+function showDevotionPopup() {
+	const popupOverlay = document.getElementById('popupOverlay');
+	popupOverlay.style.display = 'flex';
+}
+
+function hideDevotionsPopup() {
+	const popupOverlay = document.getElementById('popupOverlay');
+	popupOverlay.style.display = 'none';
+}
+
+function createDevotion() {
+	let releaseDate = document.querySelector('#releaseDate').value;
+	let title = document.querySelector('#devotionTitle').value;
+	let message = tinymce.get('message').getContent();
+	let data = new FormData();
+	data.append('releaseDate', releaseDate);
+	data.append('title', title);
+	data.append('message', message);
+	fetch('api/admin/create-devotion', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				hideDevotionsPopup();
+				location.reload();
+			}
+		});
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+	const deleteButtons = document.querySelectorAll('.deleteBtn');
+	console.log(deleteButtons); // Check if the buttons are being selected
+
+	deleteButtons.forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			console.log('Delete button clicked'); // Check if the event is firing
+			const optionBackground = document.getElementById('optionBackground');
+			const deleteButtons = document.getElementById('deleteButtons');
+
+			if (optionBackground && deleteButtons) {
+				optionBackground.style.display = 'flex';
+				deleteButtons.style.display = 'flex';
+			} else {
+				console.log('Elements not found');
+			}
+		});
+	});
 });

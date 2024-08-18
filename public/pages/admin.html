@@ -15,6 +15,7 @@
     <script type="module" src="../js/admin.js"></script>
     <script type="module" src="../js/navbar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/tinymce_7.2.1/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body style="overflow-x: auto;">
     <div class="settings">
@@ -22,11 +23,18 @@
             <button id="membersBtn" class="settingSidebarBtn"><i class="fa-solid fa-users"></i> <p>Members</p></button>
             <button id="analyticsBtn" class="settingSidebarBtn"><i class="fa-solid fa-chart-simple"></i> <p>Analytics</p></button>
             <button id="reportsBtn" class="settingSidebarBtn"><i class="fa-solid fa-flag"></i> <p>Reports</p></button>
-            <button id="reportsBtn" class="settingSidebarBtn"><i class="fa-regular fa-calendar"></i> <p>Daily Devotions</p></button>
+            <button id="devotionsBtn" class="settingSidebarBtn"><i class="fa-regular fa-calendar"></i> <p>Daily Devotions</p></button>
         </div>
         <div class="settingMainContent">
             <div id="members" class="settingSection">
                 <div class="settingColumn">
+                    <div>
+                        <div id="optionBackground" style="display: none;" class="popupPost"></div>
+                        <div id="deleteButtons" style="display: none; width: 30vw; background-color: #fff;">
+                            <button class="btnLink">Delete</button>
+                            <button class="btnLink">Nevermind</button>
+                        </div>
+                    </div>
                     <h1>Members</h1>
                     <span class="line"></span>
                     <div style="margin-block: 20px; display: flex; flex-direction: row; justify-content: end;">
@@ -216,6 +224,27 @@
                     <div id="reportHolder"></div>
                 </div>
             </div>
+            <div id="devotions" class="settingSection">
+                <div id="popupOverlay" class="deleteOverlay">
+                    <div id="devotionPopupContents"class="deletePopup" style="color: #333">
+                          <h2>Create Daily Devotion</h2>
+                          <label for="releaseDate">Release Date: </label>  
+                          <input type="date" id="releaseDate" name="releaseDate">
+                          <input style="width: 99%; margin-block: 20px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="devotionTitle" placeholder="Enter Title"type="text">
+                          <textarea style="height: 150px;" class="postText" id="message" placeholder="Enter text"type="text"></textarea>
+                          <button style="margin-top: 250px; width: 50%;" id="scheduleDevotionBtn" class="filterBtn">Schedule Devotion</button>
+                    </div>
+                </div>
+                <div class="settingColumn" id="memberColumn">
+                    <h1>Daily Devotions</h1>
+                    <span class="line"></span>
+                    <div style="display: flex;">
+                        <button id="createDevotionBtn" class="btnLink" style="width: 100%; height: 100px; margin: auto; margin: 10px; font-size: 15pt;"><i style="margin-inline: 5px;" class="fa-regular fa-square-plus"></i> Create New Devotion</button>
+                    </div>
+                    <span class="line"></span>
+                    <div id="devotionHolder"></div>
+                </div>
+            </div>
         </div>
     </div>
     <style>
@@ -223,9 +252,61 @@
             font-family: 'Roboto';
         }
 
-        #deleteBtn:hover {
+        #deleteMemberBtn:hover {
             background-color: #f75252 !important;
         }
     </style>
+    <style>
+
+        .tox-edit-area {
+          min-height: 30vh !important;
+        }
+  
+        .tox, .tox-editor-container, .tox-edit-area, .tox-tinymce, .tox-statusbar__text-container {
+          overflow: visible !important;
+        }
+  
+      .line {margin-block: 3.5px;} 
+      .tox-statusbar__branding, .tox-statusbar__resize-handle, .tox-promotion {display: none !important;}
+      #postButton {
+          width: 100px;
+          margin: 10px 0px 10px 0px !important;
+      }
+      .signupInput:focus-visible {
+        border: solid 2px #0268db !important;
+      }
+  
+      img {
+        border-radius: 7px;
+      }
+  
+      .mceEditor > table {
+        height: 600px !important;
+      }
+  
+      #message {
+        flex: 1; /* Allow textarea to take up remaining space */
+        min-height: 500px; /* Ensure minimum height is respected */
+        height: 500px;
+      }
+  
+      </style>
+    <script>
+        tinymce.init({
+  selector: 'textarea',  // combined selectors
+  plugins: '',
+  toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image table mergetags | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+  tinycomments_mode: 'embedded',
+  tinycomments_author: 'Author name',
+  paste_data_images: false,
+  mergetags_list: [
+    { value: 'First.Name', title: 'First Name' },
+    { value: 'Email', title: 'Email' },
+  ],
+  height: 150,
+  min_height: 150,
+  resize: true
+});
+        </script>
 </body>
 </html>

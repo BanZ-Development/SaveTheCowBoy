@@ -3,6 +3,7 @@ const multer = require('multer');
 const User = require('../model/User');
 const Post = require('../model/Post');
 const Report = require('../model/Report');
+const Devotion = require('../model/Devotion');
 const hasher = require('../controllers/hasher');
 const validate = require('../controllers/validate');
 const analytics = require('../controllers/analytics');
@@ -11,6 +12,14 @@ const mongoose = require('mongoose');
 const crypto = require('crypto');
 require('dotenv').config();
 require('../controllers/local');
+
+const DateText = (date) => {
+	const options = { month: 'long' };
+	const month = new Intl.DateTimeFormat('en-US', options).format(date);
+	const day = date.getDate();
+	const year = date.getFullYear();
+	return `${month} ${day}, ${year}`;
+};
 
 router.get('/isAdmin', async (req, res) => {
 	try {
@@ -165,6 +174,39 @@ router.post('/ignore-report', async (req, res) => {
 			status: true,
 			message: 'Report has switched its visibility setting'
 		});
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
+router.post('/create-devotion', async (req, res) => {
+	try {
+		console.log(req.body);
+		const { title, message, releaseDate } = req.body;
+		let date = Date.parse(releaseDate);
+		if (date < new Date()) {
+			return res.send({
+				status: false,
+				message: 'Release date cannot be in the past!'
+			});
+		}
+		let devotion = await Devotion.create({
+			title: title,
+			message: message,
+			releaseDate: date,
+			uID: req.user.id,
+			username: req.user.meta.username
+		});
+		if (devotion) {
+			res.send({
+				status: true,
+				message: `Daily devotion has been scheduled for ${releaseDate}`
+			});
+		}
 	} catch (err) {
 		console.log(err);
 		res.send({

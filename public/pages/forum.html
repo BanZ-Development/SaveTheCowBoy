@@ -16,7 +16,15 @@
     <script src="../js/tinymce_7.2.1/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
   </head>
 <body>
-  
+  <div id="popupOverlay" class="deleteOverlay">
+    <div class="deletePopup">
+          <h2 style="margin:auto;">Are you sure you want to delete?</h2>
+          <p>You cannot undo this action.</p>
+          <button style="height:min-content;" class="filterBtn" id="confirmDeletionBtn"><i class="fa-regular fa-trash-can"></i> Confirm</button>
+          <button style="height: auto;" class="filterBtn" id="cancelDeletionBtn">Cancel</button>
+    </div>
+</div>
+
   <div class="allForum">
     <div class="forumSection">
       <div id="forumHeader" style="display: flex; flex-direction: row; position: relative;">
@@ -31,6 +39,7 @@
       <div>
           <div id="makePost" style="display: none;" class="popupPost"></div>
           <div style="display: none;" id="postInformation" class="postInformation">
+            <button id="closePostBtn" style="height: 50px;" class="btnLink"><i style="color: #f75252;" class="fa-regular fa-circle-xmark"></i> Close</button>
               <h1 style="color: #333; width: 94%;">Create Post</h1>
               <input style="width: 99%; margin-block: 20px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="title" placeholder="Enter Title"type="text">
               <textarea style="height: 500px;" class="postText" id="message" placeholder="Enter text"type="text"></textarea>
