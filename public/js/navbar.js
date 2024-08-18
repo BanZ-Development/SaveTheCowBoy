@@ -34,7 +34,7 @@ function load() {
             <div class="navDrop">
                 <a style="border-radius: 4px 4px 0px 0px;" href="forum" class="dropLink"><i class="fa-regular fa-comments" disabled></i> Forum</a>
                 <a href="" class="dropLink"><i class="fa-regular fa-calendar"></i> Daily Devotions</a>
-                <a href="" class="dropLink"><i class="fa-solid fa-book-bible"></i> Bible Plans</a>
+                <a href="biblePlans" class="dropLink"><i class="fa-solid fa-book-bible"></i> Bible Plans</a>
                 <a style="border-radius: 0px 0px 4px 4px" href="" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
             </div>
         </div>
