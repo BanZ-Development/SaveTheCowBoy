@@ -16,7 +16,15 @@
     <script src="../js/tinymce_7.2.1/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
   </head>
 <body>
-  
+  <div id="popupOverlay" class="deleteOverlay">
+    <div class="deletePopup">
+          <h2 style="margin:auto;">Are you sure you want to delete?</h2>
+          <p>You cannot undo this action.</p>
+          <button style="height:min-content;" class="filterBtn" id="confirmDeletionBtn"><i class="fa-regular fa-trash-can"></i> Confirm</button>
+          <button style="height: auto;" class="filterBtn" id="cancelDeletionBtn">Cancel</button>
+    </div>
+</div>
+
   <div class="allForum">
     <div class="forumSection">
       <div id="forumHeader" style="display: flex; flex-direction: row; position: relative;">

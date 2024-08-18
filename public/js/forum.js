@@ -218,7 +218,7 @@ function loadSinglePost(post, currentUserID, pfp) {
 	let div = document.createElement('div');
 	let date = new Date(postDate);
 	let profilePic = '../images/default-pfp.jpeg';
-	if (pfp.name) profilePic = `/image/${pfp.name}`;
+	if (pfp) profilePic = `/image/${pfp.name}`;
 	document.querySelector('.backBtn').style.display = 'flex';
 	document.querySelector('#sorting').style.display = 'none';
 
@@ -872,3 +872,8 @@ async function sorterClick() {
 document.querySelectorAll('.filterBtn').forEach((btn) => {
 	btn.addEventListener('click', sorterClick);
 });
+
+function showDeletePopup() {
+	const popupOverlay = document.getElementById('popupOverlay');
+	popupOverlay.style.display = 'flex';
+}

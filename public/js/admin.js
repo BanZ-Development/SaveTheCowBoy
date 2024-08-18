@@ -548,6 +548,9 @@ const openView = (view) => {
 		case 'reports':
 			openReports();
 			break;
+		case 'devotions':
+			openDevotions();
+			break;
 		default:
 			openMembers();
 			break;
@@ -610,7 +613,7 @@ const createMemberElement = (user) => {
 		<div class="tableRowBtns">
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="editBtn" class="btnLink">Edit</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="profileBtn" class="btnLink">View Profile</button>
-		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteBtn" class="btnLink">Delete</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteBtn" class="btnLink">Delete Account</button>
 		</div>
 		</div>
 		<div style="display:none;" id="dropdownBox">
@@ -735,7 +738,7 @@ const createReportObject = (message, reasons, post, pfp, postID, _id, ignored) =
         <p>Report category: ${reasonsToSentence(reasons).capitalize()}</p>
         <p>Report message: ${SafeHTML(message)}</p>
         <div class="inlineButtons">
-        <button style="height: 50px;" id="deleteBtn" class="btnLink">Delete</button>
+        <button style="height: 50px;" id="deleteBtn" class="btnLink">Delete Post</button>
         <button style="height: 50px;" id="ignoreBtn" class="btnLink">${ignoredText}</button>
         </div>
 		</div>
@@ -799,6 +802,17 @@ async function openReports() {
 				initReportObject(report);
 			});
 		});
+}
+
+async function openDevotions() {
+	enableView('devotions');
+	console.log('devotions');
+	document.querySelector('#createDevotionBtn').addEventListener('click', showDevotionPopup);
+	document.querySelector('#devotionPopupContents').addEventListener('click', (event) => {
+		event.stopPropagation();
+	});
+	document.querySelector('#popupOverlay').addEventListener('click', hideDevotionsPopup);
+	document.querySelector('#scheduleDevotionBtn').addEventListener('click', createDevotion);
 }
 
 async function clickReportsButton() {
@@ -889,6 +903,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#membersBtn').addEventListener('click', openMembers);
 	document.querySelector('#analyticsBtn').addEventListener('click', openAnalytics);
 	document.querySelector('#reportsBtn').addEventListener('click', openReports);
+	document.querySelector('#devotionsBtn').addEventListener('click', openDevotions);
 	document.querySelector('#updateDauBtn').addEventListener('click', updateDAU);
 	document.querySelector('#currentReportsBtn').addEventListener('click', clickReportsButton);
 	document.querySelector('#ignoredReportsBtn').addEventListener('click', clickReportsButton);
@@ -908,3 +923,38 @@ document.addEventListener('click', function (event) {
 		}
 	}
 });
+
+function showDevotionPopup() {
+	const popupOverlay = document.getElementById('popupOverlay');
+	popupOverlay.style.display = 'flex';
+}
+
+function hideDevotionsPopup() {
+	const popupOverlay = document.getElementById('popupOverlay');
+	popupOverlay.style.display = 'none';
+}
+
+function createDevotion() {
+	let releaseDate = document.querySelector('#releaseDate').value;
+	let title = document.querySelector('#devotionTitle').value;
+	let message = tinymce.get('message').getContent();
+	let data = new FormData();
+	data.append('releaseDate', releaseDate);
+	data.append('title', title);
+	data.append('message', message);
+	fetch('api/admin/create-devotion', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				hideDevotionsPopup();
+				location.reload();
+			}
+		});
+}
