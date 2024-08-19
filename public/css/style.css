@@ -1240,7 +1240,7 @@ button {
 
 .filterDrop {
     top: 50px;
-    left: 0;
+    right: 0;
     width: 340px;
     display: none;
     flex-direction: column;
@@ -1332,7 +1332,7 @@ button {
 
 .biblePlansHolder {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 .biblePlans {
@@ -1345,7 +1345,7 @@ button {
     display: flex;
     flex-direction: row;
     border-radius: 10px;
-    width: 45vw;
+    width: 60vw;
     height: 300px;
     object-fit: cover;
     object-position: center;
@@ -1391,6 +1391,40 @@ button {
     border-radius: 1000px;
     height: 20px;
     width: 50%;
+}
+
+.tableContents {
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: solid 1.5px #ccc;
+    padding: 13px;
+    border-radius: 10px;
+    position: fixed;
+    height: 75%;
+    right: 80px;
+}
+
+.tableContents > h2 {
+    text-align: center;
+    text-decoration: underline;
+}
+
+.tableContents > ul {
+    padding-left: 10px;
+}
+
+.tableContents > ul > li > a {
+    color: #fff;
+    text-decoration: none;
+    padding: 5px;
+    background-color: #555;
+    border-radius: 8px;
+}
+
+#closePostBtn {
+    display: none;
 }
 
   @media only screen and (max-width: 1610px) {
@@ -1713,6 +1747,10 @@ button {
   }
 
   @media only screen and (max-width: 856px) {
+
+    #closePostBtn {
+        display: block;
+    }
 
     .postInformation {
         width: 86vw;
