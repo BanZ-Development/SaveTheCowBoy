@@ -28,18 +28,30 @@
 <meta property="twitter:image" content="https://longxranchcowboys.com/images/websiteMetaImg.jpg" />
 </head>
 <body>
-    <div style="height: 98vh; background-color: #141414;" id="mainContent" class="main-content">
-        <div class="fundraiserDiv" style="width: 95%; height: 75%; margin-top: 110px; position: relative; z-index: 2;">
-            <div style="position: absolute; z-index: 3; margin-left: 10px; width: fit-content;">
-                <h1 class="fundraiserHeader" style="color: #fff; font-size: min(max(180px), 15vw ); margin-block: 0px; font-family: 'Inter Tight'; width: fit-content;">Fund</h1>
-                <span id="fundraiserLine" class="line" style="width: 100%; max-width: 413px; background-color: #fff;"></span>
-                <p class="fundraiserPara" style="max-width: 413px; width: 35vw; color: #fff; font-size: 20px;">Save the Cowboy, a 501(c)(3) non-profit, Christian, working-ranch introduces our subscription and community service, Long X Ranch Cowboys. Connect with other ranchers, learn and spread the gospel, and help support our local ranchers.</p>
-                <div style="margin-top: 5vh;">
-                    <a id="fundraiserBtn" style="margin-inline: 2px; background-color: #2782f2; color: #fff;" class="btnLink" target="_blank" href="https://www.paypal.com/ncp/payment/D9XGAY5BEKZ86">Fundraiser</a>
-                    <a id="fundraiserBtn" style="margin-inline: 2px; background-color: #2782f2; color: #fff;" class="btnLink" target="_blank" href="https://www.paypal.com/ncp/payment/5SHCT5RHDKRN2">Door Tickets</a>
-                </div>
+    <div id="mainContent" class="main-content">
+        <div class="main-contentText" style="transform: translateX(0px); opacity: 1;">
+            <h1 id="title">Long X Ranch Cowboys</h1>
+            <p id="desc">Save the Cowboy, a 501(c)3 non-profit, Christian, working-ranch introduces our subscription and community service, <b>Long X Ranch Cowboys</b>. Connect with other ranchers, learn and spread the gospel, and help support our local ranchers.</p>
+            <div style=" justify-content: center; display: flex; flex-direction: row;">
+                <a target="_blank" href="https://pushpay.com/g/savethecowboy?src=hpp" id="link" style="font-family: 'Roboto';" class="btnLink">Donate</a>
+                <a id="repo" href="signup" style="font-family: 'Roboto';" class="btnLink">Join Community</a>
+                <a id="moreInfoBtn" href="#about" style="font-family: 'Roboto';" href="" class="btnLink">More Information</a>
             </div>
-            <img class="fundraiserImg" style="filter: blur(2.5px) brightness(0.7); border-radius: 50px; position: absolute; z-index: 2;" src="../images/IMG_8436.jpg" alt="">
+        </div>
+        <div  style="display: block; opacity: 1;" class="slide">
+            <img src="../images/majestic-view-of-sunlit-colorado-mountains-rn30xeu96fs79q8c.jpg" alt="">
+        </div>
+        <div style="display: none; opacity: 1;" class="slide">
+            <img src="../images/IMG_8436.jpg" alt="">
+        </div>
+        <div style="display: none; opacity: 1;" class="slide">
+            <img src="../images/ColoradoCountry.jpg" alt="">
+        </div>
+        <div style="display: none; opacity: 1;" class="slide">
+            <img src="../images/ColoradoCountry2.jpg" alt="">
+        </div>
+        <div class="progress">
+            <span class="progressIn" style="width: 22.2269%;"></span>
         </div>
     </div>
     <div class="subscriptionSection">
@@ -185,12 +197,6 @@
             <img class="aboutImg" src="https://cdn.dribbble.com/userupload/7221961/file/original-ffa8173a025a994bcf9e7173564a1d71.jpg?resize=1024x768" alt="">
         </div>
     </div>
-    <style>
-        #fundraiserBtn:hover {
-            background-color: #fff !important;
-            color: #333 !important;
-        }
-    </style>
     <script>
         anime({targets: '.progressIn',duration: '15000',width: ['0%', '100%'],easing: 'linear'});
 

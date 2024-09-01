@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
 
 :root {
     --slate-gray: #6d8a96ff;
@@ -1367,8 +1368,8 @@ button {
     text-decoration: none;
     color: #333;
     bottom: 15px;
-    left: 30%;
-    right: 50%;
+    left: 0;
+    right: 0;
     transition: ease all 0.3s;
 }
 
@@ -1747,6 +1748,31 @@ button {
   }
 
   @media only screen and (max-width: 856px) {
+
+    .fundraiserDiv {
+        margin-top: 100px !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .fundraiserImg {
+        border-radius: 0px !important;
+        width: 100% !important;
+    }
+
+    #fundraiserLine {
+        width: 35vw !important;
+    }
+
+    .fundraiserPara {
+        width: 99% !important;
+    }
+
+    .backBtn {
+        position: absolute !important;
+        left: 6px;
+        top: 2px;
+    }
 
     #closePostBtn {
         display: block;

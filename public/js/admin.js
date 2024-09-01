@@ -915,11 +915,11 @@ document.addEventListener('click', function (event) {
 		var button = event.target.closest('#dropInformation');
 		var tableRow = button.closest('.tableRow');
 
-		if (tableRow.style.height === '315px') {
+		if (tableRow.style.height === 'fit-content') {
 			tableRow.style.height = '60px'; // Change to the original height
 			button.querySelector('i').classList.replace('fa-chevron-down', 'fa-chevron-right');
 		} else {
-			tableRow.style.height = '315px'; // Expand to fit content
+			tableRow.style.height = 'fit-content'; // Expand to fit content
 			button.querySelector('i').classList.replace('fa-chevron-right', 'fa-chevron-down');
 		}
 	}

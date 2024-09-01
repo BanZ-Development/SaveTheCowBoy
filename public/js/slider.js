@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function slideRight() {
 	document.getElementById('subscriptions').scrollLeft += 1400;
-	if (document.getElementById('subscriptions').scrollLeft == 1374) {
+	if (document.getElementById('subscriptions').scrollLeft <= 1374) {
 		document.getElementById('subscriptions').scrollLeft = 0;
 	}
 }
