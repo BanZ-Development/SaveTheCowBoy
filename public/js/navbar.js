@@ -146,7 +146,7 @@ function checkForPfpCookie() {
 }
 checkForPfpCookie();
 
-/* COMMENT OUT ON TEST (CONSTRUCTION BANNER)
+// COMMENT OUT ON TEST (CONSTRUCTION BANNER)
 document.addEventListener('DOMContentLoaded', function () {
 	for (let i = 0; i < document.querySelectorAll('.dropLink').length; i++) {
 		document.querySelectorAll('.dropLink')[i].addEventListener('click', (event) => {
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 		});
 	}
-});*/
+});
 
 document.addEventListener('DOMContentLoaded', function () {
 	document.querySelector('#profile').setAttribute('href', '');
