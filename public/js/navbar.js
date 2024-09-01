@@ -33,9 +33,9 @@ function load() {
                 <i class="material-icons">keyboard_arrow_down</i>
             <div class="navDrop">
                 <a style="border-radius: 4px 4px 0px 0px;" href="forum" class="dropLink"><i class="fa-regular fa-comments" disabled></i> Forum</a>
-                <a href="" class="dropLink"><i class="fa-regular fa-calendar"></i> Daily Devotions</a>
-                <a href="biblePlans" class="dropLink"><i class="fa-solid fa-book-bible"></i> Bible Plans</a>
-                <a style="border-radius: 0px 0px 4px 4px" href="cowboyStories" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
+                <a href="" id="notFinished" class="dropLink"><i class="fa-regular fa-calendar"></i> Daily Devotions</a>
+                <a href="biblePlans" id="notFinished" class="dropLink"><i class="fa-solid fa-book-bible"></i> Bible Plans</a>
+                <a style="border-radius: 0px 0px 4px 4px" id="notFinished" href="cowboyStories" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
             </div>
         </div>
             <a id="signupNav" href="signup" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i></a>
@@ -149,7 +149,7 @@ checkForPfpCookie();
 // COMMENT OUT ON TEST (CONSTRUCTION BANNER)
 document.addEventListener('DOMContentLoaded', function () {
 	for (let i = 0; i < document.querySelectorAll('.dropLink').length; i++) {
-		document.querySelectorAll('.dropLink')[i].addEventListener('click', (event) => {
+		document.querySelectorAll('#notFinished')[i].addEventListener('click', (event) => {
 			event.preventDefault();
 			document.querySelector('.construction').style = 'display: block !important;';
 			document.querySelector('#nav').style = 'margin-top: 51px;';
