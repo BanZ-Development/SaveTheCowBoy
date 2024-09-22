@@ -45,12 +45,11 @@ async function loadPosts() {
 				loadCreatePostButton();
 				if (data.status) {
 					console.log(data);
+					let loadMoreBtn = document.querySelector('#loadMoreBtn');
 					if (data.hasMore) {
-						let loadMoreBtn = document.querySelector('#loadMoreBtn');
 						loadMoreBtn.style.display = 'flex';
 						loadMoreBtn.addEventListener('click', loadPosts);
 					} else {
-						let loadMoreBtn = document.querySelector('#loadMoreBtn');
 						loadMoreBtn.style.display = 'none';
 						loadMoreBtn.addEventListener('click', loadPosts);
 					}

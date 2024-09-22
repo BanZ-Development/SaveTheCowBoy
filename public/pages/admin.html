@@ -230,9 +230,9 @@
                           <h2>Create Daily Devotion</h2>
                           <label for="releaseDate">Release Date: </label>  
                           <input type="date" id="releaseDate" name="releaseDate">
-                          <input style="height: 24px; width: 99%; margin-block: 20px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="devotionTitle" placeholder="Enter Title"type="text">
-                          <textarea style="height: 150px;" class="postText" id="message" placeholder="Enter text"type="text"></textarea>
-                          <button style="margin-top: 250px; width: 50%;" id="scheduleDevotionBtn" class="filterBtn">Schedule Devotion</button>
+                          <input style="width: 99%; height: 3%;margin-block: 20px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="devotionTitle" placeholder="Enter Title"type="text">
+                          <textarea style="height: 20%;" class="postText" id="message" placeholder="Enter text"type="text"></textarea>
+                          <button style="margin-top: 200px; width: 60%;" id="scheduleDevotionBtn" class="filterBtn">Schedule Devotion</button>
                     </div>
                 </div>
                 <div class="settingColumn" id="memberColumn">
@@ -242,6 +242,31 @@
                         <button id="createDevotionBtn" class="btnLink" style="width: 100%; height: 100px; margin: auto; margin: 10px; font-size: 15pt;"><i style="margin-inline: 5px;" class="fa-regular fa-square-plus"></i> Create New Devotion</button>
                     </div>
                     <span class="line"></span>
+                    <div id="devotionHolder"></div>
+                </div>
+            </div>
+            <div id="bibleplans" class="settingSection">
+                <div id="bpPopupOverlay" class="deleteOverlay">
+                    <div id="bpPopupContents"class="deletePopup" style="color: #333; display: block; flex-direction: column; overflow: auto;">
+                          <h2>Create Bible Plan</h2>
+                          <h3>Setup</h3>
+                          <input style="width: 99%; height: 3%;margin-block: 10px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="bpTitle" placeholder="Enter title"type="text">
+                          <input style="width: 99%; height: 3%;margin-block: 10px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="bpDescription" placeholder="Enter description"type="text">
+                          <label for="bpIcon">Icon: </label>
+                          <input type="file" name="" id="bpIcon" style="margin-block: 10px">
+                          <h3>Content</h3>
+                          <label for="">Select Your Books/Chapters/Verses</label>
+                          <div id="booksHolder" style="overflow-y:scroll; max-height: 500px;"></div>
+                          <button style="margin-top: 50px; width: 60%;" id="createBiblePlanBtn" class="filterBtn">Create Bible Plan</button>
+                    </div>
+                </div>
+                <div class="settingColumn" id="memberColumn">
+                    <h1>Bible Plans</h1>
+                    <span class="line"></span>
+                    <div style="display: flex;">
+                        <button id="openBiblePlansCreateBtn" class="btnLink" style="width: 100%; height: 100px; margin: auto; margin: 10px; font-size: 15pt;"><i style="margin-inline: 5px;" class="fa-regular fa-square-plus"></i> Create Bible Plan</button>
+                    </div>
+                    <span class="line"></span>  
                     <div id="devotionHolder"></div>
                 </div>
             </div>
@@ -264,6 +289,10 @@
   
         .tox, .tox-editor-container, .tox-edit-area, .tox-tinymce, .tox-statusbar__text-container {
           overflow: visible !important;
+        }
+
+        .tox-menubar {
+            display: none !important;
         }
   
       .line {margin-block: 3.5px;} 

@@ -170,6 +170,27 @@ button {
     color: #fff !important;
 }
 
+.btnChapter {
+    border: none;
+    background-color: #fff;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 18px;
+    transition: ease all 0.3s;
+    height: 30px;
+    text-align: center;
+    width: 10px;
+    border-radius: 5px;
+    color: white;
+    min-width: 40px;
+    line-height: 10px;
+    margin-inline: 5px;
+    margin-block: 5px;
+}
+
 .subscriptionSection {
     height: 1100px;
     background-color: #fff;

@@ -187,24 +187,54 @@ router.post('/create-devotion', async (req, res) => {
 	try {
 		console.log(req.body);
 		const { title, message, releaseDate } = req.body;
-		let date = Date.parse(releaseDate);
-		if (date < new Date()) {
+		let date = new Date(new Date(Date.parse(releaseDate)).setHours(24, 59, 59, 999));
+		let today = new Date(new Date().setHours(0, 0, 0, 0));
+		console.log(date);
+		console.log(today);
+		if (date < today) {
 			return res.send({
 				status: false,
 				message: 'Release date cannot be in the past!'
 			});
 		}
-		let devotion = await Devotion.create({
+		let devotion = await Post.create({
 			title: title,
 			message: message,
 			releaseDate: date,
 			uID: req.user.id,
-			username: req.user.meta.username
+			username: req.user.meta.username,
+			type: 'devotion',
+			postDate: new Date()
 		});
+		console.log(devotion);
 		if (devotion) {
 			res.send({
 				status: true,
 				message: `Daily devotion has been scheduled for ${releaseDate}`
+			});
+		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
+router.post('/get-devotions', async (req, res) => {
+	try {
+		let devotions = await Post.find({ type: 'devotion' }).sort({ releaseDate: -1 });
+		if (devotions) {
+			res.send({
+				status: true,
+				devotions: devotions,
+				message: `${devotions.length} Devotions loaded`
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'No devotions found!'
 			});
 		}
 	} catch (err) {
