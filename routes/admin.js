@@ -3,6 +3,7 @@ const multer = require('multer');
 const User = require('../model/User');
 const Post = require('../model/Post');
 const Report = require('../model/Report');
+const BiblePlan = require('../model/BiblePlan');
 const Devotion = require('../model/Devotion');
 const hasher = require('../controllers/hasher');
 const validate = require('../controllers/validate');
@@ -237,6 +238,30 @@ router.post('/get-devotions', async (req, res) => {
 				message: 'No devotions found!'
 			});
 		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
+router.post('/create-bible-plan', async (req, res) => {
+	try {
+		const { title, description, icon, books } = req.body;
+		let newBooks = new Function('return [' + books + '];')();
+		let options = {
+			title: title,
+			description: description,
+			icon: icon,
+			books: newBooks[0]
+		};
+		let biblePlan = await BiblePlan.create(options);
+		res.send({
+			status: true,
+			biblePlan: biblePlan
+		});
 	} catch (err) {
 		console.log(err);
 		res.send({
