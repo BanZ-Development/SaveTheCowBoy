@@ -1360,7 +1360,7 @@ button {
 
 .biblePlans {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .biblePlan {

@@ -854,7 +854,7 @@ function createBibleList(data) {
 		<div id="book" style="display: flex;flex-direction: row; height: 50%">
 		<input type="checkbox" id="bookCheckmark" value="${book.bookid}">
 		<label for="bookCheckmark" ><h5 id="bookName">${book.bookid}. ${book.name}</h5>
-		<button class="filterBtn" id="selectAllToggle" style="display: none; height: 50px; width: 120px; !important">Select All</button></label>
+		<button class="filterBtn" id="selectAllToggle" style="display: none; height: 50px; width: 120px; !important">Deselect All</button></label>
 		
 		<div id="chapters" value="${book.chapters}" style="display: none;">
 			<div id="chaptersHolder" style="display: flex; flex-wrap: wrap; flex-direction: row; !important"></div>
@@ -862,7 +862,7 @@ function createBibleList(data) {
 		</div>`;
 		for (let i = 1; i <= book.chapters; i++) {
 			let newChapter = document.createElement('div');
-			newChapter.innerHTML = `<button class="btnChapter" id="chapter" style="width: 10px; border-radius: 5px; background-color: #f75252; color:white; min-width: 40px; line-height: 10px; margin-inline: 5px; margin-block: 5px; ">${i}</button>`;
+			newChapter.innerHTML = `<button class="btnChapter" id="chapter" style="width: 10px; border-radius: 5px; background-color: #3dd598; color:white; min-width: 40px; line-height: 10px; margin-inline: 5px; margin-block: 5px; ">${i}</button>`;
 			newChapter.querySelector('#chapter').addEventListener('click', chapterToggle);
 			obj.querySelector('#book').querySelector('#chapters').querySelector('#chaptersHolder').appendChild(newChapter);
 		}
@@ -892,10 +892,10 @@ function toggleAllChaptersSelected() {
 
 function chapterToggle() {
 	let button = event.target;
-	if (button.style.backgroundColor == 'rgb(61, 213, 152)') {
-		button.style.backgroundColor = '#f75252';
-	} else {
+	if (button.style.backgroundColor == 'rgb(247, 82, 82)') {
 		button.style.backgroundColor = '#3dd598';
+	} else {
+		button.style.backgroundColor = '#f75252';
 	}
 }
 

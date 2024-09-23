@@ -12,6 +12,7 @@ const checkoutRoute = require('./routes/checkout');
 const forumRoute = require('./routes/forum');
 const profileRoute = require('./routes/profile');
 const imageRoute = require('./routes/image');
+const biblePlansRoute = require('./routes/bibleplans');
 const User = require('./model/User');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
@@ -123,6 +124,7 @@ app.use('/api/admin', adminRoute);
 app.use('/api/checkout', checkoutRoute);
 app.use('/api/forum', forumRoute);
 app.use('/api/profile', profileRoute);
+app.use('/api/biblePlans', biblePlansRoute);
 app.use('/image', imageRoute);
 
 app.get('/', async (req, res) => {
