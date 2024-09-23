@@ -551,6 +551,9 @@ const openView = (view) => {
 		case 'devotions':
 			openDevotions();
 			break;
+		case 'bibleplans':
+			openBiblePlans();
+			break;
 		default:
 			openMembers();
 			break;
@@ -814,6 +817,172 @@ async function openDevotions() {
 	});
 	document.querySelector('#popupOverlay').addEventListener('click', hideDevotionsPopup);
 	document.querySelector('#scheduleDevotionBtn').addEventListener('click', createDevotion);
+	initDevotions();
+}
+
+async function openBiblePlans() {
+	enableView('bibleplans');
+	console.log('bible plans');
+	document.querySelector('#openBiblePlansCreateBtn').addEventListener('click', showBiblePlansPopup);
+	document.querySelector('#bpPopupContents').addEventListener('click', (event) => {
+		event.stopPropagation();
+	});
+	document.querySelector('#bpPopupOverlay').addEventListener('click', hideBiblePlansPopup);
+	document.querySelector('#createBiblePlanBtn').addEventListener('click', createBiblePlan);
+	initBiblePlans();
+}
+
+function showBiblePlansPopup() {
+	const popupOverlay = document.getElementById('bpPopupOverlay');
+	popupOverlay.style.display = 'flex';
+}
+
+function hideBiblePlansPopup() {
+	const popupOverlay = document.getElementById('bpPopupOverlay');
+	popupOverlay.style.display = 'none';
+}
+
+function createBibleList(data) {
+	let books = document.createElement('div');
+	books.id = 'books';
+	books.style = 'height: 100%;';
+	data.forEach((book) => {
+		let obj = document.createElement('div');
+		obj.style = 'margin-block: 0px';
+		obj.id = book.name;
+		obj.innerHTML = `
+		<div id="book" style="display: flex;flex-direction: row; height: 50%">
+		<input type="checkbox" id="bookCheckmark" value="${book.bookid}">
+		<label for="bookCheckmark" ><h5 id="bookName">${book.bookid}. ${book.name}</h5>
+		<button class="filterBtn" id="selectAllToggle" style="display: none; height: 50px; width: 120px; !important">Select All</button></label>
+		
+		<div id="chapters" value="${book.chapters}" style="display: none;">
+			<div id="chaptersHolder" style="display: flex; flex-wrap: wrap; flex-direction: row; !important"></div>
+		</div> 
+		</div>`;
+		for (let i = 1; i <= book.chapters; i++) {
+			let newChapter = document.createElement('div');
+			newChapter.innerHTML = `<button class="btnChapter" id="chapter" style="width: 10px; border-radius: 5px; background-color: #f75252; color:white; min-width: 40px; line-height: 10px; margin-inline: 5px; margin-block: 5px; ">${i}</button>`;
+			newChapter.querySelector('#chapter').addEventListener('click', chapterToggle);
+			obj.querySelector('#book').querySelector('#chapters').querySelector('#chaptersHolder').appendChild(newChapter);
+		}
+		obj.querySelector('#selectAllToggle').addEventListener('click', toggleAllChaptersSelected);
+		books.appendChild(obj);
+	});
+	document.querySelector('#booksHolder').appendChild(books);
+}
+
+function toggleAllChaptersSelected() {
+	let button = event.target;
+	console.log(button);
+	let buttons = button.parentNode.parentNode.querySelector('#chapters').querySelector('#chaptersHolder');
+	console.log(buttons);
+	if (button.innerHTML == 'Select All') {
+		buttons.childNodes.forEach((btn) => {
+			btn.querySelector('#chapter').style.backgroundColor = '#3dd598';
+		});
+		button.innerHTML = 'Deselect All';
+	} else {
+		buttons.childNodes.forEach((btn) => {
+			btn.querySelector('#chapter').style.backgroundColor = '#f75252';
+		});
+		button.innerHTML = 'Select All';
+	}
+}
+
+function chapterToggle() {
+	let button = event.target;
+	if (button.style.backgroundColor == 'rgb(61, 213, 152)') {
+		button.style.backgroundColor = '#f75252';
+	} else {
+		button.style.backgroundColor = '#3dd598';
+	}
+}
+
+function getChapterList(obj, checked) {
+	if (checked) obj.querySelector('#chapters').style.display = 'flex';
+	else obj.querySelector('#chapters').style.display = 'none';
+}
+
+function setupCheckmarks() {
+	document.querySelectorAll('#bookCheckmark').forEach((checkmark) => {
+		checkmark.addEventListener('click', function (e) {
+			let background = e.target.parentNode.parentNode;
+			getChapterList(e.target.parentNode, checkmark.checked);
+			if (checkmark.checked) {
+				console.log('checked');
+				background.style = 'background-color: #1111; border-radius: 10px;';
+				background.querySelector('#selectAllToggle').style = 'display: flex';
+			} else {
+				console.log('unchecked');
+				background.style = 'background-color: #fff; border-radius: 10px;';
+				background.querySelector('#selectAllToggle').style = 'display: none';
+			}
+		});
+	});
+}
+
+async function initBiblePlans() {
+	fetch('https://bolls.life/get-books/ESV/', {
+		method: 'get',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			createBibleList(data);
+			setupCheckmarks();
+		});
+}
+
+function getBibleData() {
+	let holder = document.querySelector('#books');
+	let data = [];
+	holder.childNodes.forEach((book) => {
+		if (book.style.backgroundColor != '' && book.querySelector('#chapters').style.display != 'none') {
+			let name = book.querySelector('#bookName').innerHTML.split('. ');
+			let number = name[0];
+			let title = name[1];
+			let chapters = [];
+			let chaptersHolder = book.querySelector('#chaptersHolder');
+			chaptersHolder.childNodes.forEach((div) => {
+				let chapter = div.querySelector('#chapter');
+				if (chapter.style.backgroundColor == 'rgb(61, 213, 152)') {
+					chapters.push(chapter.innerHTML);
+				}
+			});
+			if (chapters.length > 0) {
+				data.push({
+					book: number,
+					chapters: chapters
+				});
+			}
+		}
+	});
+	if (data.length == 0) return null;
+	return data;
+}
+
+function createBiblePlan() {
+	let data = new FormData();
+	let books = getBibleData();
+	data.append('title', document.querySelector('#bpTitle').value);
+	data.append('description', document.querySelector('#bpDescription').value);
+	data.append('icon', 'testing');
+	data.append('books', JSON.stringify(books));
+	fetch('api/admin/create-bible-plan', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+		});
 }
 
 async function clickReportsButton() {
@@ -905,6 +1074,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#analyticsBtn').addEventListener('click', openAnalytics);
 	document.querySelector('#reportsBtn').addEventListener('click', openReports);
 	document.querySelector('#devotionsBtn').addEventListener('click', openDevotions);
+	document.querySelector('#biblePlanBtn').addEventListener('click', openBiblePlans);
 	document.querySelector('#updateDauBtn').addEventListener('click', updateDAU);
 	document.querySelector('#currentReportsBtn').addEventListener('click', clickReportsButton);
 	document.querySelector('#ignoredReportsBtn').addEventListener('click', clickReportsButton);
@@ -956,6 +1126,49 @@ function createDevotion() {
 			if (data.status) {
 				hideDevotionsPopup();
 				location.reload();
+			}
+		});
+}
+
+function loadDevotion(devotion) {
+	console.log(devotion);
+	let { _id, title, message, username, uID, releaseDate, likesCount, commentsCount, profilePic } = devotion;
+	let date = new Date(releaseDate);
+	let dateString = DateText(date);
+
+	let div = document.createElement('div');
+	div.id = 'post';
+	div.innerHTML = `
+		<span class="line"></span>
+		<div class="forumPost" id=${_id}>
+		
+		
+		<h2 class="forumDate">${DateText(date)}</h2>
+		<h3><a class="forumTitle" id="title">${SafeHTML(title)}</a></h3>
+		
+		<p style="white-space:pre;">${message}</p>
+		<div class="forumBtns">
+			<button id="deleteDevotionBtn" class="iconBtn"><i class="fa-regular fa-trash-can"></i></button>
+		</div>
+		</div>
+	`;
+	document.querySelector('#devotionHolder').appendChild(div);
+}
+
+function initDevotions() {
+	fetch('api/admin/get-devotions', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				data.devotions.forEach((devotion) => {
+					loadDevotion(devotion);
+				});
 			}
 		});
 }

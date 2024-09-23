@@ -5,23 +5,25 @@ const Report = require('../model/Report');
 const Comment = require('../model/Comment');
 
 router.post('/loadPosts', async function (req, res) {
-	const { loadedPosts, sortType } = req.body;
+	let { loadedPosts, sortType, type } = req.body;
 	try {
+		if (!type) type = 'post';
 		const totalCount = await Post.countDocuments();
 		let toLoad = totalCount - loadedPosts;
 		let hasMore = toLoad > 10;
 		// Load the next 10 posts, starting after the already loaded ones
 		let posts;
+		let filtered = await Post.find({ type: type });
 		switch (sortType) {
 			case 'Newest':
-				posts = await Post.find({})
+				posts = await Post.find({ type: type })
 					.sort({ postDate: -1 }) // Sort by most recent
 					.skip(loadedPosts)
 					.limit(10);
 				break;
 			case 'Popular':
 				//Sorting by most popular (popular = likes / time since post);
-				posts = await Post.find({});
+				posts = await Post.find({ type: type });
 				posts = posts.sort((firstItem, secondItem) => {
 					const firstItemPopularity = ((firstItem.likesCount + firstItem.commentsCount) * 1e8) / (new Date() - new Date(firstItem.postDate).valueOf());
 					const secondItemPopularity = ((secondItem.likesCount + secondItem.commentsCount) * 1e8) / (new Date() - new Date(secondItem.postDate).valueOf());
@@ -32,16 +34,24 @@ router.post('/loadPosts', async function (req, res) {
 				posts = posts.slice(loadedPosts, loadedPosts + 10);
 				break;
 			case 'Most Liked':
-				posts = await Post.find({})
+				posts = await Post.find({ type: type })
 					.sort({ likesCount: -1 }) // Sort by most recent
 					.skip(loadedPosts)
 					.limit(10);
 				break;
 			default:
-				posts = await Post.find({})
-					.sort({ postDate: -1 }) // Sort by most recent
-					.skip(loadedPosts)
-					.limit(10);
+				if (type == 'post') {
+					posts = await Post.find({ type: type })
+						.sort({ postDate: -1 }) // Sort by most recent
+						.skip(loadedPosts)
+						.limit(10);
+				} else if (type == 'devotion') {
+					posts = await Post.find({ type: type, releaseDate: { $lte: new Date() } })
+						.sort({ postDate: -1 }) // Sort by most recent
+						.skip(loadedPosts)
+						.limit(10);
+				}
+
 				break;
 		}
 
