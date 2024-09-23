@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gideon+Roman&display=swap');
 
 :root {
     --slate-gray: #6d8a96ff;
@@ -1426,6 +1427,81 @@ button {
 
 #closePostBtn {
     display: none;
+}
+
+.biblePlanPages {
+    background-color: #fff;
+    border: solid 1.5px #ccc;
+    height: fit-content;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.biblePlanPage {
+    font-size: 20px;
+    font-family: 'Roboto';
+    font-weight: 300;
+    line-height: 35px;
+    color: #555;
+}
+
+.pageSwitch {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    font-size: 30px;
+    color: #767676;
+    font-family: 'Spectral';
+}
+
+.pageSwitch > button {
+    font-size: 25px;
+    height: 50px;
+    background-color: #fff0;
+    border: none;
+    color: #767676;
+    cursor: pointer;
+}
+
+.pageSwitch > p {
+    margin-inline: auto;
+}
+
+.biblePlanSidebar {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    background-color: #fff;
+    width: 25%;
+    height: 100%;
+    border-right: solid 1px #ccc;
+}
+
+.toolbar {
+    margin-top: 110px;
+    width: fit-content;
+    margin-inline: auto;
+    border: solid 1px #ccc;
+    border-radius: 20px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.toolbar > button {
+    color: #333;
+    background-color: #fff0;
+    border: none;
+    width: 45px;
+    padding: 10px;
+    margin-inline: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.toolbar > button:hover {
+    background-color: #ccc;
+    border-radius: 5px;
 }
 
   @media only screen and (max-width: 1610px) {
