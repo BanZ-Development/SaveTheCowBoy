@@ -252,8 +252,8 @@ async function createPlanWindow(plan) {
         </div>
     </div>
     <div style="display: flex; flex-direction: column; height: 90vh; width: 65%; padding-top: 110px; padding-left: 30%;">
-        <h1 style="font-family: 'Spectral'; color: #767676; font-size: 40px; text-align: center;">${title}</h1>
-        <h2 id="chapterTitle" style="font-family: 'Spectral'; color: #767676; font-size: 30px; text-align: center;"></h2>
+        <h1 style="font-family: 'Spectral'; color: #767676; font-size: 40px; text-align: center; margin-block: 0px; margin-top: 10px;">${title}</h1>
+        <h2 id="chapterTitle" style="font-family: 'Spectral'; color: #767676; font-size: 30px; text-align: center; margin-block: 10px;"></h2>
         <div class="biblePlanPages">
             <div class="biblePlanPage" id="page1"></div>
         </div>
