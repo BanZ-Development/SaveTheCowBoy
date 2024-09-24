@@ -1408,6 +1408,17 @@ button {
     margin-left: 20px;
 }
 
+.biblePlanPopup {
+    display: none;
+    position: absolute;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    font-size: 14px;
+    z-index: 1000;
+}
+
 .innerBiblePlanProg {
     display: inline-block;
     background-color: #5285ff;

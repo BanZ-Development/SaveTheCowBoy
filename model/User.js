@@ -49,7 +49,14 @@ const userSchema = new Schema({
 		expirationDate: Date
 	},
 	posts: [String],
-	activeDate: Date
+	activeDate: Date,
+	biblePlans: {
+		translation: {
+			type: String,
+			default: 'NIV'
+		},
+		plans: Array
+	}
 });
 
 module.exports = mongoose.model('User', userSchema);

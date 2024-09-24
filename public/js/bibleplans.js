@@ -255,6 +255,7 @@ async function createPlanWindow(plan) {
         <h1 style="font-family: 'Spectral'; color: #767676; font-size: 40px; text-align: center; margin-block: 0px; margin-top: 10px;">${title}</h1>
         <h2 id="chapterTitle" style="font-family: 'Spectral'; color: #767676; font-size: 30px; text-align: center; margin-block: 10px;"></h2>
         <div class="biblePlanPages">
+			<div class="biblePlanPopup" id="biblePlanPopup"><button class="filterBtn"><i class="fa-regular fa-note-sticky"></i> Annotate</button><button class="filterBtn"><i class="fa-regular fa-comment"></i> Comment</button></div>
             <div class="biblePlanPage" id="page1"></div>
         </div>
         <div class="pageSwitch">
@@ -323,5 +324,31 @@ function createPlanObject(plan) {
             </div>`;
 	document.querySelector('.biblePlans').appendChild(obj);
 }
+
+document.addEventListener('mouseup', function (event) {
+	let selected = window.getSelection();
+	let anchor = selected.anchorNode;
+	let focus = selected.focusNode;
+	console.log(anchor.parentElement.parentElement.id, focus.parentElement.parentElement.id);
+	if (anchor.parentElement.parentElement.id != 'page1' || focus.parentElement.parentElement.id != 'page1') return;
+	const selectedText = selected.toString().trim();
+	const popup = document.getElementById('biblePlanPopup');
+
+	if (selectedText.length > 0) {
+		const range = window.getSelection().getRangeAt(0);
+		const rect = range.getBoundingClientRect();
+
+		popup.style.left = `${rect.left + window.scrollX}px`;
+		popup.style.top = `${rect.bottom + window.scrollY + 10}px`;
+		popup.style.display = 'block';
+	} else {
+		popup.style.display = 'none';
+	}
+});
+
+document.addEventListener('mousedown', function () {
+	const popup = document.getElementById('biblePlanPopup');
+	popup.style.display = 'none';
+});
 
 loadMainOrPlan();
