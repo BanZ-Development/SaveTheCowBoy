@@ -950,7 +950,10 @@ function getBibleData() {
 			chaptersHolder.childNodes.forEach((div) => {
 				let chapter = div.querySelector('#chapter');
 				if (chapter.style.backgroundColor == 'rgb(61, 213, 152)') {
-					chapters.push(chapter.innerHTML);
+					chapters.push({
+						number: chapter.innerHTML,
+						comments: []
+					});
 				}
 			});
 			if (chapters.length > 0) {

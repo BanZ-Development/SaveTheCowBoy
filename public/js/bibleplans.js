@@ -1,3 +1,4 @@
+loadMainOrPlan();
 function returnID() {
 	let urlParams = window.location.search;
 	let getQuery = urlParams.split('?')[1];
@@ -21,6 +22,13 @@ function returnBookAndChapter() {
 	}
 }
 
+function scrollToElement(elementId, smoothOrAuto) {
+	const element = document.getElementById(elementId);
+	if (element) {
+		element.scrollIntoView({ behavior: smoothOrAuto });
+	}
+}
+
 function calculateLines(element) {
 	const elementHeight = element.clientHeight; // Get the height of the element
 	const lineHeight = parseFloat(window.getComputedStyle(element).lineHeight); // Get the computed line height
@@ -36,7 +44,9 @@ function loadMainOrPlan() {
 
 function loadPlan(id) {
 	console.log('Loading:', id);
-	document.querySelector('.biblePlansHolder').remove();
+	try {
+		document.querySelector('.biblePlansHolder').remove();
+	} catch (err) {}
 
 	let data = new FormData();
 	data.append('id', id);
@@ -54,7 +64,7 @@ function loadPlan(id) {
 		});
 }
 
-function createTableOfContents(books) {
+function createTableOfContents(books, scroll) {
 	let bible;
 	fetch('https://bolls.life/get-books/ESV/', {
 		method: 'get',
@@ -64,7 +74,6 @@ function createTableOfContents(books) {
 	})
 		.then((res) => res.json())
 		.then((data) => {
-			console.log(data);
 			bible = data;
 			books.forEach((book) => {
 				let chaptersCount = book.chapters.length;
@@ -72,22 +81,24 @@ function createTableOfContents(books) {
 				let title = bible[bookNum].name;
 				let div = document.createElement('div');
 				div.innerHTML = `
-                <div id="book">
+                <div id="book${bookNum}">
                         <h3 id=${bookNum}>${title} (0/${chaptersCount})</h3>
                         <div id="chapters" style="display: flex; flex-direction: column;">
                             
                         </div>
                     </div>`;
 				book.chapters.forEach((chapter) => {
+					let chapterNum = chapter.number;
 					let chapterElem = document.createElement('a');
-					chapterElem.id = chapter;
-					chapterElem.innerHTML = `Chapter ${chapter}`;
+					chapterElem.id = chapterNum;
+					chapterElem.innerHTML = `Chapter ${chapterNum}`;
 					let id = returnID();
-					chapterElem.href = `/biblePlans?id=${id}&b=${bookNum + 1}&c=${chapter}`;
+					chapterElem.href = `/biblePlans?id=${id}&b=${bookNum + 1}&c=${chapterNum}`;
 					div.querySelector('#chapters').appendChild(chapterElem);
 				});
 				document.querySelector('#tableOfContents').appendChild(div);
 			});
+			scrollToElement(`book${scroll - 1}`, 'auto');
 		});
 }
 
@@ -100,10 +111,17 @@ function setTitle(bookID, chapterID) {
 	})
 		.then((res) => res.json())
 		.then((data) => {
-			console.log(data);
 			let bookTitle = data[bookID - 1].name;
 			document.querySelector('#chapterTitle').innerHTML = `${bookTitle} | Chapter ${chapterID}`;
 		});
+}
+
+function returnCleanedKJV(text) {
+	if (text.includes('<S>') || text.includes('<sup>')) {
+		text = text.replaceAll(/<S>.*?<\/S>/g, '');
+		text = text.replaceAll(/<sup>.*?<\/sup>/g, '');
+		return text;
+	} else return text;
 }
 
 function createText(chapter) {
@@ -113,6 +131,7 @@ function createText(chapter) {
 	chapter.forEach((obj) => {
 		if (calculateLines(page) < 10) {
 			let { verse, text } = obj;
+			text = returnCleanedKJV(text);
 			page.innerHTML += `<span id="${verse}" style="font-size: .7em; font-weight: bold;">${verse}</span> <span id="${verse}">${text}</span>   `;
 		}
 	});
@@ -128,6 +147,7 @@ function loadNextPage(lastVerse) {
 		let obj = chapter[i];
 		if (!obj) return;
 		let { verse, text } = obj;
+		text = returnCleanedKJV(text);
 		page.innerHTML += `<span id="${verse}" style="font-size: .7em; font-weight: bold;">${verse}</span> <span id="${verse}">${text}</span>   `;
 	}
 }
@@ -142,6 +162,7 @@ function loadLastPage(lastVerse) {
 		let obj = chapter[i];
 		if (!obj) return;
 		let { verse, text } = obj;
+		text = returnCleanedKJV(text);
 		page.innerHTML = `<span id="${verse}" style="font-size: .7em; font-weight: bold;">${verse}</span> <span id="${verse}">${text}</span>   ` + page.innerHTML;
 	}
 }
@@ -180,7 +201,7 @@ function pageBackward() {
 
 async function setChapter(bookID, chapterID) {
 	setTitle(bookID, chapterID);
-	let translation = 'ESV';
+	let translation = returnStoredTranslation();
 	fetch(`https://bolls.life/get-chapter/${translation}/${bookID}/${chapterID}/`, {
 		method: 'get',
 		headers: {
@@ -198,7 +219,7 @@ function rerouteToFirstChapter(books) {
 	// could also reroute to last visisted
 	console.log('Reroute:', books);
 	let bookID = books[0].book;
-	let chapterID = books[0].chapters[0];
+	let chapterID = books[0].chapters[0].number;
 	return {
 		bookID: bookID,
 		chapterID: chapterID
@@ -225,29 +246,34 @@ async function createPlanWindow(plan) {
 		const newUrl = `${currentUrl.pathname}?${params.toString()}`;
 		window.history.replaceState({}, '', newUrl);
 	}
-
 	await setChapter(bookID, chapterID);
 	let div = document.createElement('div');
+	div.id = 'biblePlanWindow';
 	div.innerHTML = `
     <div class="biblePlanSidebar">
         <div class="toolbar">
-            <button><i class="fa-solid fa-list"></i></button>
-            <button><i class="fa-regular fa-note-sticky"></i></button>
-            <button><i class="fa-regular fa-comment"></i></button>
-            <button><i class="fa-solid fa-language"></i></button>
+            <button id="tableOfContentsBtn"><i class="fa-solid fa-list"></i></button>
+            <button id="notesBtn"><i class="fa-regular fa-note-sticky"></i></button>
+            <button id="commentsBtn"><i class="fa-regular fa-comment"></i></button>
+            <button id="translationsBtn"><i class="fa-solid fa-language"></i></button>
         </div>
         <div id="sidebar" style="overflow: auto;">
             <div id="tableOfContents" style="flex-direction: column; display: flex;">
                 
             </div>
-            <div id="notes">
+            <div id="notes" style="display: none; flex-direction: column;">
 
             </div>
-            <div id="comments">
-
+            <div id="comments" style="display: none; flex-direction: column;">
+				<h1 style="margin-bottom:0px;">Comments</h1>
+				<label id="commentChapter">Romans 1</label>
             </div>
-            <div id="translations">
-
+            <div id="translations" style="display:none; flex-direction: column;">
+				<h1 style="margin-bottom:0px;">Translations</h1>
+				<label id="currentTranslation">Current Translation: </label>
+				<label for="languageDropdown">Language:</label>
+				<select id="languageDropdown"></select>
+				<div id="translationsHolder" style="display:flex; flex-direction: column;"></div>
             </div>
         </div>
     </div>
@@ -267,8 +293,14 @@ async function createPlanWindow(plan) {
     `;
 	div.querySelector('#pageForward').addEventListener('click', pageForward);
 	div.querySelector('#pageBackward').addEventListener('click', pageBackward);
+	div.querySelector('#tableOfContentsBtn').addEventListener('click', openTableOfContents);
+	div.querySelector('#commentsBtn').addEventListener('click', openComments);
+	div.querySelector('#translationsBtn').addEventListener('click', openTranslations);
+	div.querySelector('#languageDropdown').addEventListener('change', changeStoredLanguage);
 	document.querySelector('body').appendChild(div);
-	createTableOfContents(books);
+	createTableOfContents(books, bookID);
+	createTranslations();
+	console.log(bookID);
 }
 
 function loadMain() {
@@ -325,25 +357,34 @@ function createPlanObject(plan) {
 	document.querySelector('.biblePlans').appendChild(obj);
 }
 
+function openWindow(id) {
+	document.querySelector('#tableOfContents').style.display = 'none';
+	document.querySelector('#notes').style.display = 'none';
+	document.querySelector('#comments').style.display = 'none';
+	document.querySelector('#translations').style.display = 'none';
+	document.querySelector(`#${id}`).style.display = 'flex';
+}
+
 document.addEventListener('mouseup', function (event) {
-	let selected = window.getSelection();
-	let anchor = selected.anchorNode;
-	let focus = selected.focusNode;
-	console.log(anchor.parentElement.parentElement.id, focus.parentElement.parentElement.id);
-	if (anchor.parentElement.parentElement.id != 'page1' || focus.parentElement.parentElement.id != 'page1') return;
-	const selectedText = selected.toString().trim();
-	const popup = document.getElementById('biblePlanPopup');
+	try {
+		let selected = window.getSelection();
+		let anchor = selected.anchorNode;
+		let focus = selected.focusNode;
+		if (anchor.parentElement.parentElement.id != 'page1' || focus.parentElement.parentElement.id != 'page1') return;
+		const selectedText = selected.toString().trim();
+		const popup = document.getElementById('biblePlanPopup');
 
-	if (selectedText.length > 0) {
-		const range = window.getSelection().getRangeAt(0);
-		const rect = range.getBoundingClientRect();
+		if (selectedText.length > 0) {
+			const range = window.getSelection().getRangeAt(0);
+			const rect = range.getBoundingClientRect();
 
-		popup.style.left = `${rect.left + window.scrollX}px`;
-		popup.style.top = `${rect.bottom + window.scrollY + 10}px`;
-		popup.style.display = 'block';
-	} else {
-		popup.style.display = 'none';
-	}
+			popup.style.left = `${rect.left + window.scrollX}px`;
+			popup.style.top = `${rect.bottom + window.scrollY + 10}px`;
+			popup.style.display = 'block';
+		} else {
+			popup.style.display = 'none';
+		}
+	} catch (err) {}
 });
 
 document.addEventListener('mousedown', function () {
@@ -351,4 +392,116 @@ document.addEventListener('mousedown', function () {
 	popup.style.display = 'none';
 });
 
-loadMainOrPlan();
+function openTranslations() {
+	openWindow('translations');
+}
+
+function openComments() {
+	openWindow('comments');
+}
+
+function openTableOfContents() {
+	openWindow('tableOfContents');
+}
+
+function createTranslationElements(data) {
+	let languages = [];
+	let div = document.createElement('div');
+	div.id = 'languageHolder';
+	data.forEach((language) => {
+		let languageName = language.language;
+		languages.push(languageName);
+		let languageTranslations = language.translations;
+		let languageDiv = document.createElement('div');
+		languageDiv.style.display = 'none';
+		languageDiv.id = languageName;
+		languageDiv.style.flexDirection = 'column';
+		languageTranslations.forEach((translation) => {
+			let translationDiv = document.createElement('div');
+			translationDiv.innerHTML = `<div id="${translation.short_name}"><h2>${translation.short_name}</h2><h3>${translation.full_name}</h3><button id="selectTranslationBtn">Select</button></div>`;
+			translationDiv.querySelector('#selectTranslationBtn').addEventListener('click', changeTranslation);
+			languageDiv.appendChild(translationDiv);
+		});
+		div.appendChild(languageDiv);
+	});
+	languages.forEach((language) => {
+		const newOption = document.createElement('option');
+		newOption.value = language;
+		newOption.text = language;
+		document.querySelector('#languageDropdown').appendChild(newOption);
+	});
+	document.querySelector('#languageDropdown').value = returnStoredLanguage();
+	document.querySelector('#translationsHolder').appendChild(div);
+	viewCurrentLanguage(returnStoredLanguage());
+	displayCurrentTranslation();
+}
+
+function viewCurrentLanguage(languageName) {
+	document.querySelector('#languageHolder').childNodes.forEach((language) => {
+		if (language.id != languageName) language.style.display = 'none';
+		else language.style.display = 'flex';
+	});
+}
+
+function createTranslations() {
+	fetch('https://bolls.life/static/bolls/app/views/languages.json', {
+		method: 'get',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			createTranslationElements(data);
+		});
+}
+
+function returnStoredLanguage() {
+	let language = localStorage.getItem('language');
+	if (!language) {
+		localStorage.setItem('language', 'English');
+		return returnStoredLanguage();
+	} else {
+		return language;
+	}
+}
+
+function changeStoredLanguage() {
+	let languageName = document.querySelector('#languageDropdown').value;
+	localStorage.setItem('language', languageName);
+	viewCurrentLanguage(languageName);
+}
+
+function returnStoredTranslation() {
+	let translation = localStorage.getItem('translation');
+	if (!translation) {
+		localStorage.setItem('translation', 'ESV');
+		return returnStoredTranslation();
+	} else {
+		return translation;
+	}
+}
+
+async function changeStoredTranslation(translationName) {
+	localStorage.setItem('translation', translationName);
+	displayCurrentTranslation();
+	let { bookID, chapterID } = returnBookAndChapter();
+	await setChapter(bookID, chapterID);
+	//refresh
+}
+
+function changeTranslation() {
+	let button = event.target;
+	let translationName = button.closest('div').id;
+	changeStoredTranslation(translationName);
+}
+
+function displayCurrentTranslation() {
+	let translation = returnStoredTranslation();
+	document.querySelector('#currentTranslation').innerHTML = `Current Translation: ${translation}`;
+	document.querySelectorAll('#selectTranslationBtn').forEach((btn) => {
+		btn.innerHTML = 'Select';
+	});
+	document.querySelector(`#${translation}`).querySelector('#selectTranslationBtn').innerHTML = 'Selected';
+}
