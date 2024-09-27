@@ -50,13 +50,7 @@ const userSchema = new Schema({
 	},
 	posts: [String],
 	activeDate: Date,
-	biblePlans: {
-		translation: {
-			type: String,
-			default: 'NIV'
-		},
-		plans: Array
-	}
+	biblePlans: Array
 });
 
 module.exports = mongoose.model('User', userSchema);

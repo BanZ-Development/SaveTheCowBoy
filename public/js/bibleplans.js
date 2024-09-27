@@ -60,7 +60,10 @@ function loadPlan(id) {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
-			if (data.status) createPlanWindow(data.biblePlan);
+			if (data.status) {
+				createPlanWindow(data.biblePlan);
+				setBiblePlanLocalStorage(data.biblePlan);
+			}
 		});
 }
 
@@ -106,6 +109,10 @@ function createTableOfContents(books, scroll) {
 		});
 }
 
+function setBiblePlanLocalStorage(biblePlan) {
+	localStorage.setItem('biblePlan', JSON.stringify(biblePlan.books));
+}
+
 function setTitle(bookID, chapterID) {
 	fetch('https://bolls.life/get-books/ESV/', {
 		method: 'get',
@@ -133,78 +140,61 @@ function createText(chapter) {
 	let page = document.querySelector('#page1');
 	page.innerHTML = '';
 	chapter.forEach((obj) => {
-		if (calculateLines(page) < 10) {
-			let { verse, text } = obj;
-			text = returnCleanedKJV(text);
-			page.innerHTML += `<span id="${verse}" style="font-size: .7em; font-weight: bold;">${verse}</span> <span id="${verse}">${text}</span>   `;
-		}
-	});
-}
-
-function loadNextPage(lastVerse) {
-	let chapter = JSON.parse(localStorage.getItem('chapter'));
-	if (lastVerse == chapter.length) return;
-	let page = document.querySelector('#page1');
-	page.innerHTML = '';
-	addPageNumber(1);
-	for (let i = lastVerse; calculateLines(page) < 10; i++) {
-		let obj = chapter[i];
-		if (!obj) return;
 		let { verse, text } = obj;
 		text = returnCleanedKJV(text);
 		page.innerHTML += `<span id="${verse}" style="font-size: .7em; font-weight: bold;">${verse}</span> <span id="${verse}">${text}</span>   `;
+	});
+}
+
+function isInBiblePlan(bookID, chapterID) {
+	let allowed = false;
+	let books = JSON.parse(localStorage.getItem('biblePlan'));
+	books.forEach((book) => {
+		console.log(book);
+		console.log(bookID, parseInt(book.book));
+		if (bookID == parseInt(book.book)) {
+			book.chapters.forEach((chapter) => {
+				if (chapterID == chapter.number) {
+					allowed = true;
+				}
+			});
+		}
+	});
+	return allowed;
+}
+
+function loadNextChapter() {
+	let { bookID, chapterID } = returnBookAndChapter();
+	let translation = returnStoredTranslation();
+	fetch(`https://bolls.life/get-books/${translation}/`, {
+		method: 'get',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			let chapterLength = data[bookID - 1].chapters;
+			if (chapterID == chapterLength && bookID < 65) {
+				if (isInBiblePlan(parseInt(bookID) + 1, 1)) setChapter(parseInt(bookID) + 1, 1);
+			} else {
+				if (isInBiblePlan(bookID, parseInt(chapterID) + 1)) setChapter(bookID, parseInt(chapterID) + 1);
+			}
+		});
+}
+
+function loadLastChapter() {
+	let { bookID, chapterID } = returnBookAndChapter();
+	if (chapterID == 1 && bookID > 1) {
+		if (isInBiblePlan(parseInt(bookID) - 1, 1)) setChapter(parseInt(bookID) - 1, 1);
+	} else if (chapterID >= 2) {
+		if (isInBiblePlan(bookID, parseInt(chapterID) - 1)) setChapter(bookID, parseInt(chapterID) - 1);
 	}
-}
-
-function loadLastPage(lastVerse) {
-	let chapter = JSON.parse(localStorage.getItem('chapter'));
-	let page = document.querySelector('#page1');
-	if (page.childNodes[0].id == '1') return;
-	page.innerHTML = '';
-	addPageNumber(-1);
-	for (let i = lastVerse - 2; calculateLines(page) < 10; i--) {
-		let obj = chapter[i];
-		if (!obj) return;
-		let { verse, text } = obj;
-		text = returnCleanedKJV(text);
-		page.innerHTML = `<span id="${verse}" style="font-size: .7em; font-weight: bold;">${verse}</span> <span id="${verse}">${text}</span>   ` + page.innerHTML;
-	}
-}
-
-function addPageNumber(num) {
-	let elem = document.querySelector('#pageNumber');
-	let string = elem.innerHTML;
-	let number = parseInt(string) + num;
-	elem.innerHTML = number;
-}
-
-function returnLastVerse() {
-	let page = document.querySelector('#page1');
-	let length = page.childNodes.length;
-	let lastVerse = page.childNodes[length - 2].id;
-	console.log('Last Verse:', lastVerse);
-	return lastVerse;
-}
-
-function returnFirstVerse() {
-	let page = document.querySelector('#page1');
-	let firstVerse = page.childNodes[0].id;
-	console.log('First Verse:', firstVerse);
-	return firstVerse;
-}
-
-function pageForward() {
-	let lastVerse = returnLastVerse();
-	loadNextPage(lastVerse);
-}
-
-function pageBackward() {
-	let firstVerse = returnFirstVerse();
-	loadLastPage(firstVerse);
 }
 
 async function setChapter(bookID, chapterID) {
 	setTitle(bookID, chapterID);
+	setHREF(returnID(), bookID, chapterID);
 	let translation = returnStoredTranslation();
 	fetch(`https://bolls.life/get-chapter/${translation}/${bookID}/${chapterID}/`, {
 		method: 'get',
@@ -214,7 +204,7 @@ async function setChapter(bookID, chapterID) {
 	})
 		.then((res) => res.json())
 		.then((data) => {
-			console.log(data);
+			document.querySelector('#pageNumber').innerHTML = chapterID;
 			createText(data);
 		});
 }
@@ -230,6 +220,16 @@ function rerouteToFirstChapter(books) {
 	};
 }
 
+function setHREF(_id, bookID, chapterID) {
+	const currentUrl = new URL(window.location.href);
+	const params = new URLSearchParams();
+	params.set('id', _id);
+	params.set('b', bookID);
+	params.set('c', chapterID);
+	const newUrl = `${currentUrl.pathname}?${params.toString()}`;
+	window.history.replaceState({}, '', newUrl);
+}
+
 async function createPlanWindow(plan) {
 	let { _id, books, description, icon, title } = plan;
 	let { booksCount, chaptersCount } = returnBooksAndChaptersCount(plan);
@@ -242,13 +242,7 @@ async function createPlanWindow(plan) {
 		let route = rerouteToFirstChapter(books);
 		bookID = route.bookID;
 		chapterID = route.chapterID;
-		const currentUrl = new URL(window.location.href);
-		const params = new URLSearchParams();
-		params.set('id', _id);
-		params.set('b', bookID);
-		params.set('c', chapterID);
-		const newUrl = `${currentUrl.pathname}?${params.toString()}`;
-		window.history.replaceState({}, '', newUrl);
+		setHREF(_id, bookID, chapterID);
 	}
 	await setChapter(bookID, chapterID);
 	let div = document.createElement('div');
@@ -285,6 +279,7 @@ async function createPlanWindow(plan) {
         <h1 style="font-family: 'Spectral'; color: #767676; font-size: 40px; text-align: center; margin-block: 0px; margin-top: 10px;">${title}</h1>
         <h2 id="chapterTitle" style="font-family: 'Spectral'; color: #767676; font-size: 30px; text-align: center; margin-block: 10px;"></h2>
         <div class="biblePlanPages">
+			<div class="biblePlanPopup" id="biblePlanPopup"><button class="filterBtn"><i class="fa-regular fa-note-sticky"></i> Annotate</button><button class="filterBtn"><i class="fa-regular fa-comment"></i> Comment</button></div>
             <div class="biblePlanPage" id="page1"></div>
         </div>
         <div class="pageSwitch">
@@ -294,8 +289,8 @@ async function createPlanWindow(plan) {
         </div>
     </div>
     `;
-	div.querySelector('#pageForward').addEventListener('click', pageForward);
-	div.querySelector('#pageBackward').addEventListener('click', pageBackward);
+	div.querySelector('#pageForward').addEventListener('click', loadNextChapter);
+	div.querySelector('#pageBackward').addEventListener('click', loadLastChapter);
 	div.querySelector('#tableOfContentsBtn').addEventListener('click', openTableOfContents);
 	div.querySelector('#commentsBtn').addEventListener('click', openComments);
 	div.querySelector('#translationsBtn').addEventListener('click', openTranslations);
@@ -303,7 +298,6 @@ async function createPlanWindow(plan) {
 	document.querySelector('body').appendChild(div);
 	createTableOfContents(books, bookID);
 	createTranslations();
-	console.log(bookID);
 }
 
 function loadMain() {
