@@ -1532,8 +1532,34 @@ button {
 }
 
 .toolbar > button:hover {
-    background-color: #ccc;
+    background-color: #2782f2;
+    color: #fff;
     border-radius: 5px;
+}
+
+.bookChapterList {
+    display: flex;
+    flex-direction: column;
+    width: 65%;
+    margin-inline: auto;
+    height: 50px;
+    overflow-y: hidden;
+}
+
+.inlineBookTitle {
+    display: flex;
+    flex-direction: row;
+}
+
+.bookTitleDropBtn {
+    margin-left: 15px;
+    margin-top: 19px;
+    background-color: #333;
+    color: #fff;
+    height: 25px;
+    width: 25px;
+    border-radius: 25px;
+    cursor: pointer;
 }
 
   @media only screen and (max-width: 1610px) {
