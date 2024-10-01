@@ -62,9 +62,16 @@ function loadPlan(id) {
 			console.log(data);
 			if (data.status) {
 				createPlanWindow(data.biblePlan);
-				setBiblePlanLocalStorage(data.biblePlan);
 			}
 		});
+}
+
+function getBook(name) {
+	return name.split(':')[0];
+}
+
+function isNum(str) {
+	return Number.isFinite(Number(str));
 }
 
 function createTableOfContents(books, scroll) {
@@ -83,10 +90,12 @@ function createTableOfContents(books, scroll) {
 				let bookNum = parseInt(book.book) - 1;
 				let title = bible[bookNum].name;
 				let div = document.createElement('div');
+				let completed = isNum(toString(completion[bookNum])) ? completion[bookNum] : '0';
+				console.log(num);
 				div.innerHTML = `
                 <div class="bookChapterList" id="book">
 				<div class="inlineBookTitle">
-					<h3 id=${bookNum}>${title} (0/${chaptersCount})</h3>
+					<h3 id=${bookNum}>${title} (${completed}/${chaptersCount})</h3>
 					<button style="position: static;border: none;" class="bookTitleDropBtn" id="bookDropBtn"><i class="fa-solid fa-chevron-right"></i></button>
 				</div>
                         
@@ -97,7 +106,7 @@ function createTableOfContents(books, scroll) {
 				book.chapters.forEach((chapter) => {
 					let chapterNum = chapter.number;
 					let chapterElem = document.createElement('a');
-					chapterElem.id = chapterNum;
+					chapterElem.id = `${bookNum}:${chapterNum}`;
 					chapterElem.innerHTML = `Chapter ${chapterNum}`;
 					let id = returnID();
 					chapterElem.href = `/biblePlans?id=${id}&b=${bookNum + 1}&c=${chapterNum}`;
@@ -107,10 +116,6 @@ function createTableOfContents(books, scroll) {
 			});
 			scrollToElement(`book${scroll - 1}`, 'auto');
 		});
-}
-
-function setBiblePlanLocalStorage(biblePlan) {
-	localStorage.setItem('biblePlan', JSON.stringify(biblePlan.books));
 }
 
 function setTitle(bookID, chapterID) {
@@ -150,8 +155,6 @@ function isInBiblePlan(bookID, chapterID) {
 	let allowed = false;
 	let books = JSON.parse(localStorage.getItem('biblePlan'));
 	books.forEach((book) => {
-		console.log(book);
-		console.log(bookID, parseInt(book.book));
 		if (bookID == parseInt(book.book)) {
 			book.chapters.forEach((chapter) => {
 				if (chapterID == chapter.number) {
@@ -300,6 +303,17 @@ async function createPlanWindow(plan) {
 	createTranslations();
 }
 
+function updateCompletion(userPlans) {
+	console.log(userPlans);
+	userPlans.forEach((plan) => {
+		let obj = document.getElementById(plan.id);
+		let progress = obj.querySelector('.innerBiblePlanProg');
+		let percent = plan.chaptersFinished.length / progress.id;
+		obj.querySelector('#progressCounter').innerHTML = `${(percent * 100).toFixed(0)}% completed`;
+		progress.style.width = percent * 100 + '%';
+	});
+}
+
 function loadMain() {
 	console.log('Loading Main');
 	fetch('api/biblePlans/get-bible-plans', {
@@ -310,7 +324,10 @@ function loadMain() {
 	})
 		.then((res) => res.json())
 		.then((data) => {
-			if (data.status) iteratePlans(data.biblePlans);
+			if (data.status) {
+				iteratePlans(data.biblePlans);
+				updateCompletion(data.userPlans);
+			}
 		});
 }
 
@@ -337,7 +354,7 @@ function createPlanObject(plan) {
 	let { _id, books, description, icon, title } = plan;
 	let { booksCount, chaptersCount } = returnBooksAndChaptersCount(plan);
 	let obj = document.createElement('div');
-	obj.innerHTML = `<div class="biblePlan">
+	obj.innerHTML = `<div class="biblePlan" id="${_id}">
                 <div style="width: 45%;">
                     <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg" alt="">
                 </div>
@@ -345,8 +362,9 @@ function createPlanObject(plan) {
                     <h3 style="font-style: italic; font-family: 'spectral'; font-weight: 500; text-align: center;">${title}</h3>
                     <p>${description}</p>
                     <p>${booksCount} books, ${chaptersCount} chapters</p>
+					<label for="${chaptersCount}" id="progressCounter">0% completed</label>
                     <div class="biblePlanProg">
-                        <span class="innerBiblePlanProg"></span>
+                        <span style="width: 0%"id="${chaptersCount}" class="innerBiblePlanProg"></span>
                     </div>
                     <a class="biblePlanBtn" href="/biblePlans?id=${_id}">Continue</a>
                 </div>
@@ -449,7 +467,6 @@ function createTranslations() {
 	})
 		.then((res) => res.json())
 		.then((data) => {
-			console.log(data);
 			createTranslationElements(data);
 		});
 }

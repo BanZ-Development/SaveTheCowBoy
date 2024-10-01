@@ -8,10 +8,13 @@ const User = require('../model/User');
 router.get('/get-bible-plans', async (req, res) => {
 	try {
 		let biblePlans = await BiblePlan.find();
+		let user = await User.findById(req.user.id);
+		let userPlans = user.biblePlans;
 		res.send({
 			status: true,
 			message: `${biblePlans.length} Bible Plans loaded!`,
-			biblePlans: biblePlans
+			biblePlans: biblePlans,
+			userPlans: userPlans
 		});
 	} catch (err) {
 		console.log(err);
@@ -32,7 +35,7 @@ async function trackBiblePlan(biblePlanID, userID) {
 		if (!hasBiblePlan) {
 			let plan = {
 				id: biblePlanID,
-				chaptersFinished: {},
+				chaptersFinished: [],
 				notes: {}
 			};
 			user.biblePlans.push(plan);
@@ -62,16 +65,57 @@ router.post('/get-bible-plan', async (req, res) => {
 
 router.post('/check-plan-completion', async (req, res) => {
 	try {
-		let { id, bookID, chapterID } = req.body;
+		let { id } = req.body;
+		console.log('ID:', id);
 		let user = await User.findById(req.user.id);
+		let biblePlan = null;
 		user.biblePlans.forEach((plan) => {
-			if (plan.id == id) {
-			}
+			if (plan.id == id) biblePlan = plan;
 		});
+		if (biblePlan) {
+			res.send({
+				status: true,
+				message: `Bible Plan ${id} completion saved.`,
+				biblePlan: biblePlan
+			});
+		} else {
+			res.send({
+				status: false,
+				message: `No bible plan found with ID: ${id} under this account!`
+			});
+		}
+	} catch (err) {
+		console.log(err);
 		res.send({
-			status: true,
-			message: `Bible Plan ${id} loaded!`,
-			biblePlan: biblePlan
+			status: false,
+			message: err.message
+		});
+	}
+});
+
+router.post('/update-plan-completion', async (req, res) => {
+	try {
+		let { id, chaptersFinished } = req.body;
+		console.log(id, chaptersFinished);
+		let user = await User.findById(req.user.id);
+		for (let i = 0; i < user.biblePlans.length; i++) {
+			let plan = user.biblePlans[i];
+			if (plan.id == id) {
+				console.log('Before:', user.biblePlans);
+				user.biblePlans[i].chaptersFinished = chaptersFinished.split(',');
+				console.log('After:', user.biblePlans);
+				await User.findByIdAndUpdate(req.user.id, {
+					biblePlans: user.biblePlans
+				});
+				return res.send({
+					status: true,
+					message: 'Chapters finished has been updated'
+				});
+			}
+		}
+		res.send({
+			status: false,
+			message: `No bible plan found with ID: ${id} under this account!`
 		});
 	} catch (err) {
 		console.log(err);
