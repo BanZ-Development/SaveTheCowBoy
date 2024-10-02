@@ -90,12 +90,10 @@ function createTableOfContents(books, scroll) {
 				let bookNum = parseInt(book.book) - 1;
 				let title = bible[bookNum].name;
 				let div = document.createElement('div');
-				let completed = isNum(toString(completion[bookNum])) ? completion[bookNum] : '0';
-				console.log(num);
 				div.innerHTML = `
                 <div class="bookChapterList" id="book">
 				<div class="inlineBookTitle">
-					<h3 id=${bookNum}>${title} (${completed}/${chaptersCount})</h3>
+					<h3 id=${bookNum}>${title} (0/${chaptersCount})</h3>
 					<button style="position: static;border: none;" class="bookTitleDropBtn" id="bookDropBtn"><i class="fa-solid fa-chevron-right"></i></button>
 				</div>
                         
@@ -149,6 +147,7 @@ function createText(chapter) {
 		text = returnCleanedKJV(text);
 		page.innerHTML += `<span id="${verse}" style="font-size: .7em; font-weight: bold;">${verse}</span> <span id="${verse}">${text}</span>   `;
 	});
+	loadComments();
 }
 
 function isInBiblePlan(bookID, chapterID) {
@@ -267,7 +266,14 @@ async function createPlanWindow(plan) {
             </div>
             <div id="comments" style="display: none; flex-direction: column;">
 				<h1 style="margin-bottom:0px;">Comments</h1>
-				<label id="commentChapter">Romans 1</label>
+				<label id="label">Romans 1</label>
+				<div id="commentsHolder" style="display: flex; flex-direction: column;"></div>
+				<div id="commentUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
+					<label id="quote">Quoting: </label>
+					<textarea id="commentBox" style="width=95%; height=6em; resize: none;"></textarea>
+					<button id="submitCommentBtn" style="width=95%;">Comment</button>
+				</div>
+				<h3 id="commentPrerequisite" style="position: absolute;bottom: 0; display: none">Highlight text to create a comment!</h3>
             </div>
             <div id="translations" style="display:none; flex-direction: column;">
 				<h1 style="margin-bottom:0px;">Translations</h1>
@@ -282,7 +288,7 @@ async function createPlanWindow(plan) {
         <h1 style="font-family: 'Spectral'; color: #767676; font-size: 40px; text-align: center; margin-block: 0px; margin-top: 10px;">${title}</h1>
         <h2 id="chapterTitle" style="font-family: 'Spectral'; color: #767676; font-size: 30px; text-align: center; margin-block: 10px;"></h2>
         <div class="biblePlanPages">
-			<div class="biblePlanPopup" id="biblePlanPopup"><button class="filterBtn"><i class="fa-regular fa-note-sticky"></i> Annotate</button><button class="filterBtn"><i class="fa-regular fa-comment"></i> Comment</button></div>
+			<div class="biblePlanPopup" id="biblePlanPopup"><button class="filterBtn" id="annotateBtn"><i class="fa-regular fa-note-sticky"></i> Annotate</button><button class="filterBtn" id="commentBtn"><i class="fa-regular fa-comment"></i> Comment</button></div>
             <div class="biblePlanPage" id="page1"></div>
         </div>
         <div class="pageSwitch">
@@ -298,6 +304,8 @@ async function createPlanWindow(plan) {
 	div.querySelector('#commentsBtn').addEventListener('click', openComments);
 	div.querySelector('#translationsBtn').addEventListener('click', openTranslations);
 	div.querySelector('#languageDropdown').addEventListener('change', changeStoredLanguage);
+	div.querySelector('#commentBtn').addEventListener('click', openCommentsWithComment);
+	div.querySelector('#submitCommentBtn').addEventListener('click', submitComment);
 	document.querySelector('body').appendChild(div);
 	createTableOfContents(books, bookID);
 	createTranslations();
@@ -402,7 +410,45 @@ document.addEventListener('mouseup', function (event) {
 	} catch (err) {}
 });
 
-document.addEventListener('mousedown', function () {
+function returnBookAndChapterName() {
+	let bookName = document.querySelector('#chapterTitle').innerHTML.split(' |')[0];
+	let { chapterID } = returnBookAndChapter();
+	return { bookName, chapterID };
+}
+
+function noSelectionComment() {
+	document.querySelector('#commentUserInput').style.display = 'none';
+	document.querySelector('#commentPrerequisite').style.display = 'flex';
+}
+
+function setupCommentWindow() {
+	// pass parameters for first verse and last verse
+	let selected = window.getSelection();
+	let anchor = selected.anchorNode;
+	let focus = selected.focusNode;
+	let startVerse = anchor.parentElement.id;
+	let endVerse = focus.parentElement.id;
+	console.log(startVerse, endVerse);
+	let verseString = startVerse;
+	if (startVerse != endVerse) verseString += `-${endVerse}`;
+
+	let { bookName, chapterID } = returnBookAndChapterName();
+	if (!verseString) {
+		noSelectionComment();
+	} else {
+		document.querySelector('#quote').innerHTML = `Quoting: ${bookName} ${chapterID}:${verseString}`;
+	}
+
+	console.log(anchor, focus);
+}
+
+document.addEventListener('mousedown', function (e) {
+	if (e.target.id == 'commentBtn') {
+		openCommentsWithComment();
+		setupCommentWindow();
+	} else if (e.target.id == 'annotateBtn') {
+		//openAnnotationsWithAnnotation();
+	}
 	const popup = document.getElementById('biblePlanPopup');
 	popup.style.display = 'none';
 });
@@ -411,7 +457,27 @@ function openTranslations() {
 	openWindow('translations');
 }
 
+function setCommentsLabel() {
+	let { bookName, chapterID } = returnBookAndChapterName();
+	document.querySelector('#label').innerHTML = `${bookName} ${chapterID}`;
+}
+
 function openComments() {
+	let selected = window.getSelection();
+	setCommentsLabel();
+	if (selected.anchorNode) {
+		openCommentsWithComment();
+		setupCommentWindow();
+	} else {
+		noSelectionComment();
+		openWindow('comments');
+	}
+}
+
+function openCommentsWithComment() {
+	console.log('clicked');
+	document.querySelector('#commentPrerequisite').style.display = 'none';
+	document.querySelector('#commentUserInput').style.display = 'flex';
 	openWindow('comments');
 }
 
@@ -518,4 +584,88 @@ function displayCurrentTranslation() {
 		btn.innerHTML = 'Select';
 	});
 	document.querySelector(`#${translation}`).querySelector('#selectTranslationBtn').innerHTML = 'Selected';
+}
+
+function submitComment() {
+	let id = returnID();
+	let { bookID, chapterID } = returnBookAndChapter();
+	let comment = document.querySelector('#commentBox').value;
+	let location = document.querySelector('#quote').innerHTML.split(': ')[1];
+	let data = new FormData();
+	data.append('id', id);
+	data.append('bookID', bookID);
+	data.append('chapterID', chapterID);
+	data.append('comment', comment);
+	data.append('location', location);
+	fetch('api/biblePlans/create-comment', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+		});
+}
+
+function deleteComments() {
+	document.querySelector('#commentsHolder').style.display = 'none';
+	document.querySelector('#commentsHolder').childNodes.forEach((child) => {
+		child.remove();
+	});
+	document.querySelector('#commentsHolder').style.display = 'flex';
+}
+
+function loadComments() {
+	deleteComments();
+	setCommentsLabel();
+	let id = returnID();
+	let { bookID, chapterID } = returnBookAndChapter();
+	let data = new FormData();
+	data.append('id', id);
+	data.append('bookID', bookID);
+	data.append('chapterID', chapterID);
+	fetch('api/biblePlans/get-comments', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			createCommentElements(data.comments);
+		});
+}
+
+function createCommentElements(comments) {
+	deleteComments();
+	console.log(comments);
+
+	comments.forEach((obj) => {
+		let { comment, location, uID, postDate } = obj;
+		let div = document.createElement('div');
+		div.innerHTML = `
+		<a class="navProfileUser" id="commentProfile" href="/profile?uid=${uID}"></a>
+		<label id="location"for="comment">${location}</label>
+		<p id="comment">${comment}</p>`;
+		document.querySelector('#commentsHolder').appendChild(div);
+		let data = new FormData();
+		data.append('uid', uID);
+		fetch('api/profile/load', {
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			body: new URLSearchParams(data)
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log(data);
+				let { username, pfp } = data.profile;
+				div.querySelector('#commentProfile').innerHTML = `<img src="/image/${pfp}" alt="Profile pic"> <p>${username}</p>`;
+			});
+	});
 }

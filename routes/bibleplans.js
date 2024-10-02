@@ -126,4 +126,60 @@ router.post('/update-plan-completion', async (req, res) => {
 	}
 });
 
+router.post('/create-comment', async (req, res) => {
+	try {
+		let { id, bookID, chapterID, location, comment } = req.body;
+		if (comment.length == 0 || comment.length > 500) {
+			return res.send({
+				status: false,
+				message: 'Comment either does not exist or comment is too long (500+ chars).'
+			});
+		}
+		let biblePlan = await BiblePlan.findById(id);
+		let book = biblePlan.books.find((item) => item.book == bookID);
+		let chapter = book.chapters.find((item) => item.number == chapterID);
+		let update = {
+			location: location,
+			comment: comment,
+			uID: req.user.id,
+			postDate: new Date()
+		};
+		chapter.comments.push(update);
+		biblePlan.markModified('books');
+		await biblePlan.save();
+		res.send({
+			status: true,
+			chapter: chapter,
+			update: update
+		});
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: err.message
+		});
+	}
+});
+
+router.post('/get-comments', async (req, res) => {
+	try {
+		let { id, bookID, chapterID } = req.body;
+		let biblePlan = await BiblePlan.findById(id);
+		let book = biblePlan.books.find((item) => item.book == bookID);
+		let chapter = book.chapters.find((item) => item.number == chapterID);
+		let comments = chapter.comments;
+		res.send({
+			status: true,
+			comments: comments,
+			message: `${comments.length} comments loaded!`
+		});
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: err.message
+		});
+	}
+});
+
 module.exports = router;
