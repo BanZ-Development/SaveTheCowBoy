@@ -39,13 +39,13 @@
                 <span class="innerBiblePlanProg"></span>
             </div>
         </div>
-        <div id="Notes">
+        <div style="display: none;" id="Notes">
             <textarea name="" id=""></textarea>
         </div>
-        <div id="comments">
-
+        <div style="display: none;" class="bibleSideSection" id="comments">
+            <input style="margin-inline: auto; width: 60%;" class="postText" type="text">
         </div>
-        <div id="translations">
+        <div style="display: none;" id="translations">
 
         </div>
     </div>
@@ -62,6 +62,11 @@
             <button><i class="fa-solid fa-arrow-right"></i></button>
         </div>
     </div>
+    <style>
+        .deleteBtn:hover {
+            background-color: #f75252 !important;
+        }
+    </style>
 </body>
 <script type="module" src="../js/navbar.js"></script>
 <script src="../js/anime.min.js"></script>

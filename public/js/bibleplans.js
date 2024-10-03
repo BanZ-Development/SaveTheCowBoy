@@ -161,7 +161,7 @@ function createText(chapter) {
 	chapter.forEach((obj) => {
 		let { verse, text } = obj;
 		text = returnCleanedKJV(text);
-		page.innerHTML += `<span id="${verse}" style="font-size: .7em; font-weight: bold;">${verse}</span> <span id="${verse}">${text}</span>   `;
+		page.innerHTML += `<sup id="${verse}" style="font-size: .7em; font-weight: bold;">${verse}</sup> <span id="${verse}">${text}</span>   `;
 	});
 	loadComments();
 }
@@ -281,8 +281,8 @@ async function createPlanWindow(plan) {
                 
             </div>
             <div id="annotations" style="display: none; flex-direction: column;">
-				<h1 style="margin-bottom:0px;">Annotations</h1>
-				<label>Create private notes to study the bible!</label>
+				<h1 style="margin-bottom:0px; text-align: center;">Annotations</h1>
+				<label style="text-align: center; margin-bottom: 15px;">Create private notes to study the bible!</label>
 				<div id="annotationsHolder" style="display: flex; flex-direction: column;"></div>
 				<div id="annotationsUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
 					<label id="annotateRoute"></label>
@@ -292,8 +292,8 @@ async function createPlanWindow(plan) {
 				<h3 id="annotatePrerequisite" style="position: absolute;bottom: 0; display: none">Highlight text to create an annotation!</h3>
             </div>
             <div id="comments" style="display: none; flex-direction: column;">
-				<h1 style="margin-bottom:0px;">Comments</h1>
-				<label>Chat with other STC members about this chapter!</label>
+				<h1 style="margin-bottom:0px;text-align: center;">Comments</h1>
+				<label style="text-align: center; margin-bottom: 15px;">Chat with other STC members about this chapter!</label>
 				<label id="label">Romans 1</label>
 				<div id="commentsHolder" style="display: flex; flex-direction: column;"></div>
 				<div id="commentUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
@@ -325,6 +325,33 @@ async function createPlanWindow(plan) {
             <button id="pageForward"><i class="fa-solid fa-arrow-right"></i></button>
         </div>
     </div>
+	<style>
+
+		#commentProfile {
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+		#commentProfile > p {
+			font-weight: bold;
+			color: #333;
+		}
+
+		#commentProfile > img {
+			width: 45px;
+			height: 45px;
+			margin-left: 0px;
+		}
+
+		.deleteBtn {
+			border: solid 1px #ccc;
+			border-radius: 12px;
+		}
+        .deleteBtn:hover {
+            background-color: #f75252 !important;
+			border: solid 1px #fff0;
+        }
+    </style>
     `;
 	div.querySelector('#pageForward').addEventListener('click', loadNextChapter);
 	div.querySelector('#pageBackward').addEventListener('click', loadLastChapter);
@@ -699,9 +726,15 @@ function createCommentElements(comments) {
 		let { comment, location, uID, postDate } = obj;
 		let div = document.createElement('div');
 		div.innerHTML = `
-		<a class="navProfileUser" id="commentProfile" href="/profile?uid=${uID}"></a>
-		<label id="location"for="comment">${location}</label>
-		<p id="comment">${comment}</p>`;
+		<div class="annotation">
+			<div class="inlineAnnotationTitle"> 
+				<a class="navProfileUser" id="commentProfile" href="/profile?uid=${uID}"></a>
+				<label style="margin-left: auto; color: #797979; font-family: 'Noto Serif'; margin-block: auto;" id="location"for="comment">${location}</label>
+			</div>
+			<p style="padding-bottom: 15px; font-weight: 500;" class="annotationText" id="comment">${comment}</p>
+		</div>
+		
+		`;
 		document.querySelector('#commentsHolder').appendChild(div);
 		let data = new FormData();
 		data.append('uid', uID);
@@ -786,20 +819,28 @@ function loadAnnotations() {
 	})
 		.then((res) => res.json())
 		.then((data) => {
-			if (data.status) {
-				createAnnotationElement(data.annotations);
-			}
+			createAnnotationElements(data.annotations);
 		});
 }
 
-function createAnnotationElement(annotations) {
+function createAnnotationElements(annotations) {
 	console.log(annotations);
 	annotations.forEach((obj) => {
 		let { annotation, location, uID, postDate } = obj;
 		let div = document.createElement('div');
 		div.innerHTML = `
-		<label id="location"for="comment">${location}</label>
-		<p id="comment">${annotation}</p>`;
+		<div class="annotation">
+			<div class="inlineAnnotationTitle"> 
+				<label class="annotationTitle" id="location"for="comment">${location}</label>
+				<button class="viewVerseBtn">View Verse</button>
+			</div>
+			<p class="annotationText" id="comment">${annotation}</p>
+			<div style="display:flex;flex-direction:row;">
+				<button style="height: 45px; line-height:0px;" class="btnLink deleteBtn"><i class="fa-solid fa-trash"></i> Delete</button>
+				<button class="annotationDrop"><i class="fa-solid fa-chevron-down"></i></button>
+			</div>
+		</div>
+		`;
 		document.querySelector('#annotationsHolder').appendChild(div);
 	});
 }
