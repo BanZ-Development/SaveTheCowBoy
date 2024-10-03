@@ -224,11 +224,19 @@ router.post('/get-annotations', async (req, res) => {
 		let user = await User.findById(req.user.id);
 		let plan = user.biblePlans.find((item) => item.id == id);
 		let annotations = plan.annotations;
-		res.send({
-			status: true,
-			annotations: annotations,
-			message: `${annotations.length} comments loaded!`
-		});
+		if (annotations.length > 0) {
+			res.send({
+				status: true,
+				annotations: annotations,
+				message: `${annotations.length} comments loaded!`
+			});
+		} else {
+			res.send({
+				status: true,
+				annotations: null,
+				message: `No comments loaded!`
+			});
+		}
 	} catch (err) {
 		console.log(err);
 		res.send({

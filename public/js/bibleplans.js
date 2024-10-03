@@ -786,11 +786,13 @@ function loadAnnotations() {
 	})
 		.then((res) => res.json())
 		.then((data) => {
-			createAnnotationElements(data.annotations);
+			if (data.status) {
+				createAnnotationElement(data.annotations);
+			}
 		});
 }
 
-function createAnnotationElements(annotations) {
+function createAnnotationElement(annotations) {
 	console.log(annotations);
 	annotations.forEach((obj) => {
 		let { annotation, location, uID, postDate } = obj;
