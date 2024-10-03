@@ -48,7 +48,7 @@ function load() {
             <div class="navProfileDrop">
                 <a id="profile" class="navProfileDropLink"><i class="fa-solid fa-user"></i> Profile</a>
                 <a href="settings" class="navProfileDropLink"><i class="fa-solid fa-gear"></i> Settings</a>
-                <a id="navSub" class="navProfileDropLink"><i class="fa-solid fa-credit-card"></i> Subscription</a>
+                <a id="navSub" style="display: none;" class="navProfileDropLink"><i class="fa-solid fa-credit-card"></i> Subscription</a>
                 <a id="logoutBtn1" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
             </div>
         </div>

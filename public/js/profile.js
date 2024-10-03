@@ -95,10 +95,12 @@ function createProfile(profile) {
 	console.log(profile);
 	let div = document.createElement('div');
 	div.innerHTML = `<br><br><br><br><br><br><br><br><br><br><br><br><div id="profile">
-		<img id="pfp" src="/image/${profile.pfp}">
-		<h1>${profile.username}</h1>
+		<div style="display: flex; flex-direction: row; color: #fff; margin-bottom: 20px;">
+			<img style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; object-position: center;" id="pfp" src="/image/${profile.pfp}">
+			<h1 style="line-height: 15px; margin-left: 10px;">${profile.username}</h1>
+		</div>
 		<span class="line"></span>
-		<h2>Posts</h2>
+		<h2 style="color: #fff;">Posts</h2>
 		<div id="posts"></div>
 		</div>
 		`;

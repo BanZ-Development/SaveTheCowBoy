@@ -304,10 +304,10 @@ async function createPlanWindow(plan) {
 				<h3 id="commentPrerequisite" style="position: absolute;bottom: 0; display: none">Highlight text to create a comment!</h3>
             </div>
             <div id="translations" style="display:none; flex-direction: column;">
-				<h1 style="margin-bottom:0px;">Translations</h1>
-				<label id="currentTranslation">Current Translation: </label>
+				<h1 style="margin-bottom:0px; text-align: center;">Translations</h1>
+				<label style="text-align:center; margin-bottom: 15px;" id="currentTranslation">Current Translation: </label>
 				<label for="languageDropdown">Language:</label>
-				<select id="languageDropdown"></select>
+				<select class="custom-select" id="languageDropdown"></select>
 				<div id="translationsHolder" style="display:flex; flex-direction: column;"></div>
             </div>
         </div>
@@ -577,7 +577,15 @@ function createTranslationElements(data) {
 		languageDiv.style.flexDirection = 'column';
 		languageTranslations.forEach((translation) => {
 			let translationDiv = document.createElement('div');
-			translationDiv.innerHTML = `<div id="${translation.short_name}"><h2>${translation.short_name}</h2><h3>${translation.full_name}</h3><button id="selectTranslationBtn">Select</button></div>`;
+			translationDiv.innerHTML = `
+			<div class="bibleTranslation" id="${translation.short_name}">
+				<div style="display: flex; flex-direction: column; width: 85%;">
+					<h2>${translation.short_name}</h2>
+					<h3>${translation.full_name}</h3>
+				</div>
+				<button id="selectTranslationBtn"><i class="fa-solid fa-check"></i></button>
+			</div>
+			`;
 			translationDiv.querySelector('#selectTranslationBtn').addEventListener('click', changeTranslation);
 			languageDiv.appendChild(translationDiv);
 		});
@@ -659,9 +667,9 @@ function displayCurrentTranslation() {
 	let translation = returnStoredTranslation();
 	document.querySelector('#currentTranslation').innerHTML = `Current Translation: ${translation}`;
 	document.querySelectorAll('#selectTranslationBtn').forEach((btn) => {
-		btn.innerHTML = 'Select';
+		btn.innerHTML = '';
 	});
-	document.querySelector(`#${translation}`).querySelector('#selectTranslationBtn').innerHTML = 'Selected';
+	document.querySelector(`#${translation}`).querySelector('#selectTranslationBtn').innerHTML = '<i class="fa-solid fa-check"></i>';
 }
 
 function submitComment() {
