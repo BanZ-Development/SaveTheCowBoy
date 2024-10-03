@@ -22,6 +22,20 @@ function returnBookAndChapter() {
 	}
 }
 
+function startSpin() {
+	document.querySelector('#spinner').style.display = 'flex';
+	try {
+		document.querySelector('#biblePlanWindow').style.display = 'none';
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+function endSpin() {
+	document.querySelector('#biblePlanWindow').style.display = 'flex';
+	document.querySelector('#spinner').style.display = 'none';
+}
+
 function scrollToElement(elementId, smoothOrAuto) {
 	const element = document.getElementById(elementId);
 	if (element) {
@@ -50,6 +64,7 @@ function loadPlan(id) {
 
 	let data = new FormData();
 	data.append('id', id);
+	document.addEventListener('DOMContentLoaded', () => startSpin());
 	fetch('api/biblePlans/get-bible-plan', {
 		method: 'post',
 		headers: {
@@ -62,6 +77,7 @@ function loadPlan(id) {
 			console.log(data);
 			if (data.status) {
 				createPlanWindow(data.biblePlan);
+				localStorage.setItem('biblePlan', JSON.stringify(data.biblePlan.books));
 			}
 		});
 }
@@ -197,6 +213,7 @@ function loadLastChapter() {
 async function setChapter(bookID, chapterID) {
 	setTitle(bookID, chapterID);
 	setHREF(returnID(), bookID, chapterID);
+	startSpin();
 	let translation = returnStoredTranslation();
 	fetch(`https://bolls.life/get-chapter/${translation}/${bookID}/${chapterID}/`, {
 		method: 'get',
@@ -208,6 +225,7 @@ async function setChapter(bookID, chapterID) {
 		.then((data) => {
 			document.querySelector('#pageNumber').innerHTML = chapterID;
 			createText(data);
+			endSpin();
 		});
 }
 
@@ -251,9 +269,10 @@ async function createPlanWindow(plan) {
 	div.id = 'biblePlanWindow';
 	div.innerHTML = `
     <div class="biblePlanSidebar">
+	
         <div class="toolbar">
             <button id="tableOfContentsBtn"><i class="fa-solid fa-list"></i></button>
-            <button id="notesBtn"><i class="fa-regular fa-note-sticky"></i></button>
+            <button id="annotationsBtn"><i class="fa-regular fa-note-sticky"></i></button>
             <button id="commentsBtn"><i class="fa-regular fa-comment"></i></button>
             <button id="translationsBtn"><i class="fa-solid fa-language"></i></button>
         </div>
@@ -261,16 +280,25 @@ async function createPlanWindow(plan) {
             <div id="tableOfContents" style="flex-direction: column; display: flex;">
                 
             </div>
-            <div id="notes" style="display: none; flex-direction: column;">
-
+            <div id="annotations" style="display: none; flex-direction: column;">
+				<h1 style="margin-bottom:0px;">Annotations</h1>
+				<label>Create private notes to study the bible!</label>
+				<div id="annotationsHolder" style="display: flex; flex-direction: column;"></div>
+				<div id="annotationsUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
+					<label id="annotateRoute"></label>
+					<textarea placeholder="Write down something important to you..." id="annotateBox" style="width=95%; height=6em; resize: none;"></textarea>
+					<button id="submitAnnotationBtn" style="width=95%;">Annotate</button>
+				</div>
+				<h3 id="annotatePrerequisite" style="position: absolute;bottom: 0; display: none">Highlight text to create an annotation!</h3>
             </div>
             <div id="comments" style="display: none; flex-direction: column;">
 				<h1 style="margin-bottom:0px;">Comments</h1>
+				<label>Chat with other STC members about this chapter!</label>
 				<label id="label">Romans 1</label>
 				<div id="commentsHolder" style="display: flex; flex-direction: column;"></div>
 				<div id="commentUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
 					<label id="quote">Quoting: </label>
-					<textarea id="commentBox" style="width=95%; height=6em; resize: none;"></textarea>
+					<textarea placeholder="Speak your mind..."id="commentBox" style="width=95%; height=6em; resize: none;"></textarea>
 					<button id="submitCommentBtn" style="width=95%;">Comment</button>
 				</div>
 				<h3 id="commentPrerequisite" style="position: absolute;bottom: 0; display: none">Highlight text to create a comment!</h3>
@@ -305,7 +333,10 @@ async function createPlanWindow(plan) {
 	div.querySelector('#translationsBtn').addEventListener('click', openTranslations);
 	div.querySelector('#languageDropdown').addEventListener('change', changeStoredLanguage);
 	div.querySelector('#commentBtn').addEventListener('click', openCommentsWithComment);
+	div.querySelector('#annotateBtn').addEventListener('click', openAnnotations);
 	div.querySelector('#submitCommentBtn').addEventListener('click', submitComment);
+	div.querySelector('#submitAnnotationBtn').addEventListener('click', submitAnnotation);
+	div.querySelector('#annotationsBtn').addEventListener('click', openAnnotations);
 	document.querySelector('body').appendChild(div);
 	createTableOfContents(books, bookID);
 	createTranslations();
@@ -382,7 +413,7 @@ function createPlanObject(plan) {
 
 function openWindow(id) {
 	document.querySelector('#tableOfContents').style.display = 'none';
-	document.querySelector('#notes').style.display = 'none';
+	document.querySelector('#annotations').style.display = 'none';
 	document.querySelector('#comments').style.display = 'none';
 	document.querySelector('#translations').style.display = 'none';
 	document.querySelector(`#${id}`).style.display = 'flex';
@@ -421,25 +452,28 @@ function noSelectionComment() {
 	document.querySelector('#commentPrerequisite').style.display = 'flex';
 }
 
-function setupCommentWindow() {
-	// pass parameters for first verse and last verse
-	let selected = window.getSelection();
+function returnVerseString(bookName, chapterID, selected) {
 	let anchor = selected.anchorNode;
 	let focus = selected.focusNode;
 	let startVerse = anchor.parentElement.id;
 	let endVerse = focus.parentElement.id;
 	console.log(startVerse, endVerse);
-	let verseString = startVerse;
+	let verseString = `${bookName} ${chapterID}:${startVerse}`;
 	if (startVerse != endVerse) verseString += `-${endVerse}`;
+	return verseString;
+}
 
+function setupCommentWindow() {
+	// pass parameters for first verse and last verse
+	let selected = window.getSelection();
 	let { bookName, chapterID } = returnBookAndChapterName();
-	if (!verseString) {
+	let verseString = returnVerseString(bookName, chapterID, selected);
+	if (!selected.toString().trim()) {
 		noSelectionComment();
 	} else {
-		document.querySelector('#quote').innerHTML = `Quoting: ${bookName} ${chapterID}:${verseString}`;
+		console.log('working');
+		document.querySelector('#quote').innerHTML = `Quoting: ${verseString}`;
 	}
-
-	console.log(anchor, focus);
 }
 
 document.addEventListener('mousedown', function (e) {
@@ -448,6 +482,8 @@ document.addEventListener('mousedown', function (e) {
 		setupCommentWindow();
 	} else if (e.target.id == 'annotateBtn') {
 		//openAnnotationsWithAnnotation();
+		console.log('hi');
+		openAnnotations();
 	}
 	const popup = document.getElementById('biblePlanPopup');
 	popup.style.display = 'none';
@@ -471,6 +507,21 @@ function openComments() {
 	} else {
 		noSelectionComment();
 		openWindow('comments');
+	}
+}
+
+function openAnnotations() {
+	openWindow('annotations');
+	loadAnnotations();
+	let selected = window.getSelection();
+	if (selected.toString().trim()) {
+		let { bookName, chapterID } = returnBookAndChapterName();
+		document.querySelector('#annotationsUserInput').style.display = 'flex';
+		document.querySelector('#annotatePrerequisite').style.display = 'none';
+		document.querySelector('#annotateRoute').innerHTML = returnVerseString(bookName, chapterID, selected);
+	} else {
+		document.querySelector('#annotationsUserInput').style.display = 'none';
+		document.querySelector('#annotatePrerequisite').style.display = 'flex';
 	}
 }
 
@@ -607,6 +658,8 @@ function submitComment() {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
+			clearCommentsWindow();
+			loadComments();
 		});
 }
 
@@ -642,8 +695,6 @@ function loadComments() {
 
 function createCommentElements(comments) {
 	deleteComments();
-	console.log(comments);
-
 	comments.forEach((obj) => {
 		let { comment, location, uID, postDate } = obj;
 		let div = document.createElement('div');
@@ -667,5 +718,86 @@ function createCommentElements(comments) {
 				let { username, pfp } = data.profile;
 				div.querySelector('#commentProfile').innerHTML = `<img src="/image/${pfp}" alt="Profile pic"> <p>${username}</p>`;
 			});
+	});
+}
+
+function clearCommentsWindow() {
+	document.querySelector('#commentPrerequisite').style.display = 'flex';
+	document.querySelector('#commentUserInput').style.display = 'none';
+	document.querySelector('#commentBox').value = '';
+	document.querySelector('#label').innerHTML = '';
+}
+
+function clearAnnotationWindow() {
+	document.querySelector('#annotationsUserInput').style.display = 'none';
+	document.querySelector('#annotatePrerequisite').style.display = 'flex';
+	document.querySelector('#annotateBox').value = '';
+	document.querySelector('#annotateRoute').innerHTML = '';
+}
+
+function submitAnnotation() {
+	let id = returnID();
+	let { bookID, chapterID } = returnBookAndChapter();
+	let annotation = document.querySelector('#annotateBox').value;
+	let location = document.querySelector('#annotateRoute').innerHTML;
+	let data = new FormData();
+	data.append('id', id);
+	data.append('bookID', bookID);
+	data.append('chapterID', chapterID);
+	data.append('annotation', annotation);
+	data.append('location', location);
+	fetch('api/biblePlans/create-annotation', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			clearAnnotationWindow();
+			loadAnnotations();
+		});
+}
+
+function deleteAnnotations() {
+	document.querySelector('#annotationsHolder').style.display = 'none';
+	document.querySelector('#annotationsHolder').childNodes.forEach((child) => {
+		child.remove();
+	});
+	document.querySelector('#annotationsHolder').style.display = 'flex';
+}
+
+function loadAnnotations() {
+	deleteAnnotations();
+	let id = returnID();
+	let { bookID, chapterID } = returnBookAndChapter();
+	let data = new FormData();
+	data.append('id', id);
+	data.append('bookID', bookID);
+	data.append('chapterID', chapterID);
+	fetch('api/biblePlans/get-annotations', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			createAnnotationElements(data.annotations);
+		});
+}
+
+function createAnnotationElements(annotations) {
+	console.log(annotations);
+	annotations.forEach((obj) => {
+		let { annotation, location, uID, postDate } = obj;
+		let div = document.createElement('div');
+		div.innerHTML = `
+		<label id="location"for="comment">${location}</label>
+		<p id="comment">${annotation}</p>`;
+		document.querySelector('#annotationsHolder').appendChild(div);
 	});
 }

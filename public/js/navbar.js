@@ -56,8 +56,22 @@ function load() {
         
         <button class="navIcon" id="burgerMenu"><i class="fa-solid fa-bars"></i></button>
     </nav>
+	<div id="spinner" style="background-color: white; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 100;">
+        <l-ring
+        size="40"
+        stroke="5"
+        bg-opacity="0"
+        speed="2"
+        color="black" 
+        ></l-ring>
+    </div>
     `;
 	document.body.innerHTML = nav.innerHTML + document.body.innerHTML;
+	let spinner = document.createElement('script');
+	spinner.type = 'module';
+	spinner.src = 'https://cdn.jsdelivr.net/npm/ldrs/dist/auto/ring.js';
+	console.log(spinner);
+	document.head.appendChild(spinner);
 }
 
 function checkLogin() {

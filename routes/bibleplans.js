@@ -36,7 +36,7 @@ async function trackBiblePlan(biblePlanID, userID) {
 			let plan = {
 				id: biblePlanID,
 				chaptersFinished: [],
-				notes: {}
+				annotations: []
 			};
 			user.biblePlans.push(plan);
 			await user.save();
@@ -172,6 +172,62 @@ router.post('/get-comments', async (req, res) => {
 			status: true,
 			comments: comments,
 			message: `${comments.length} comments loaded!`
+		});
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: err.message
+		});
+	}
+});
+
+router.post('/create-annotation', async (req, res) => {
+	try {
+		let { id, bookID, chapterID, location, annotation } = req.body;
+		if (annotation.length == 0 || annotation.length > 500) {
+			return res.send({
+				status: false,
+				message: 'Annotation either does not exist or annotation is too long (500+ chars).'
+			});
+		}
+		let user = await User.findById(req.user.id);
+		let plan = user.biblePlans.find((item) => item.id == id);
+		let update = {
+			location: location,
+			bookID: bookID,
+			chapterID: chapterID,
+			annotation: annotation,
+			uID: req.user.id,
+			postDate: new Date()
+		};
+		plan.annotations.push(update);
+		user.markModified('biblePlans');
+		await user.save();
+		res.send({
+			status: true,
+			message: 'Annotation has been created',
+			update: update
+		});
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: err.message
+		});
+	}
+});
+
+router.post('/get-annotations', async (req, res) => {
+	try {
+		let { id } = req.body;
+		let user = await User.findById(req.user.id);
+		let plan = user.biblePlans.find((item) => item.id == id);
+		let annotations = plan.annotations;
+		res.send({
+			status: true,
+			annotations: annotations,
+			message: `${annotations.length} comments loaded!`
 		});
 	} catch (err) {
 		console.log(err);

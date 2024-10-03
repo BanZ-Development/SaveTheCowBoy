@@ -23,6 +23,22 @@ const returnSortType = () => {
 	else return sortType;
 };
 
+function startSpin() {
+	document.addEventListener('DOMContentLoaded', () => {
+		document.querySelector('#spinner').style.display = 'flex';
+		try {
+			document.querySelector('.allForum').style.display = 'none';
+		} catch (err) {
+			console.log(err);
+		}
+	});
+}
+
+function endSpin() {
+	document.querySelector('.allForum').style.display = 'flex';
+	document.querySelector('#spinner').style.display = 'none';
+}
+
 async function loadPosts() {
 	const id = returnID();
 	let loadedPosts = 0;
@@ -32,6 +48,7 @@ async function loadPosts() {
 	const data = new FormData();
 	data.append('loadedPosts', loadedPosts);
 	data.append('sortType', sortType);
+	startSpin();
 	if (!id) {
 		fetch('api/forum/loadPosts', {
 			method: 'post',
@@ -56,6 +73,7 @@ async function loadPosts() {
 					data.posts.forEach((post) => {
 						createPostElement(post, data.currentUserID, data.pfp);
 					});
+					endSpin();
 				} else {
 					console.log(data);
 				}
@@ -78,6 +96,7 @@ async function loadPosts() {
 				console.log(data);
 				if (data.status) {
 					loadSinglePost(data.post, data.currentUserID, data.pfp);
+					endSpin();
 				} else {
 					console.log('error!');
 				}
