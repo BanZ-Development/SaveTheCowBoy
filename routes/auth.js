@@ -34,15 +34,39 @@ router.post('/login', passport.authenticate('local', { failureRedirect: '/login'
 	});
 });
 
+async function isSubscribed(customerID) {
+	try {
+		const subscriptions = await stripe.subscriptions.list({
+			customer: customerID,
+			status: 'all' // Retrieve all subscriptions (active, past_due, etc.)
+		});
+		// Check if any subscription is still active
+		const activeSubscription = subscriptions.data.find((sub) => sub.status === 'active' || sub.status === 'trialing');
+
+		if (activeSubscription) {
+			console.log('Customer has an active subscription');
+			return true;
+		} else {
+			console.log('No active subscriptions found for the customer');
+			return false;
+		}
+	} catch (error) {
+		console.error('Error retrieving subscriptions:', error);
+		return false;
+	}
+}
+
 router.post('/isLoggedIn', async (req, res) => {
 	try {
 		if (req.user) {
+			let subscribed = await isSubscribed(req.user.subscription.customer);
 			let params = {
 				status: true,
 				message: 'User is logged in',
 				username: req.user.meta.username,
 				uid: req.user.id,
-				admin: req.user.admin
+				admin: req.user.admin,
+				subscribed: subscribed
 			};
 			if (req.user.meta.pfp) params['pfp'] = req.user.meta.pfp.name;
 			let date = new Date();

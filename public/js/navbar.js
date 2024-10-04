@@ -74,6 +74,20 @@ function load() {
 	document.head.appendChild(spinner);
 }
 
+function isNonSubscriberPage() {
+	const url = window.location.href; // Get the current URL
+	const pageName = url.substring(url.lastIndexOf('/') + 1); // Extract the page name
+
+	return (
+		pageName === '' ||
+		pageName.toLowerCase() === 'index' ||
+		pageName.toLowerCase() === 'settings' ||
+		pageName.toLowerCase() === 'signup' ||
+		pageName.toLowerCase() === 'login' ||
+		pageName.toLowerCase() === 'forgotPassword'
+	);
+}
+
 function checkLogin() {
 	fetch('api/auth/isLoggedIn', {
 		method: 'post',
@@ -84,22 +98,25 @@ function checkLogin() {
 		.then((res) => res.json())
 		.then(async (data) => {
 			if (data.status) {
-				document.querySelector('#username').innerHTML = SafeHTML(data.username);
-				document.querySelector('.navDrop').style = 'right: -35px;';
-				document.querySelector('#signupNav').style = 'display: none; !important';
-				document.querySelector('#navProfile').style = 'display: flex;';
-				document.querySelector('#logoutBtn1').style = 'display: flex; !important';
-				document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
-				if (data.pfp) {
-					document.querySelector('#pfp').src = `/image/${data.pfp}`;
-				}
-				if (data.admin) {
-					let adminLink = document.createElement('a');
-					adminLink.className = 'navProfileDropLink';
-					adminLink.innerHTML = '<i class="fa-solid fa-chart-line"></i> Admin Dashboard';
-					adminLink.href = 'admin';
-					document.querySelector('#navSub').insertAdjacentElement('afterend', adminLink);
-				}
+				if (data.subscribed || data.admin) {
+					// || data.admin
+					document.querySelector('#username').innerHTML = SafeHTML(data.username);
+					document.querySelector('.navDrop').style = 'right: -35px;';
+					document.querySelector('#signupNav').style = 'display: none; !important';
+					document.querySelector('#navProfile').style = 'display: flex;';
+					document.querySelector('#logoutBtn1').style = 'display: flex; !important';
+					document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
+					if (data.pfp) {
+						document.querySelector('#pfp').src = `/image/${data.pfp}`;
+					}
+					if (data.admin) {
+						let adminLink = document.createElement('a');
+						adminLink.className = 'navProfileDropLink';
+						adminLink.innerHTML = '<i class="fa-solid fa-chart-line"></i> Admin Dashboard';
+						adminLink.href = 'admin';
+						document.querySelector('#navSub').insertAdjacentElement('afterend', adminLink);
+					}
+				} else if (isNonSubscriberPage()) location.replace('/login');
 			} else {
 				document.querySelector('#signupNav').innerHTML = '<i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Signup';
 				document.querySelector('.navDrop').style = 'right: -35px';
