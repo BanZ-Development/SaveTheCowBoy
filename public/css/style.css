@@ -1604,7 +1604,8 @@ button {
 .annotationText {
     padding-inline: 25px;
     margin-bottom: 0px;
-    font-family: 'Montserrat';
+    font-family: 'Roboto';
+    font-weight: 400;
 }
 
 .annotationTitle {

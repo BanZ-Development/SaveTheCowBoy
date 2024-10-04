@@ -34,6 +34,13 @@ function endSpin() {
 	document.querySelector('#spinner').style.display = 'none';
 }
 
+function startSearchSpin(id) {
+	document.getElementById(id).style.display = 'flex';
+}
+function endSearchSpin(id) {
+	document.getElementById(id).style.display = 'none';
+}
+
 function scrollToElement(elementId, smoothOrAuto) {
 	const element = document.getElementById(elementId);
 	if (element) {
@@ -316,7 +323,16 @@ async function createPlanWindow(plan) {
             <div id="annotations" style="display: none; flex-direction: column;">
 				<h1 style="margin-bottom:0px; text-align: center; font-family: 'Noto Serif';">Annotations</h1>
 				<label style="text-align: center; margin-bottom: 15px; font-family: 'Noto Serif';">Create private notes to study the bible!</label>
-				<div id="annotationsHolder" style="display: flex; flex-direction: column;"></div>
+				<div id="annotationsHolder" style="display: flex; flex-direction: column;">
+				<div id="annotationsSpinner" style="background-color: white; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 100;">
+					<l-ring
+					size="40"
+					stroke="5"
+					bg-opacity="0"
+					speed="2"
+					color="black" 
+					></l-ring>
+				</div></div>
 				<div id="annotationsUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
 					<label id="annotateRoute"></label>
 					<textarea placeholder="Write down something important to you..." id="annotateBox" style="width=95%; height=6em; resize: none;"></textarea>
@@ -326,15 +342,24 @@ async function createPlanWindow(plan) {
             </div>
             <div id="comments" style="display: none; flex-direction: column;">
 				<h1 style="margin-bottom:0px;text-align: center; font-family: 'Noto Serif';">Comments</h1>
-				<label style="text-align: center; margin-bottom: 15px; font-family: 'Noto Serif';">Chat with other STC members about this chapter!</label>
-				<label id="label">Romans 1</label>
-				<div id="commentsHolder" style="display: flex; flex-direction: column;"></div>
+				<label style="text-align: center; margin-bottom: 10px; font-family: 'Noto Serif';">Chat with other STC members about this chapter!</label>
+				<div id="commentsHolder" style="display: flex; flex-direction: column;">
+				<div id="commentsSpinner" style="background-color: white; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 100;">
+					<l-ring
+					size="40"
+					stroke="5"
+					bg-opacity="0"
+					speed="2"
+					color="black" 
+					></l-ring>
+				</div></div>
+				</div>
 				<div id="commentUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
 					<label id="quote">Quoting: </label>
 					<textarea placeholder="Speak your mind..."id="commentBox" style="width=95%; height=6em; resize: none;"></textarea>
 					<button id="submitCommentBtn" style="width=95%;">Comment</button>
 				</div>
-				<h3 id="commentPrerequisite" style="position: absolute;bottom: 0; display: none">Highlight text to create a comment!</h3>
+				<h3 id="commentPrerequisite" style="position: absolute;bottom: 0; display: none;">Highlight text to create a comment!</h3>
             </div>
             <div id="translations" style="display:none; flex-direction: column;">
 				<h1 style="margin-bottom:0px; text-align: center; font-family: 'Noto Serif';">Translations</h1>
@@ -554,12 +579,12 @@ function openTranslations() {
 
 function setCommentsLabel() {
 	let { bookName, chapterID } = returnBookAndChapterName();
-	document.querySelector('#label').innerHTML = `${bookName} ${chapterID}`;
+	//document.querySelector('#label').innerHTML = `${bookName} ${chapterID}`;
 }
 
 function openComments() {
 	let selected = window.getSelection();
-	setCommentsLabel();
+	//setCommentsLabel();
 	if (selected.anchorNode) {
 		openCommentsWithComment();
 		setupCommentWindow();
@@ -616,7 +641,7 @@ function createTranslationElements(data) {
 					<h2>${translation.short_name}</h2>
 					<h3>${translation.full_name}</h3>
 				</div>
-				<button id="selectTranslationBtn"><i class="fa-solid fa-check"></i></button>
+				<button id="selectTranslationBtn"></button>
 			`;
 			translationDiv.querySelector('#selectTranslationBtn').addEventListener('click', changeTranslation);
 
@@ -701,7 +726,9 @@ function displayCurrentTranslation() {
 	document.querySelector('#currentTranslation').innerHTML = `Current Translation: ${translation}`;
 	document.querySelectorAll('#selectTranslationBtn').forEach((btn) => {
 		btn.innerHTML = '';
+		btn.parentElement.style.backgroundColor = 'white';
 	});
+	document.querySelector(`#${translation}`).style.backgroundColor = '#d5d5d5';
 	document.querySelector(`#${translation}`).querySelector('#selectTranslationBtn').innerHTML = '<i class="fa-solid fa-check"></i>';
 }
 
@@ -734,13 +761,16 @@ function submitComment() {
 function deleteComments() {
 	document.querySelector('#commentsHolder').style.display = 'none';
 	document.querySelector('#commentsHolder').childNodes.forEach((child) => {
-		child.remove();
+		if (child.id != 'commentsSpinner') child.remove();
 	});
 	document.querySelector('#commentsHolder').style.display = 'flex';
 }
 
 function loadComments() {
+	document.querySelector('#commentsHolder').style.display = 'none';
 	deleteComments();
+	document.querySelector('#commentsHolder').style.display = 'flex';
+	startSearchSpin('commentsSpinner');
 	setCommentsLabel();
 	let id = returnID();
 	let { bookID, chapterID } = returnBookAndChapter();
@@ -758,6 +788,7 @@ function loadComments() {
 		.then((res) => res.json())
 		.then((data) => {
 			createCommentElements(data.comments);
+			endSearchSpin('commentsSpinner');
 		});
 }
 
@@ -772,7 +803,7 @@ function createCommentElements(comments) {
 				<a class="navProfileUser" id="commentProfile" href="/profile?uid=${uID}"></a>
 				<label style="margin-left: auto; color: #797979; font-family: 'Noto Serif'; margin-block: auto;" id="location"for="comment">${location}</label>
 			</div>
-			<p style="padding-bottom: 15px; font-weight: 500;" class="annotationText" id="comment">${comment}</p>
+			<p style="padding-bottom: 15px;" class="annotationText" id="comment">${comment}</p>
 		</div>
 		
 		`;
@@ -788,7 +819,6 @@ function createCommentElements(comments) {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				console.log(data);
 				let { username, pfp } = data.profile;
 				div.querySelector('#commentProfile').innerHTML = `<img src="/image/${pfp}" alt="Profile pic"> <p>${username}</p>`;
 			});
@@ -799,7 +829,7 @@ function clearCommentsWindow() {
 	document.querySelector('#commentPrerequisite').style.display = 'flex';
 	document.querySelector('#commentUserInput').style.display = 'none';
 	document.querySelector('#commentBox').value = '';
-	document.querySelector('#label').innerHTML = '';
+	//document.querySelector('#label').innerHTML = '';
 }
 
 function clearAnnotationWindow() {
@@ -838,13 +868,14 @@ function submitAnnotation() {
 function deleteAnnotations() {
 	document.querySelector('#annotationsHolder').style.display = 'none';
 	document.querySelector('#annotationsHolder').childNodes.forEach((child) => {
-		child.remove();
+		if (child.id != 'annotationsSpinner') child.remove();
 	});
 	document.querySelector('#annotationsHolder').style.display = 'flex';
 }
 
 function loadAnnotations() {
 	deleteAnnotations();
+	startSearchSpin('annotationsSpinner');
 	let id = returnID();
 	let { bookID, chapterID } = returnBookAndChapter();
 	let data = new FormData();
@@ -861,11 +892,11 @@ function loadAnnotations() {
 		.then((res) => res.json())
 		.then((data) => {
 			createAnnotationElements(data.annotations);
+			endSearchSpin('annotationsSpinner');
 		});
 }
 
 function createAnnotationElements(annotations) {
-	console.log(annotations);
 	annotations.forEach((obj) => {
 		let { annotation, location, uID, postDate } = obj;
 		let div = document.createElement('div');
