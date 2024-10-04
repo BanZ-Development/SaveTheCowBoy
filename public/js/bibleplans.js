@@ -229,16 +229,13 @@ async function setChapter(bookID, chapterID) {
 }
 
 function setCompletionText(completion) {
-	console.log(completion);
 	for (let i = 0; i < Object.keys(completion).length; i++) {
-		console.log('hi', i);
 		let key = parseInt(Object.keys(completion)[i]) - 1;
 		let value = Object.values(completion)[i];
 		let title = document.querySelector('#tableOfContents').querySelector(`[id='${key}']`);
 		let before = title.innerHTML.split('(')[0];
 		let after = title.innerHTML.split('/')[1];
 		let string = `${before}(${value}/${after}`;
-		console.log(string);
 		title.innerHTML = string;
 	}
 }
@@ -260,7 +257,6 @@ function checkForCompletion() {
 		.then((res) => res.json())
 		.then((data) => {
 			if (data.status) {
-				console.log(data);
 				setCompletionText(data.completion);
 			}
 		});
