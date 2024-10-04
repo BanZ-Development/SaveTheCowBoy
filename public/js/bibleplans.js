@@ -26,9 +26,7 @@ function startSpin() {
 	document.querySelector('#spinner').style.display = 'flex';
 	try {
 		document.querySelector('#biblePlanWindow').style.display = 'none';
-	} catch (err) {
-		console.log(err);
-	}
+	} catch (err) {}
 }
 
 function endSpin() {
@@ -226,6 +224,45 @@ async function setChapter(bookID, chapterID) {
 			document.querySelector('#pageNumber').innerHTML = chapterID;
 			createText(data);
 			endSpin();
+			checkForCompletion();
+		});
+}
+
+function setCompletionText(completion) {
+	console.log(completion);
+	for (let i = 0; i < Object.keys(completion).length; i++) {
+		console.log('hi', i);
+		let key = parseInt(Object.keys(completion)[i]) - 1;
+		let value = Object.values(completion)[i];
+		let title = document.querySelector('#tableOfContents').querySelector(`[id='${key}']`);
+		let before = title.innerHTML.split('(')[0];
+		let after = title.innerHTML.split('/')[1];
+		let string = `${before}(${value}/${after}`;
+		console.log(string);
+		title.innerHTML = string;
+	}
+}
+
+function checkForCompletion() {
+	let data = new FormData();
+	let id = returnID();
+	let { bookID, chapterID } = returnBookAndChapter();
+	data.append('id', id);
+	data.append('bookID', bookID);
+	data.append('chapterID', chapterID);
+	fetch('api/biblePlans/check-plan-completion', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			if (data.status) {
+				console.log(data);
+				setCompletionText(data.completion);
+			}
 		});
 }
 
@@ -281,8 +318,8 @@ async function createPlanWindow(plan) {
                 
             </div>
             <div id="annotations" style="display: none; flex-direction: column;">
-				<h1 style="margin-bottom:0px; text-align: center;">Annotations</h1>
-				<label style="text-align: center; margin-bottom: 15px;">Create private notes to study the bible!</label>
+				<h1 style="margin-bottom:0px; text-align: center; font-family: 'Noto Serif';">Annotations</h1>
+				<label style="text-align: center; margin-bottom: 15px; font-family: 'Noto Serif';">Create private notes to study the bible!</label>
 				<div id="annotationsHolder" style="display: flex; flex-direction: column;"></div>
 				<div id="annotationsUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
 					<label id="annotateRoute"></label>
@@ -292,8 +329,8 @@ async function createPlanWindow(plan) {
 				<h3 id="annotatePrerequisite" style="position: absolute;bottom: 0; display: none">Highlight text to create an annotation!</h3>
             </div>
             <div id="comments" style="display: none; flex-direction: column;">
-				<h1 style="margin-bottom:0px;text-align: center;">Comments</h1>
-				<label style="text-align: center; margin-bottom: 15px;">Chat with other STC members about this chapter!</label>
+				<h1 style="margin-bottom:0px;text-align: center; font-family: 'Noto Serif';">Comments</h1>
+				<label style="text-align: center; margin-bottom: 15px; font-family: 'Noto Serif';">Chat with other STC members about this chapter!</label>
 				<label id="label">Romans 1</label>
 				<div id="commentsHolder" style="display: flex; flex-direction: column;"></div>
 				<div id="commentUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
@@ -304,8 +341,8 @@ async function createPlanWindow(plan) {
 				<h3 id="commentPrerequisite" style="position: absolute;bottom: 0; display: none">Highlight text to create a comment!</h3>
             </div>
             <div id="translations" style="display:none; flex-direction: column;">
-				<h1 style="margin-bottom:0px; text-align: center;">Translations</h1>
-				<label style="text-align:center; margin-bottom: 15px;" id="currentTranslation">Current Translation: </label>
+				<h1 style="margin-bottom:0px; text-align: center; font-family: 'Noto Serif';">Translations</h1>
+				<label style="text-align:center; margin-bottom: 15px; font-family: 'Noto Serif';" id="currentTranslation">Current Translation: </label>
 				<label for="languageDropdown">Language:</label>
 				<select class="custom-select" id="languageDropdown"></select>
 				<div id="translationsHolder" style="display:flex; flex-direction: column;"></div>
@@ -498,7 +535,6 @@ function setupCommentWindow() {
 	if (!selected.toString().trim()) {
 		noSelectionComment();
 	} else {
-		console.log('working');
 		document.querySelector('#quote').innerHTML = `Quoting: ${verseString}`;
 	}
 }
@@ -508,12 +544,12 @@ document.addEventListener('mousedown', function (e) {
 		openCommentsWithComment();
 		setupCommentWindow();
 	} else if (e.target.id == 'annotateBtn') {
-		//openAnnotationsWithAnnotation();
-		console.log('hi');
 		openAnnotations();
 	}
-	const popup = document.getElementById('biblePlanPopup');
-	popup.style.display = 'none';
+	try {
+		const popup = document.getElementById('biblePlanPopup');
+		popup.style.display = 'none';
+	} catch (err) {}
 });
 
 function openTranslations() {
@@ -577,16 +613,17 @@ function createTranslationElements(data) {
 		languageDiv.style.flexDirection = 'column';
 		languageTranslations.forEach((translation) => {
 			let translationDiv = document.createElement('div');
+			translationDiv.className = 'bibleTranslation';
+			translationDiv.id = translation.short_name;
 			translationDiv.innerHTML = `
-			<div class="bibleTranslation" id="${translation.short_name}">
-				<div style="display: flex; flex-direction: column; width: 85%;">
+			<div style="display: flex; flex-direction: column; width: 85%;">
 					<h2>${translation.short_name}</h2>
 					<h3>${translation.full_name}</h3>
 				</div>
 				<button id="selectTranslationBtn"><i class="fa-solid fa-check"></i></button>
-			</div>
 			`;
 			translationDiv.querySelector('#selectTranslationBtn').addEventListener('click', changeTranslation);
+
 			languageDiv.appendChild(translationDiv);
 		});
 		div.appendChild(languageDiv);

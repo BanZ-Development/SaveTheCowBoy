@@ -63,21 +63,43 @@ router.post('/get-bible-plan', async (req, res) => {
 	}
 });
 
+function returnCompletionArray(chaptersFinished) {
+	let chapters = chaptersFinished.map((str) => str.split(':')[0]);
+	const occurrences = chapters.reduce((acc, term) => {
+		acc[term] = (acc[term] || 0) + 1;
+		return acc;
+	}, {});
+
+	return occurrences;
+}
+
 router.post('/check-plan-completion', async (req, res) => {
 	try {
-		let { id } = req.body;
+		let { id, bookID, chapterID } = req.body;
 		console.log('ID:', id);
 		let user = await User.findById(req.user.id);
-		let biblePlan = null;
-		user.biblePlans.forEach((plan) => {
-			if (plan.id == id) biblePlan = plan;
-		});
+		let biblePlan = user.biblePlans.find((item) => item.id == id);
+		console.log(biblePlan);
 		if (biblePlan) {
-			res.send({
-				status: true,
-				message: `Bible Plan ${id} completion saved.`,
-				biblePlan: biblePlan
-			});
+			let chaptersFinished = biblePlan.chaptersFinished;
+			let found = chaptersFinished.find((finished) => finished == `${bookID}:${chapterID}`);
+			if (!found) {
+				chaptersFinished.push(`${bookID}:${chapterID}`);
+				console.log(chaptersFinished);
+				user.markModified('biblePlans');
+				await user.save();
+				res.send({
+					status: true,
+					completion: returnCompletionArray(chaptersFinished),
+					message: 'Completion has been updated!'
+				});
+			} else {
+				res.send({
+					status: true,
+					completion: returnCompletionArray(chaptersFinished),
+					message: 'Completion has not been updated.'
+				});
+			}
 		} else {
 			res.send({
 				status: false,
@@ -93,38 +115,9 @@ router.post('/check-plan-completion', async (req, res) => {
 	}
 });
 
-router.post('/update-plan-completion', async (req, res) => {
-	try {
-		let { id, chaptersFinished } = req.body;
-		console.log(id, chaptersFinished);
-		let user = await User.findById(req.user.id);
-		for (let i = 0; i < user.biblePlans.length; i++) {
-			let plan = user.biblePlans[i];
-			if (plan.id == id) {
-				console.log('Before:', user.biblePlans);
-				user.biblePlans[i].chaptersFinished = chaptersFinished.split(',');
-				console.log('After:', user.biblePlans);
-				await User.findByIdAndUpdate(req.user.id, {
-					biblePlans: user.biblePlans
-				});
-				return res.send({
-					status: true,
-					message: 'Chapters finished has been updated'
-				});
-			}
-		}
-		res.send({
-			status: false,
-			message: `No bible plan found with ID: ${id} under this account!`
-		});
-	} catch (err) {
-		console.log(err);
-		res.send({
-			status: false,
-			message: err.message
-		});
-	}
-});
+async function updateCompletion(res, biblePlan, bookID, chapterID) {
+	console.log(bookID, chapterID);
+}
 
 router.post('/create-comment', async (req, res) => {
 	try {
