@@ -810,23 +810,48 @@ let imagePreview = document.getElementById('imageUploadPreview');
 
 document.getElementById('addImage').addEventListener('change', uploadImage);
 
+function setAspectRatio(img) {
+	img.onload = function () {
+		let defaultHeight = parseFloat(img.style.height.replace('px', ''));
+		let height = img.naturalHeight;
+		let width = img.naturalWidth;
+		let aspectRatio = (width / height).toFixed(2);
+		img.style.width = aspectRatio * defaultHeight + 'px';
+		console.log(height, width, aspectRatio, defaultHeight);
+	};
+}
+
+function deleteImage() {
+	event.target.parentElement.remove();
+}
+
+function uploadImage() {
+	const file = event.target.files[0];
+	if (file && file.type.startsWith('image/')) {
+		const reader = new FileReader();
+		let div = document.createElement('div');
+		div.innerHTML = `
+			<img style="width: 100px; height: 100px; border: 2px solid grey; object-fit: cover;"></img>
+			<button>Delete</button> 
+		`;
+		div.querySelector('button').addEventListener('click', deleteImage);
+		let img = div.querySelector('img');
+		reader.onload = function (e) {
+			img.src = e.target.result;
+			setAspectRatio(img);
+		};
+		reader.readAsDataURL(file);
+		document.querySelector('#images').appendChild(div);
+	} else {
+		alert('Please upload a valid image file.');
+	}
+}
+
 document.getElementById('dropArea').addEventListener('dragover', function (e) {
 	e.preventDefault();
 });
 
-document.getElementById('dropArea').addEventListener('drop', function (e) {
-	e.preventDefault();
-	inputFile.files = e.dataTransfer.files;
-	uploadImage();
-});
-
-function uploadImage() {
-	let imgLink = URL.createObjectURL(inputFile.files[0]);
-	imagePreview.setAttribute('src', imgLink);
-	document.querySelector('.submitImageText').style.display = 'none';
-	document.querySelector('.imageUploadPreviewDiv').style.display = 'block';
-	document.querySelector('#removeImageBtn').style.display = 'inline-block';
-}
+document.getElementById('dropArea').addEventListener('drop', uploadImage);
 
 document.querySelector('#removeImageBtn').addEventListener('click', function () {
 	imagePreview.setAttribute('src', '');

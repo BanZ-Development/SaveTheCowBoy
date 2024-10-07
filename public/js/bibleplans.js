@@ -344,15 +344,15 @@ async function createPlanWindow(plan) {
 				<h1 style="margin-bottom:0px;text-align: center; font-family: 'Noto Serif';">Comments</h1>
 				<label style="text-align: center; margin-bottom: 10px; font-family: 'Noto Serif';">Chat with other STC members about this chapter!</label>
 				<div id="commentsHolder" style="display: flex; flex-direction: column;">
-				<div id="commentsSpinner" style="background-color: white; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 100;">
-					<l-ring
-					size="40"
-					stroke="5"
-					bg-opacity="0"
-					speed="2"
-					color="black" 
-					></l-ring>
-				</div></div>
+					<div id="commentsSpinner" style="background-color: white; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 100;">
+						<l-ring
+						size="40"
+						stroke="5"
+						bg-opacity="0"
+						speed="2"
+						color="black" 
+						></l-ring>
+					</div>
 				</div>
 				<div id="commentUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
 					<label id="quote">Quoting: </label>
@@ -455,10 +455,20 @@ function loadMain() {
 		});
 }
 
+function createPlanLink(plan) {
+	let link = document.createElement('li');
+	link.style = 'margin-inline: auto; margin-block: 15px;';
+	link.innerHTML = `<a href="#${plan._id}" style="text-decoration: underline;">${plan.title}</a>`;
+	document.querySelector('.tableContents > ul').appendChild(link);
+}
+
 function iteratePlans(plans) {
 	plans.forEach((plan) => {
 		createPlanObject(plan);
+		createPlanLink(plan);
 	});
+	document.querySelector('.tableContents').style.display = 'block';
+	document.querySelector('.biblePlans').style.display = 'flex';
 }
 
 function returnBooksAndChaptersCount(plan) {
@@ -478,9 +488,12 @@ function createPlanObject(plan) {
 	let { _id, books, description, icon, title } = plan;
 	let { booksCount, chaptersCount } = returnBooksAndChaptersCount(plan);
 	let obj = document.createElement('div');
-	obj.innerHTML = `<div class="biblePlan" id="${_id}">
+	obj.className = 'biblePlan';
+	obj.id = _id;
+	obj.style = 'width: 50vw; max-width: 575px;';
+	obj.innerHTML = `
                 <div style="width: 45%;">
-                    <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg" alt="">
+                    <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: fill;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg" alt="">
                 </div>
                 <div style="padding-left: 20px; width: 55%; position: relative;">
                     <h3 style="font-style: italic; font-family: 'spectral'; font-weight: 500; text-align: center;">${title}</h3>
@@ -491,8 +504,7 @@ function createPlanObject(plan) {
                         <span style="width: 0%"id="${chaptersCount}" class="innerBiblePlanProg"></span>
                     </div>
                     <a class="biblePlanBtn" href="/biblePlans?id=${_id}">Continue</a>
-                </div>
-            </div>`;
+                </div>`;
 	document.querySelector('.biblePlans').appendChild(obj);
 }
 
@@ -891,8 +903,12 @@ function loadAnnotations() {
 	})
 		.then((res) => res.json())
 		.then((data) => {
-			createAnnotationElements(data.annotations);
-			endSearchSpin('annotationsSpinner');
+			if (data.status && data.annotations) {
+				createAnnotationElements(data.annotations);
+				endSearchSpin('annotationsSpinner');
+			} else {
+				endSearchSpin('annotationsSpinner');
+			}
 		});
 }
 

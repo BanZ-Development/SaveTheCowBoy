@@ -820,6 +820,59 @@ async function openDevotions() {
 	initDevotions();
 }
 
+function createBiblePlanObject(bp) {
+	createPlanObject(bp);
+}
+
+function getBiblePlans() {
+	fetch('api/biblePlans/get-bible-plans', {
+		method: 'get',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				data.biblePlans.forEach((bp) => createBiblePlanObject(bp));
+			}
+		});
+}
+
+function returnBooksAndChaptersCount(plan) {
+	let books = 0;
+	let chapters = 0;
+	plan.books.forEach((book) => {
+		books++;
+		chapters += book.chapters.length;
+	});
+	return {
+		booksCount: books,
+		chaptersCount: chapters
+	};
+}
+
+function createPlanObject(plan) {
+	let { _id, books, description, icon, title } = plan;
+	let { booksCount, chaptersCount } = returnBooksAndChaptersCount(plan);
+	let obj = document.createElement('div');
+	obj.className = 'biblePlan';
+	obj.id = _id;
+	obj.style = 'width: 50vw; color: black; border: 0px; max-width: 575px;';
+	obj.innerHTML = `
+                <div style="width: 45%;">
+                    <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: fill;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg" alt="">
+                </div>
+                <div style="padding-left: 20px; width: 55%; position: relative;">
+                    <h3 style="font-style: italic; font-family: 'spectral'; font-weight: 500; text-align: center;">${title}</h3>
+                    <p>${description}</p>
+                    <p>${booksCount} books, ${chaptersCount} chapters</p>
+                    <a class="biblePlanBtn" href="/biblePlans?id=${_id}">Open</a>
+                </div>`;
+	document.querySelector('#bpHolder').appendChild(obj);
+}
+
 async function openBiblePlans() {
 	enableView('bibleplans');
 	console.log('bible plans');
@@ -830,6 +883,7 @@ async function openBiblePlans() {
 	document.querySelector('#bpPopupOverlay').addEventListener('click', hideBiblePlansPopup);
 	document.querySelector('#createBiblePlanBtn').addEventListener('click', createBiblePlan);
 	initBiblePlans();
+	getBiblePlans();
 }
 
 function showBiblePlansPopup() {
@@ -968,6 +1022,13 @@ function getBibleData() {
 	return data;
 }
 
+function resetBiblePlanMenu() {
+	document.querySelector('#booksHolder').remove();
+	document.querySelector('#bpTitle').value = '';
+	document.querySelector('#bpDescription').value = '';
+	document.querySelector('#bpIcon').value = '';
+}
+
 function createBiblePlan() {
 	let data = new FormData();
 	let books = getBibleData();
@@ -985,6 +1046,10 @@ function createBiblePlan() {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
+			if (data.status) {
+				hideBiblePlansPopup();
+				resetBiblePlanMenu();
+			}
 		});
 }
 
