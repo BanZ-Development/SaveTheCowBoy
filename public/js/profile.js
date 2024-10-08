@@ -93,6 +93,7 @@ function loadPosts(posts) {
 
 function createProfile(profile) {
 	console.log(profile);
+	document.title = `${profile.username} | Long X Ranch Cowboys`;
 	let div = document.createElement('div');
 	div.innerHTML = `<br><br><br><br><br><br><br><br><br><br><br><br><div id="profile">
 		<div style="display: flex; flex-direction: row; color: #fff; margin-bottom: 20px;">

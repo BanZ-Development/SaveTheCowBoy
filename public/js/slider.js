@@ -62,16 +62,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Subscription Slider
 
+
+
 function slideRight() {
-	document.getElementById('subscriptions').scrollLeft += 1400;
-	if (document.getElementById('subscriptions').scrollLeft <= 1374) {
-		document.getElementById('subscriptions').scrollLeft = 0;
-	}
+	let container = document.querySelector('.subscriptions');
+	container.scrollLeft += 1400;
+	let maxScrollLeft = container.scrollWidth - container.clientWidth;
+	if (container.scrollLeft >= maxScrollLeft) {
+        container.scrollLeft = 0;
+    }
 }
 
 function slideLeft() {
-	document.getElementById('subscriptions').scrollLeft -= 1400;
-	if (document.getElementById('subscriptions').scrollLeft == 0) {
-		document.getElementById('subscriptions').scrollLeft = 1374;
-	}
+	let container = document.querySelector('.subscriptions');
+	container.scrollLeft -= 1400;
+	if (container.scrollLeft <= 0) {
+        container.scrollLeft = container.scrollWidth - container.clientWidth;
+    }
 }

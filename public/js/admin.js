@@ -585,37 +585,66 @@ function formatPhoneNumber(phoneNumberString) {
 	}
 	return null;
 }
+const editUserClick = () => {
+	let button = event.target;
+	let member = button.closest('#memberElement');
+
+	let paragraphs = member.querySelectorAll('#editableInfo > p');
+	let inputs = member.querySelectorAll('#editableInfo > input');
+	console.log(paragraphs, inputs);
+	paragraphs.forEach((p) => (p.style.display = 'none'));
+	inputs.forEach((i) => {
+		i.style.display = 'flex';
+		i.placeholder = i.previousElementSibling.innerHTML;
+	});
+	member.querySelector('#editBtn').style.display = 'none';
+	member.querySelector('#confirmEditBtn').style.display = '';
+	member.querySelector('#cancelEditBtn').style.display = '';
+};
+const viewUserProfileClick = () => {
+	let button = event.target;
+	let member = button.closest('#memberElement');
+	let uid = member.querySelector('#uid').innerHTML;
+	window.open(`/profile?id=${uid}`, '_blank');
+};
+const deleteUserClick = () => {
+	let button = event.target;
+	console.log(button);
+};
 
 const createMemberElement = (user) => {
-	let { address, admin, city, customer, email, firstName, lastName, pfp, phoneNumber, state, uid, zip } = user;
+	let { address, admin, city, customer, email, firstName, lastName, pfp, phoneNumber, state, uid, username, zip } = user;
 	let formattedPhoneNumber = formatPhoneNumber(phoneNumber);
 	let div = document.createElement('div');
 	div.id = 'memberElement';
 	div.innerHTML = `
 		<div class="tableRow">
-		<div class="tableRowInfo">
+		<div class="tableRowInfo" id="editableInfo">
 		<button id="dropInformation" class="tableDropBtn"> <i class="fa-solid fa-chevron-right"></i></button>
-		<p id="firstNameAdmin">${SafeHTML(firstName)}</p>
-		<p id="lastNameAdmin">${SafeHTML(lastName)}</p>
-		<p id="emailAdmin">${SafeHTML(email)}</p>
-		<p id="phoneNumberAdmin">${SafeHTML(formattedPhoneNumber)}</p>
-		<p id="stateAdmin">${SafeHTML(state)}</p>
-        <p id="cityAdmin">${SafeHTML(city)}</p>
-		<p id="addressAdmin">${SafeHTML(address)}</p>
-		<p id="zipAdmin">${SafeHTML(zip)}</p>
-		<p id="adminAdmin">${admin}</p>
+		<p id="firstNameAdmin">${SafeHTML(firstName)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update first name..."></input>
+		<p id="lastNameAdmin">${SafeHTML(lastName)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update last name..."></input>
+		<p id="emailAdmin">${SafeHTML(email)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update email..."></input>
+		<p id="phoneNumberAdmin">${SafeHTML(formattedPhoneNumber)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update phone number..."></input>
+		<p id="stateAdmin">${SafeHTML(state)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update state (abbreviated)..."></input>
+        <p id="cityAdmin">${SafeHTML(city)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update city..."></input>
+		<p id="addressAdmin">${SafeHTML(address)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update address..."></input>
+		<p id="zipAdmin">${SafeHTML(zip)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update zip..."></input>
+		<p id="adminAdmin">${admin}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update admin..."></input>
 		</div>
 		<div style="display: flex; flex-direction: row;">
 		</div>
 		<div style="flex-direction: row; align-items: start; flex-wrap: wrap;" class="tableRowInfo">
 		<p class="userInfoTag" style="width: 100%;"><b>Full Name:</b> ${SafeHTML(firstName)} ${SafeHTML(lastName)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>Username:</b> ${SafeHTML(username)}</p>
 		<p class="userInfoTag" style="width: 100%;"><b>Email:</b> ${SafeHTML(email)}</p>
 		<p class="userInfoTag" style="width: 100%;"><b>Phone Number:</b> ${SafeHTML(formattedPhoneNumber)}</p>
 		<p class="userInfoTag" style="width: 100%;"><b>Address:</b> ${SafeHTML(address)}, ${SafeHTML(city)}, ${SafeHTML(state)}, ${SafeHTML(zip)}</p>
-		<p class="userInfoTag" style="width: 100%;"><b>UID:</b> ${SafeHTML(uid)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>UID:</b> <span id="uid">${SafeHTML(uid)}</span></p>
 		</div>
 		<div class="tableRowBtns">
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="editBtn" class="btnLink">Edit</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px; display:none;" id="confirmEditBtn" class="btnLink">Confirm Edit</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px; display:none;" id="cancelEditBtn" class="btnLink">Cancel Edit</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="profileBtn" class="btnLink">View Profile</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteMemberBtn" class="btnLink deleteBtn">Delete</button>
 		</div>
@@ -625,6 +654,9 @@ const createMemberElement = (user) => {
 		</div>
 		<span class="line"></span>
 	`;
+	div.querySelector('#editBtn').addEventListener('click', editUserClick);
+	div.querySelector('#profileBtn').addEventListener('click', viewUserProfileClick);
+	div.querySelector('#deleteMemberBtn').addEventListener('click', deleteUserClick);
 	document.querySelector('.membersTable').appendChild(div);
 };
 
@@ -820,6 +852,59 @@ async function openDevotions() {
 	initDevotions();
 }
 
+function createBiblePlanObject(bp) {
+	createPlanObject(bp);
+}
+
+function getBiblePlans() {
+	fetch('api/biblePlans/get-bible-plans', {
+		method: 'get',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				data.biblePlans.forEach((bp) => createBiblePlanObject(bp));
+			}
+		});
+}
+
+function returnBooksAndChaptersCount(plan) {
+	let books = 0;
+	let chapters = 0;
+	plan.books.forEach((book) => {
+		books++;
+		chapters += book.chapters.length;
+	});
+	return {
+		booksCount: books,
+		chaptersCount: chapters
+	};
+}
+
+function createPlanObject(plan) {
+	let { _id, books, description, icon, title } = plan;
+	let { booksCount, chaptersCount } = returnBooksAndChaptersCount(plan);
+	let obj = document.createElement('div');
+	obj.className = 'biblePlan';
+	obj.id = _id;
+	obj.style = 'width: 50vw; color: black; border: 0px; max-width: 575px;';
+	obj.innerHTML = `
+                <div style="width: 45%;">
+                    <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: fill;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg" alt="">
+                </div>
+                <div style="padding-left: 20px; width: 55%; position: relative;">
+                    <h3 style="font-style: italic; font-family: 'spectral'; font-weight: 500; text-align: center;">${title}</h3>
+                    <p>${description}</p>
+                    <p>${booksCount} books, ${chaptersCount} chapters</p>
+                    <a class="biblePlanBtn" href="/biblePlans?id=${_id}">Open</a>
+                </div>`;
+	document.querySelector('#bpHolder').appendChild(obj);
+}
+
 async function openBiblePlans() {
 	enableView('bibleplans');
 	console.log('bible plans');
@@ -830,6 +915,7 @@ async function openBiblePlans() {
 	document.querySelector('#bpPopupOverlay').addEventListener('click', hideBiblePlansPopup);
 	document.querySelector('#createBiblePlanBtn').addEventListener('click', createBiblePlan);
 	initBiblePlans();
+	getBiblePlans();
 }
 
 function showBiblePlansPopup() {
@@ -968,6 +1054,13 @@ function getBibleData() {
 	return data;
 }
 
+function resetBiblePlanMenu() {
+	document.querySelector('#booksHolder').remove();
+	document.querySelector('#bpTitle').value = '';
+	document.querySelector('#bpDescription').value = '';
+	document.querySelector('#bpIcon').value = '';
+}
+
 function createBiblePlan() {
 	let data = new FormData();
 	let books = getBibleData();
@@ -985,6 +1078,10 @@ function createBiblePlan() {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
+			if (data.status) {
+				hideBiblePlansPopup();
+				resetBiblePlanMenu();
+			}
 		});
 }
 

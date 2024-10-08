@@ -3,6 +3,37 @@ const Post = require('../model/Post');
 const User = require('../model/User');
 const Report = require('../model/Report');
 const Comment = require('../model/Comment');
+const multer = require('multer');
+const bodyParser = require('body-parser');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const Image = require('../model/Image');
+const crypto = require('crypto');
+const path = require('path');
+require('dotenv').config();
+router.use(bodyParser.json());
+
+const storage = new GridFsStorage({
+	url: process.env.MONGODB_URI,
+	file: (req, file) => {
+		return new Promise((resolve, reject) => {
+			crypto.randomBytes(16, (err, buf) => {
+				if (err) {
+					console.log(error);
+					return reject(err);
+				}
+				const filename = buf.toString('hex') + path.extname(file.originalname);
+				const fileInfo = {
+					filename: filename,
+					bucketName: 'uploads'
+				};
+				resolve(fileInfo);
+			});
+		}).catch((error) => {
+			console.log(error);
+		});
+	}
+});
+const upload = multer({ storage });
 
 router.post('/loadPosts', async function (req, res) {
 	let { loadedPosts, sortType, type } = req.body;
@@ -128,17 +159,35 @@ router.post('/loadComment', async function (req, res) {
 	}
 });
 
-router.post('/post', async function (req, res) {
+router.post('/post', upload.array('files'), async (req, res) => {
 	try {
-		const { title, message } = req.body;
+		let body = { ...req.body };
+		console.log(body);
+		const { title, message } = body;
 		let date = new Date();
 		let params = {
 			title: title,
 			message: message,
 			uID: req.user._id,
 			username: req.user.meta.username,
-			postDate: date
+			postDate: date,
+			images: []
 		};
+		const files = req.files;
+		console.log(files);
+		if (files && files.length > 0) {
+			files.forEach((file) => {
+				const { originalname, filename, size, uploadDate, contentType, id } = file;
+				if (!contentType.includes('image')) return;
+				const image = new Image({
+					name: filename,
+					contentType: contentType,
+					uploadDate: uploadDate,
+					fileID: id
+				});
+				params['images'].push(image);
+			});
+		}
 		const post = await Post.create(params);
 		let user = await User.findById(req.user.id);
 		user.posts.push(post.id);
@@ -158,6 +207,7 @@ router.post('/post', async function (req, res) {
 			});
 		}
 	} catch (error) {
+		console.log(error);
 		res.send({
 			status: false,
 			message: 'Please make sure all the fields are filled in'
