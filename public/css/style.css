@@ -10,6 +10,10 @@
     --rich-black: #101419ff;
 }
 
+p, h3, h1, h2, button, a {
+    transform: rotate(180deg) !important;
+}
+
 html {
     scroll-behavior: smooth;
     font-family: 'Montserrat';
@@ -456,7 +460,8 @@ button {
     font-family: 'Montserrat';
     font-size: 20px;
     color: #333;
-    background-color: #f3f3f3;
+    background-color: #fff;
+    border: solid 1px #ccc;
     text-indent: 10px;
 }
 
@@ -531,19 +536,20 @@ button {
   }
 
   .filterBtn {
-    color: #fff;
-    background-color: #1e1e1e;
-    border: 2px solid #303030;
+    color: #333;
+    background-color: #fff;
+    border: 2px solid #f2f2f2;
     padding: 10px;
     font-size: 17px;
     border-radius: 10px;
     cursor: pointer;
     width: 120px;
     margin-inline: 5px;
+    font-family: 'Roboto';
   }
 
   .filterBtn:hover {
-    background-color: #353535;
+    background-color: #f2f2f2;
   }
 
   .searchInput {
@@ -733,7 +739,7 @@ button {
     width: 20%;
     height: calc(100% - 30px);
     align-items: center;
-    background-color: #1a1a1a;
+    background-color: #fff;
     position: fixed;
 }
 
@@ -749,7 +755,7 @@ button {
     font-size: 20px;
     border-radius: 5px;
     background-color: #fff0;
-    color: #474747;
+    color: #333;
     transition: all ease 0.3s;
     cursor: pointer;
     text-align: left;
@@ -774,11 +780,11 @@ button {
 .settingMainContent {
     display: flex;
     flex-direction: column;
-    background-color: #1e1e1e;
+    background-color: #f2f2f2;
     width: 80%;
     min-height: 100%;
     max-height: fit-content;
-    color: #fff;
+    color: #333;
     padding-inline: 30px;
     padding-left: 20%;
     padding-bottom: 120px;
@@ -874,16 +880,17 @@ button {
     text-overflow: ellipsis;
     overflow-x: hidden;
     line-height: 35px;
+    color: #333;
   }
 
   .forumTitle > h3 > a {
     font-size: 1.6vw;
-    color: #fff !important;
+    color: #333 !important;
     text-decoration: none;
   }
 
   .forumPost:hover {
-    background-color: #22222269;
+    background-color: #e8e8e869;
   }
 
   .comment:hover {
@@ -983,7 +990,7 @@ button {
   .iconBtn {
     display: block;
     background-color: #fff0;
-    color: #fff;
+    color: #333;
     border: none;
     cursor: pointer;
     font-size: 20px;
@@ -995,7 +1002,7 @@ button {
     display: flex;
     flex-direction: column;
     height: fit-content;
-    background-color: #1e1e1e;
+    background-color: #f2f2f2;
     display: none;
     margin-top: 15px;
   }
@@ -1058,7 +1065,7 @@ button {
 
   .forumPost {
     font-family: 'Roboto';
-    color: #ccc;
+    color: #333;
   }
 
   .construction {
@@ -1138,20 +1145,20 @@ button {
     height: calc(100vh - 180px);
     padding-inline: 20px;
     border-radius: 10px;
-    background-color: #202020;
-    color: #fff;
+    background-color: #fff;
+    color: #333;
     overflow-y: scroll;
-    border: solid 1px #2b2b2b;
+    border: solid 1px #ccc;
  }
 
  .faqBtn {
     font-family: 'Roboto';
-    color: #747474;
+    color: #333;
     text-align: left;
     font-size: 20px;
     border: none;
     cursor: pointer;
-    background-color: #202020;
+    background-color: #fff;
     display: flex;
     flex-direction: column;
     height: fit-content;
@@ -1227,7 +1234,7 @@ button {
 }
 
 .forumDesc > h3  {
-    margin-left: 20px;
+    margin-left: 10px;
 }
 
 .inlineGraphs {

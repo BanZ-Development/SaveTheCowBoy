@@ -769,7 +769,7 @@ function loadCreatePostButton() {
 		btn.remove();
 	});
 	let button = document.createElement('button');
-	button.style.cssText = 'margin-left: auto; padding-block: 0px; height: 40px;';
+	button.style.cssText = 'margin-left: auto; padding-block: 0px; height: 40px; background-color: var(--bistre); color: #fff;';
 	button.id = 'showPopup';
 	button.className = 'btnLink';
 	button.innerHTML = '<i style="margin-inline: 5px;" class="fa-regular fa-square-plus"></i> Create Post';
@@ -944,10 +944,10 @@ async function sorterClick() {
 	let button = event.target;
 	let sorters = document.querySelectorAll('.filterBtn');
 	sorters.forEach((btn) => {
-		btn.style.backgroundColor = '#1e1e1e';
+		btn.style.backgroundColor = '#fff';
 		btn.id = 'sortUnclicked';
 	});
-	button.style.backgroundColor = '#353535';
+	button.style.backgroundColor = '#f2f2f2';
 	button.id = 'sortClicked';
 	clearPosts();
 	loadPosts();
