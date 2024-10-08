@@ -7,6 +7,7 @@ const Image = require('../model/Image');
 const crypto = require('crypto');
 const path = require('path');
 const cookie = require('../controllers/cookie');
+const { compress } = require('../controllers/image');
 require('dotenv').config();
 router.use(bodyParser.json());
 
@@ -66,6 +67,7 @@ router.post('/upload-pfp', upload.single('file'), async (req, res) => {
 		const file = req.file;
 		const { originalname, filename, size, uploadDate, contentType, id } = file;
 		if (!contentType.includes('image')) return;
+		const compressedImage = await compress(req.file.buffer, 256, 80);
 		const image = new Image({
 			name: filename,
 			contentType: contentType,

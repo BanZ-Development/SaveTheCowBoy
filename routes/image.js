@@ -15,9 +15,11 @@ mongoose.connection.once('open', () => {
 });
 
 router.get('/:filename', async (req, res) => {
+	let mediaFormats = ['jpeg', 'png', 'webp'];
 	try {
 		const file = await gfs.files.findOne({ filename: req.params.filename });
-		if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
+		const mediaType = file.contentType.split('/')[1];
+		if (mediaFormats.includes(mediaType)) {
 			const readstream = gfsBucket.openDownloadStreamByName(file.filename);
 			readstream.on('error', (err) => {
 				res.status(500).json({ err: err.message });

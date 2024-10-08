@@ -60,6 +60,7 @@ router.post('/get-members', async (req, res) => {
 		users.forEach((user) => {
 			members.push({
 				uid: user.id,
+				username: user.meta.username,
 				firstName: user.meta.firstName,
 				lastName: user.meta.lastName,
 				email: user.meta.email,

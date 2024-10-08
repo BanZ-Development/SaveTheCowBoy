@@ -585,9 +585,22 @@ function formatPhoneNumber(phoneNumberString) {
 	}
 	return null;
 }
+const editUserClick = () => {
+	let button = event.target;
+	console.log(button);
+};
+const viewUserProfileClick = () => {
+	let button = event.target;
+	console.log(button);
+};
+const deleteUserClick = () => {
+	let button = event.target;
+	console.log(button);
+};
 
 const createMemberElement = (user) => {
-	let { address, admin, city, customer, email, firstName, lastName, pfp, phoneNumber, state, uid, zip } = user;
+	console.log(user);
+	let { address, admin, city, customer, email, firstName, lastName, pfp, phoneNumber, state, uid, username, zip } = user;
 	let formattedPhoneNumber = formatPhoneNumber(phoneNumber);
 	let div = document.createElement('div');
 	div.id = 'memberElement';
@@ -609,6 +622,7 @@ const createMemberElement = (user) => {
 		</div>
 		<div style="flex-direction: row; align-items: start; flex-wrap: wrap;" class="tableRowInfo">
 		<p class="userInfoTag" style="width: 100%;"><b>Full Name:</b> ${SafeHTML(firstName)} ${SafeHTML(lastName)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>Username:</b> ${SafeHTML(username)}</p>
 		<p class="userInfoTag" style="width: 100%;"><b>Email:</b> ${SafeHTML(email)}</p>
 		<p class="userInfoTag" style="width: 100%;"><b>Phone Number:</b> ${SafeHTML(formattedPhoneNumber)}</p>
 		<p class="userInfoTag" style="width: 100%;"><b>Address:</b> ${SafeHTML(address)}, ${SafeHTML(city)}, ${SafeHTML(state)}, ${SafeHTML(zip)}</p>
@@ -625,6 +639,9 @@ const createMemberElement = (user) => {
 		</div>
 		<span class="line"></span>
 	`;
+	div.querySelector('#editBtn').addEventListener('click', editUserClick);
+	div.querySelector('#profileBtn').addEventListener('click', viewUserProfileClick);
+	div.querySelector('#deleteMemberBtn').addEventListener('click', deleteUserClick);
 	document.querySelector('.membersTable').appendChild(div);
 };
 

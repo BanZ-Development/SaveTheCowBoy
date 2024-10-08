@@ -1,3 +1,5 @@
+let allFiles = [];
+
 const SafeHTML = (html) => {
 	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 };
@@ -185,7 +187,7 @@ function returnPfp(uID, parent) {
 }
 
 function createPostElement(post, currentUserID, pfp) {
-	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount } = post;
+	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount, images } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
 	div.innerHTML = `<div id="post">
@@ -202,6 +204,7 @@ function createPostElement(post, currentUserID, pfp) {
 		
 		
 		<p style="white-space:pre;">${message}</p>
+		<div id="images" style="display: flex; flex-direction: row; justify-content: flex-start;"></div>
 		<div class="forumBtns">
 			<p id="likeCounter">${likesCount}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
@@ -225,6 +228,12 @@ function createPostElement(post, currentUserID, pfp) {
 		button.addEventListener('click', deletePostConfirm);
 		div.querySelector('.forumBtns').appendChild(button);
 	}
+	if (images.length > 0) {
+		console.log(images);
+		images.forEach((img) => {
+			div.querySelector('#images').appendChild(returnIconDiv(img, 100));
+		});
+	}
 	div.querySelector('#commentIcon').addEventListener('click', openPostComments);
 	div.querySelector('#likeBtn').addEventListener('click', likePost);
 	div.querySelector('#reportBtn').addEventListener('click', forumReport);
@@ -232,7 +241,7 @@ function createPostElement(post, currentUserID, pfp) {
 }
 
 function loadSinglePost(post, currentUserID, pfp) {
-	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount } = post;
+	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount, images } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
 	let profilePic = '../images/default-pfp.jpeg';
@@ -255,6 +264,7 @@ function loadSinglePost(post, currentUserID, pfp) {
 		
 		
 		<p style="white-space:pre;">${message}</p>
+		<div id="images" style="display: flex; flex-direction: row; justify-content: flex-start;"></div>
 		<div class="forumBtns">
 			<p id="likeCounter">${likesCount}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
@@ -284,6 +294,12 @@ function loadSinglePost(post, currentUserID, pfp) {
 		button.innerHTML = '<i class="fa-regular fa-trash-can"></i>';
 		button.addEventListener('click', deletePostConfirm);
 		div.querySelector('.forumBtns').appendChild(button);
+	}
+	if (images.length > 0) {
+		console.log(images);
+		images.forEach((img) => {
+			div.querySelector('#images').appendChild(returnIconDiv(img, 200));
+		});
 	}
 	div.querySelector('#reportBtn').addEventListener('click', forumReport);
 	div.querySelector('#commentIcon').addEventListener('click', goToCommentSection);
@@ -357,20 +373,40 @@ function deleteCommentConfirm() {
 		});
 }
 
+function returnIconDiv(file, height) {
+	const reader = new FileReader();
+	let div = document.createElement('div');
+	div.innerHTML = `
+			<a style="margin:5px;" href="/image/${file.name}" target="_blank" rel="noopener noreferrer"><img style="width: ${height}px; height: ${height}px; border: 2px solid white; object-fit: cover;" src="/image/${file.name}"></img></a>
+		`;
+	let img = div.querySelector('img');
+	reader.onload = function (e) {
+		img.src = e.target.result;
+		setAspectRatio(img);
+	};
+	return div;
+}
+
 function createPost() {
 	let title = document.querySelector('#title').value;
 	let message = tinymce.get('message').getContent();
-
 	const data = new FormData();
 	data.append('title', title);
 	data.append('message', message);
+	const fileInput = document.querySelector('#addImage');
+	const files = fileInput.files;
+	console.log('Files Uploaded:', files);
+	if (files.length > 0) {
+		// Check if there are files selected
+		for (let i = 0; i < files.length; i++) {
+			data.append('files', files[i]); // Append each file to FormData
+		}
+		// Now `data` contains all the files, and you can send it via AJAX or Fetch
+	}
 
 	fetch('api/forum/post', {
 		method: 'post',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: new URLSearchParams(data)
+		body: data
 	})
 		.then((res) => res.json())
 		.then((data) => {
@@ -817,7 +853,6 @@ function setAspectRatio(img) {
 		let width = img.naturalWidth;
 		let aspectRatio = (width / height).toFixed(2);
 		img.style.width = aspectRatio * defaultHeight + 'px';
-		console.log(height, width, aspectRatio, defaultHeight);
 	};
 }
 
@@ -826,24 +861,29 @@ function deleteImage() {
 }
 
 function uploadImage() {
-	const file = event.target.files[0];
-	if (file && file.type.startsWith('image/')) {
-		const reader = new FileReader();
-		let div = document.createElement('div');
-		div.innerHTML = `
-			<img style="width: 100px; height: 100px; border: 2px solid grey; object-fit: cover;"></img>
-			<button>Delete</button> 
-		`;
-		div.querySelector('button').addEventListener('click', deleteImage);
-		let img = div.querySelector('img');
-		reader.onload = function (e) {
-			img.src = e.target.result;
-			setAspectRatio(img);
-		};
-		reader.readAsDataURL(file);
-		document.querySelector('#images').appendChild(div);
-	} else {
-		alert('Please upload a valid image file.');
+	const files = Array.from(event.target.files);
+	console.log(files);
+	if (files.length > 0) {
+		files.forEach((file) => {
+			if (file && file.type.startsWith('image/')) {
+				const reader = new FileReader();
+				let div = document.createElement('div');
+				div.innerHTML = `
+					<img style="width: 150px; height: 150px; border: 2px solid grey; object-fit: cover;"></img>
+					<button>Delete</button> 
+				`;
+				div.querySelector('button').addEventListener('click', deleteImage);
+				let img = div.querySelector('img');
+				reader.onload = function (e) {
+					img.src = e.target.result;
+					setAspectRatio(img);
+				};
+				reader.readAsDataURL(file);
+				document.querySelector('#images').appendChild(div);
+			} else {
+				alert('Please upload a valid image file.');
+			}
+		});
 	}
 }
 
