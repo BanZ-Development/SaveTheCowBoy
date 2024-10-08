@@ -533,9 +533,9 @@ function loadComment(comment, currentUserID) {
 				<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
 				</div>
 				
-				<p style="font-family: 'roboto'; font-size: 19px;">${SafeHTML(content)}</p>
+				<p style="font-family: 'roboto'; font-size: 19px; color: #333;">${SafeHTML(content)}</p>
 				<div class="forumBtns">
-					<p id="likeCounter">${likesCount}</p>
+					<p style="color: #333;" id="likeCounter">${likesCount}</p>
 					<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
 					<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 					<button id="replyBtn" class="iconBtn">Reply</button>
@@ -632,9 +632,9 @@ function openReplies() {
 						<a class="forumUser" href="/profile?uid=${authorID}">${SafeHTML(author)}</a>
 						<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
 						</div>
-						<p style="white-space:pre; font-family: 'roboto'; font-size: 19px;">${SafeHTML(content)}</p>
+						<p style="white-space:pre;font-family: 'roboto';font-size: 19px;color: #333;">${SafeHTML(content)}</p>
 						<div class="forumBtns">
-							<p id="likeCounter">${likesCount}</p>
+							<p style="color: #333;" id="likeCounter">${likesCount}</p>
 							<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
 							<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 							<button id="replyBtn" class="iconBtn">Reply</button>

@@ -23,14 +23,35 @@
         <meta property="twitter:title" content="Long X Ranch Cowboys" />
         <meta property="twitter:description" content="Save the Cowboy, a 501(c)(3) non-profit, Christian, working-ranch introduces our subscription and community service, Long X Ranch Cowboys. Connect with other ranchers, learn and spread the gospel, and help support our local ranchers." />
         <meta property="twitter:image" content="https://longxranchcowboys.com/images/websiteMetaImg.jpg" />
+        <script type="module" src="../js/cowboy.js"></script>
     </head>
-<body>
+<body style="background-color: #fff;">
     <div class="cowboyStoryExplore">
-        
+        <h1>Share your story: How has your faith impacted your life as a cowboy?</h1>
+        <div class="createStory">
+            <input id="createStoryTitle" placeholder="Story Title" class="signupInput" style="display: none;" type="text">
+            <input id="createStoryDesc" placeholder="Story Description" class="signupInput" style="display: none;" type="text">
+            <textarea placeholder="Write a story..." name="" id="storyInput"></textarea>
+            <button>Create Story</button>
+        </div>
+        <img src="../images/ColoradoCountry2.jpg" alt="">
     </div>
     <div class="featuredStories">
-
+        <h1 style="font-family: 'Noto Serif'; color: #333;">Featured Stories</h1>
+        <div class="cowboyStory">
+            <img src="https://assets.editorial.aetnd.com/uploads/2010/04/cowboy-western-united-states-1898-1905-90cbb7.jpg" alt="">
+            <div>
+                <h1>The Cowboy's Creed</h1>
+                <p>A code of conduct for cowboys and how it aligns with Christian values.</p>
+                <button class="btnLink">Read More</button>
+            </div>
+        </div>
     </div>
+    <style>
+        .signupInput {
+            margin-block: 10px;
+        }
+    </style>
 </body>
 <script type="module" src="../js/navbar.js"></script>
 <script src="../js/anime.min.js"></script>
