@@ -147,7 +147,9 @@ function setTitle(bookID, chapterID) {
 		.then((res) => res.json())
 		.then((data) => {
 			let bookTitle = data[bookID - 1].name;
-			document.querySelector('#chapterTitle').innerHTML = `${bookTitle} | Chapter ${chapterID}`;
+			let title = `${bookTitle} | Chapter ${chapterID}`;
+			document.querySelector('#chapterTitle').innerHTML = title;
+			document.title = `${title} | Long X Ranch Cowboys`;
 		});
 }
 

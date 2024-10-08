@@ -587,11 +587,25 @@ function formatPhoneNumber(phoneNumberString) {
 }
 const editUserClick = () => {
 	let button = event.target;
-	console.log(button);
+	let member = button.closest('#memberElement');
+
+	let paragraphs = member.querySelectorAll('#editableInfo > p');
+	let inputs = member.querySelectorAll('#editableInfo > input');
+	console.log(paragraphs, inputs);
+	paragraphs.forEach((p) => (p.style.display = 'none'));
+	inputs.forEach((i) => {
+		i.style.display = 'flex';
+		i.placeholder = i.previousElementSibling.innerHTML;
+	});
+	member.querySelector('#editBtn').style.display = 'none';
+	member.querySelector('#confirmEditBtn').style.display = '';
+	member.querySelector('#cancelEditBtn').style.display = '';
 };
 const viewUserProfileClick = () => {
 	let button = event.target;
-	console.log(button);
+	let member = button.closest('#memberElement');
+	let uid = member.querySelector('#uid').innerHTML;
+	window.open(`/profile?id=${uid}`, '_blank');
 };
 const deleteUserClick = () => {
 	let button = event.target;
@@ -599,24 +613,23 @@ const deleteUserClick = () => {
 };
 
 const createMemberElement = (user) => {
-	console.log(user);
 	let { address, admin, city, customer, email, firstName, lastName, pfp, phoneNumber, state, uid, username, zip } = user;
 	let formattedPhoneNumber = formatPhoneNumber(phoneNumber);
 	let div = document.createElement('div');
 	div.id = 'memberElement';
 	div.innerHTML = `
 		<div class="tableRow">
-		<div class="tableRowInfo">
+		<div class="tableRowInfo" id="editableInfo">
 		<button id="dropInformation" class="tableDropBtn"> <i class="fa-solid fa-chevron-right"></i></button>
-		<p id="firstNameAdmin">${SafeHTML(firstName)}</p>
-		<p id="lastNameAdmin">${SafeHTML(lastName)}</p>
-		<p id="emailAdmin">${SafeHTML(email)}</p>
-		<p id="phoneNumberAdmin">${SafeHTML(formattedPhoneNumber)}</p>
-		<p id="stateAdmin">${SafeHTML(state)}</p>
-        <p id="cityAdmin">${SafeHTML(city)}</p>
-		<p id="addressAdmin">${SafeHTML(address)}</p>
-		<p id="zipAdmin">${SafeHTML(zip)}</p>
-		<p id="adminAdmin">${admin}</p>
+		<p id="firstNameAdmin">${SafeHTML(firstName)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update first name..."></input>
+		<p id="lastNameAdmin">${SafeHTML(lastName)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update last name..."></input>
+		<p id="emailAdmin">${SafeHTML(email)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update email..."></input>
+		<p id="phoneNumberAdmin">${SafeHTML(formattedPhoneNumber)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update phone number..."></input>
+		<p id="stateAdmin">${SafeHTML(state)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update state (abbreviated)..."></input>
+        <p id="cityAdmin">${SafeHTML(city)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update city..."></input>
+		<p id="addressAdmin">${SafeHTML(address)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update address..."></input>
+		<p id="zipAdmin">${SafeHTML(zip)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update zip..."></input>
+		<p id="adminAdmin">${admin}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update admin..."></input>
 		</div>
 		<div style="display: flex; flex-direction: row;">
 		</div>
@@ -626,10 +639,12 @@ const createMemberElement = (user) => {
 		<p class="userInfoTag" style="width: 100%;"><b>Email:</b> ${SafeHTML(email)}</p>
 		<p class="userInfoTag" style="width: 100%;"><b>Phone Number:</b> ${SafeHTML(formattedPhoneNumber)}</p>
 		<p class="userInfoTag" style="width: 100%;"><b>Address:</b> ${SafeHTML(address)}, ${SafeHTML(city)}, ${SafeHTML(state)}, ${SafeHTML(zip)}</p>
-		<p class="userInfoTag" style="width: 100%;"><b>UID:</b> ${SafeHTML(uid)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>UID:</b> <span id="uid">${SafeHTML(uid)}</span></p>
 		</div>
 		<div class="tableRowBtns">
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="editBtn" class="btnLink">Edit</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px; display:none;" id="confirmEditBtn" class="btnLink">Confirm Edit</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px; display:none;" id="cancelEditBtn" class="btnLink">Cancel Edit</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="profileBtn" class="btnLink">View Profile</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteMemberBtn" class="btnLink deleteBtn">Delete</button>
 		</div>

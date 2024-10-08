@@ -1358,6 +1358,11 @@ button {
     font-weight: 500;
 }
 
+.updateUserInfoInput {
+    display: none;
+    width: 7vw;
+}
+
 .biblePlansHolder {
     display: flex;
     flex-direction: row;

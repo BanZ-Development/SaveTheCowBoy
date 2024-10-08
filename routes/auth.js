@@ -80,7 +80,7 @@ router.post('/isLoggedIn', async (req, res) => {
 				let user = await User.findByIdAndUpdate(req.user.id, update);
 				let a = analytics.addDailyActiveUser(date);
 			} else {
-				console.log('same day');
+				//same day
 			}
 			let b = analytics.addTodayToUsersCalendar(date);
 			let c = analytics.addTodayToPostsCalendar(date);
