@@ -95,12 +95,13 @@ async function loadPosts() {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				console.log(data);
 				if (data.status) {
 					loadSinglePost(data.post, data.currentUserID, data.pfp);
 					endSpin();
 				} else {
-					console.log('error!');
+					endSpin();
+					alert(data.message);
+					window.location.replace('/forum');
 				}
 			})
 			.catch((err) => {
@@ -229,7 +230,6 @@ function createPostElement(post, currentUserID, pfp) {
 		div.querySelector('.forumBtns').appendChild(button);
 	}
 	if (images.length > 0) {
-		console.log(images);
 		images.forEach((img) => {
 			div.querySelector('#images').appendChild(returnIconDiv(img, 100));
 		});
@@ -395,11 +395,11 @@ function createPost() {
 	data.append('message', message);
 	const fileInput = document.querySelector('#addImage');
 	const files = fileInput.files;
-	console.log('Files Uploaded:', files);
-	if (files.length > 0) {
+	console.log('All Files Uploaded:', allFiles);
+	if (allFiles.length > 0) {
 		// Check if there are files selected
-		for (let i = 0; i < files.length; i++) {
-			data.append('files', files[i]); // Append each file to FormData
+		for (let i = 0; i < allFiles.length; i++) {
+			data.append('files', allFiles[i]); // Append each file to FormData
 		}
 		// Now `data` contains all the files, and you can send it via AJAX or Fetch
 	}
@@ -857,19 +857,24 @@ function setAspectRatio(img) {
 }
 
 function deleteImage() {
+	let name = event.target.parentElement.querySelector('img').id;
 	event.target.parentElement.remove();
+	console.log(name);
+	allFiles = allFiles.filter((item) => item.name !== name);
+	console.log(allFiles);
 }
 
 function uploadImage() {
 	const files = Array.from(event.target.files);
-	console.log(files);
+	allFiles = allFiles.concat(files);
+	console.log(allFiles);
 	if (files.length > 0) {
 		files.forEach((file) => {
 			if (file && file.type.startsWith('image/')) {
 				const reader = new FileReader();
 				let div = document.createElement('div');
 				div.innerHTML = `
-					<img style="width: 150px; height: 150px; border: 2px solid grey; object-fit: cover;"></img>
+					<img id="${file.name}" style="width: 150px; height: 150px; border: 2px solid grey; object-fit: cover;"></img>
 					<button>Delete</button> 
 				`;
 				div.querySelector('button').addEventListener('click', deleteImage);
