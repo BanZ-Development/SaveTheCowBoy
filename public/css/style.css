@@ -10,10 +10,6 @@
     --rich-black: #101419ff;
 }
 
-p, h3, h1, h2, button, a {
-    transform: rotate(180deg) !important;
-}
-
 html {
     scroll-behavior: smooth;
     font-family: 'Montserrat';
