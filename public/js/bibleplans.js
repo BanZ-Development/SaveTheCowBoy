@@ -549,12 +549,31 @@ function noSelectionComment() {
 	document.querySelector('#commentPrerequisite').style.display = 'flex';
 }
 
-function returnVerseString(bookName, chapterID, selected) {
+function returnFirstAndEndVerse(selected) {
 	let anchor = selected.anchorNode;
 	let focus = selected.focusNode;
-	let startVerse = anchor.parentElement.id;
-	let endVerse = focus.parentElement.id;
-	console.log(startVerse, endVerse);
+	let id1 = parseInt(anchor.parentElement.id);
+	let id2 = parseInt(focus.parentElement.id);
+	if (id1 < id2) {
+		return {
+			startVerse: id1,
+			endVerse: id2
+		};
+	} else if (id2 < id1) {
+		return {
+			startVerse: id2,
+			endVerse: id1
+		};
+	} else {
+		return {
+			startVerse: id1,
+			endVerse: id1
+		};
+	}
+}
+
+function returnVerseString(bookName, chapterID, selected) {
+	let { startVerse, endVerse } = returnFirstAndEndVerse(selected);
 	let verseString = `${bookName} ${chapterID}:${startVerse}`;
 	if (startVerse != endVerse) verseString += `-${endVerse}`;
 	return verseString;
@@ -622,7 +641,6 @@ function openAnnotations() {
 }
 
 function openCommentsWithComment() {
-	console.log('clicked');
 	document.querySelector('#commentPrerequisite').style.display = 'none';
 	document.querySelector('#commentUserInput').style.display = 'flex';
 	openWindow('comments');
