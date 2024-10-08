@@ -1249,8 +1249,19 @@ button {
     padding: 50px;
     width: 47%;
     padding: 10px;
-    background-color: #1c1c1c;
+    background-color: #fff;
+    border: solid 1px #fff0;
     border-radius: 20px;
+}
+
+.topGraph {
+    padding: 25px;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    border: solid 1px #ccc;
+    border-radius: 6px; height: 120px;
+    margin-inline: 5px;
 }
 
 #filterBtn {
@@ -1273,8 +1284,8 @@ button {
     display: none;
     flex-direction: column;
     position: absolute;
-    background-color: #1a1a1a;
-    border: solid 1px #333;
+    background-color: #fff;
+    border: solid 1px #ccc;
     padding: 20px;
     border-radius: 15px;
     z-index: 3;
@@ -1288,7 +1299,7 @@ button {
     display: flex;
     flex-direction: row;
     padding-block: 15px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #ccc;
     align-items: center;
 }
 
@@ -1300,9 +1311,9 @@ button {
 .filterDropSearch > input {
     height: 25px;
     border-radius: 8px;
-    background-color: #1a1a1a;
-    border: solid 1px #333;
-    color: #fff;
+    background-color: #fff;
+    border: solid 1px #ccc;
+    color: #333;
     text-indent: 10px;
     font-size: 15px;
     font-family: 'Roboto';
@@ -1342,9 +1353,9 @@ button {
 }
 
 .userInfoTag {
-    color: #aaa;
-    background-color: #1d1d1d;
-    border: solid 1px #333;
+    color: #898989;
+    background-color: #fff;
+    border: solid 1px #ccc;
     padding: 10px;
     border-radius: 8px;
     width: fit-content !important;
@@ -1354,7 +1365,7 @@ button {
 }
 
 .userInfoTag > b {
-    color: #fff;
+    color: #333;
     font-weight: 500;
 }
 
@@ -1366,11 +1377,14 @@ button {
 .biblePlansHolder {
     display: flex;
     flex-direction: row;
+    margin-left: 30% !important;
+    width: 65% !important;
 }
 
 .biblePlans {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .biblePlan {
@@ -1386,6 +1400,11 @@ button {
     border: solid 1.5px #ccc;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     margin-block: 15px;
+}
+
+.tableContentsPlan {
+    display: flex;
+    flex-direction: row;
 }
 
 .biblePlan > div > h3 {
@@ -1454,10 +1473,11 @@ button {
     background-color: #fff;
     border: solid 1.5px #ccc;
     padding: 13px;
-    border-radius: 10px;
     position: fixed;
-    height: 75%;
-    right: 80px;
+    height: 100%;
+    top: 100px;
+    left: 0;
+    width: 25%;
 }
 
 .tableContents > h2 {

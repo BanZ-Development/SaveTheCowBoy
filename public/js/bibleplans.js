@@ -492,7 +492,7 @@ function createPlanObject(plan) {
 	let obj = document.createElement('div');
 	obj.className = 'biblePlan';
 	obj.id = _id;
-	obj.style = 'width: 50vw; max-width: 575px;';
+	obj.style = 'width: 100%;';
 	obj.innerHTML = `
                 <div style="width: 45%;">
                     <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: fill;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg" alt="">

@@ -891,10 +891,10 @@ function createPlanObject(plan) {
 	let obj = document.createElement('div');
 	obj.className = 'biblePlan';
 	obj.id = _id;
-	obj.style = 'width: 50vw; color: black; border: 0px; max-width: 575px;';
+	obj.style = 'width: 100%; color: black; border: 0px;';
 	obj.innerHTML = `
                 <div style="width: 45%;">
-                    <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: fill;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg" alt="">
+                    <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: cover; object-position: top;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg" alt="">
                 </div>
                 <div style="padding-left: 20px; width: 55%; position: relative;">
                     <h3 style="font-style: italic; font-family: 'spectral'; font-weight: 500; text-align: center;">${title}</h3>

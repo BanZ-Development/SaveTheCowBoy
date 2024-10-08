@@ -13,12 +13,10 @@ var loadFile = function (event) {
     image.src = URL.createObjectURL(event.target.files[0]);
 };
 
-function changeUsername() {
-    console.log('change');
-    var usernameField = document.getElementById('username');
-    usernameField.disabled = false;
-}
-
-function ChangePassword() {
-
-}
+document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('#changeUserBtn').addEventListener('click', function() {
+            const inputField = document.querySelector('#settingUsername');
+            inputField.style = 'border: solid 1px #2782f2; width: 40%; margin-inline: 0px; height: 37px; font-family: "Roboto";';
+            inputField.disabled = !inputField.disabled;
+        });
+});
