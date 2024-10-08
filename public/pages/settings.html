@@ -16,7 +16,7 @@
     <script type="module" src="../js/navbar.js"></script>
     <script type="module" src="../js/settings.js"></script>
 </head>
-<body style="background-color: #1e1e1e;">
+<body style="background-color: #f2f2f2;">
     <div class="settings">
         <div class="settingSidebar">
             <button onclick="switchSetting(0)" class="settingSidebarBtn"><i class="fa-solid fa-user"></i> <p>Account Settings</p></button>
@@ -48,11 +48,8 @@
                     </div>
                     <h2>Username</h2>
                     <input id='settingUsername' placeholder="Username" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="text" disabled>
-                    <button onclick="changeUsername()" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px; "><i class="fa-solid fa-pencil"></i> Change Username</button>
-                    <h2>password</h2>
-                    <input id="settingPassword" placeholder="Password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
-                    <input id="settingOldPassword" placeholder="Old Password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
-                    <button onclick="changePassword()" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;"><i class="fa-solid fa-pencil"></i> Change Password</button>
+                    <button onclick="changeUsername()" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;border: solid 1px #ccc;"><i class="fa-solid fa-pencil"></i> Change Username</button>
+                    <textarea class="biographyType" name="" id=""></textarea>
                 </div>
             </div>
             <div style="display: none;" id="settingsType" class="settingSection">
@@ -154,6 +151,12 @@
                 <div style="width: 85%; margin-inline: auto;">
                     <h1>Security Settings</h1>
                     <span class="line"></span>
+                    <h2>password</h2>
+                    <div style="display: flex; flex-direction: column;">
+                        <input id="settingPassword" placeholder="Password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
+                        <input id="settingOldPassword" placeholder="Old Password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
+                        <button onclick="changePassword()" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;border: solid 1px #ccc;"><i class="fa-solid fa-pencil"></i> Change Password</button>
+                    </div>
                 </div>
             </div>
             <div style="display: none;" id="settingsType" class="settingSection">
@@ -166,6 +169,10 @@
     </div>
 
     <style>
+
+        .line {
+            color: #ccc;
+        }
 
         .subBtn {
             width: fit-content;
