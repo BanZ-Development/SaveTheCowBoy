@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#storyInput').addEventListener('click', function () {
             let page = document.querySelector('.createStory');
-            page.style = 'height: 80%; flex-direction: column; width: 95%;';
+            page.style = 'height: 60vh; flex-direction: column; width: 95%;';
             document.querySelector('#createStoryTitle').style = 'display: block; padding: 10px; font-family: "Roboto"; background-color: #fff;';
             document.querySelector('#createStoryDesc').style = 'display: block; padding: 10px; font-family: "Roboto"; background-color: #fff;';
             document.querySelector('#storyInput').style = 'margin-inline: auto; width: 70%; margin-top: 10px; border: solid 1px #ccc; padding: 10px;';

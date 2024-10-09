@@ -1090,11 +1090,11 @@ async function clickReportsButton() {
 	let button = event.target;
 	let id = button.id;
 	if (id == 'currentReportsBtn') {
-		document.querySelector('#currentReportsBtn').style.backgroundColor = '#353535';
-		document.querySelector('#ignoredReportsBtn').style.backgroundColor = '#1e1e1e';
+		document.querySelector('#currentReportsBtn').style.backgroundColor = '#f2f2f2';
+		document.querySelector('#ignoredReportsBtn').style.backgroundColor = '#fff';
 	} else if (id == 'ignoredReportsBtn') {
-		document.querySelector('#ignoredReportsBtn').style.backgroundColor = '#353535';
-		document.querySelector('#currentReportsBtn').style.backgroundColor = '#1e1e1e';
+		document.querySelector('#ignoredReportsBtn').style.backgroundColor = '#f2f2f2';
+		document.querySelector('#currentReportsBtn').style.backgroundColor = '#fff';
 	}
 
 	let data = new FormData();
