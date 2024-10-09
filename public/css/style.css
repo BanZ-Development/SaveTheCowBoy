@@ -944,13 +944,13 @@ button {
     top: 110px;
     margin-inline: auto;
     padding: 20px;
-    width: 80%;
+    width: 60%;
     height: 75vh;
     overflow-y: scroll;
     background-color: #fff;
     display: flex;
     flex-direction: column;
-    z-index: 3;
+    z-index: 2;
     border-radius: 5px;
   }
 

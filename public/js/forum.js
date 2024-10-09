@@ -777,7 +777,7 @@ function loadCreatePostButton() {
 	document.querySelector('#postButton').addEventListener('click', createPost);
 	document.querySelector('#showPopup').addEventListener('click', popupPost);
 	document.querySelector('#makePost').addEventListener('click', closePost);
-	document.querySelector('#closePostBtn').addEventListener('click', closePost);
+	document.querySelector('#closePostMainBtn').addEventListener('click', closePost);
 }
 
 function popupPost() {
