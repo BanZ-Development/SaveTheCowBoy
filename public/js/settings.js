@@ -411,3 +411,46 @@ for (let i = 0; i < subButtons.length; i++) {
 		changeSubscription(i);
 	});
 }
+
+function loadUserMeta() {
+	fetch('api/profile/load', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				let { username, bio } = data.profile;
+				document.querySelector('#settingUsername').placeholder = username;
+			}
+		});
+}
+
+function loadMenu() {
+	let menuID = event.target.id;
+	if (!menuID) menuID = event.target.parentElement.id;
+	let menus = document.querySelectorAll('.settingSection');
+	menus.forEach((m) => {
+		m.style.display = 'none';
+	});
+	load(menuID);
+}
+
+function load(menuID) {
+	let menu = document.querySelector('#' + menuID + 'Menu');
+	menu.style.display = 'flex';
+	switch (menuID) {
+		case 'account':
+			loadUserMeta();
+			break;
+	}
+}
+
+document.querySelectorAll('.settingSidebarBtn').forEach((btn) => {
+	btn.addEventListener('click', loadMenu);
+});
+
+load('account');

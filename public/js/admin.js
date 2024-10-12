@@ -767,13 +767,15 @@ const createReportObject = (message, reasons, post, pfp, postID, _id, ignored) =
 	let title = post.title || post.content;
 	let text = post.message != null ? post.message : '';
 	let ignoredText = !ignored ? 'Ignore' : 'Unignore';
+	let pfpText = '../images/default-pfp.jpeg';
+	if (pfp) pfpText = `/image/${pfp.name}`;
 	div.id = 'report';
 	div.innerHTML = `
 		<div id="${_id}" style="border: solid 1px #333; padding: 10px; border-radius: 5px; margin-top: 20px;">
 		<div id="post>
         <div class="forumPost" href="/forum?id=${postID}" id=${postID}>
         <div class="inlineForumUser">
-            <img class="forumPfp" src="/image/${pfp.name}"></img>
+            <img class="forumPfp" src="${pfpText}"></img>
             <a class="forumUser" href="/profile?uid=${uid}">${SafeHTML(username)}</a>
             <p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
         </div>

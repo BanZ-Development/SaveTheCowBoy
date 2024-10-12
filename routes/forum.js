@@ -109,24 +109,28 @@ router.post('/loadPost', async function (req, res) {
 		if (!post) {
 			let comment = await Comment.findById(req.body.id);
 			let author = await User.findById(comment.authorID);
+			let pfp = null;
+			if (author) pfp = author.meta.pfp;
 			if (comment) {
 				return res.send({
 					status: true,
 					message: '1 comment loaded',
 					post: comment,
 					currentUserID: req.user.id,
-					pfp: author.meta.pfp
+					pfp: pfp
 				});
 			}
 		}
 		let author = await User.findById(post.uID);
+		let pfp = null;
+		if (author) pfp = author.meta.pfp;
 		if (post) {
 			return res.send({
 				status: true,
 				message: '1 post loaded',
 				post: post,
 				currentUserID: req.user.id,
-				pfp: author.meta.pfp
+				pfp: pfp
 			});
 		}
 	} catch (error) {

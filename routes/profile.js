@@ -35,7 +35,8 @@ const upload = multer({ storage });
 
 router.post('/load', async (req, res) => {
 	try {
-		const { uid } = req.body;
+		let { uid } = req.body;
+		if (!uid) uid = req.user.id;
 		const user = await User.findById(uid);
 		let pfp = null;
 		if (user.meta.pfp) pfp = user.meta.pfp.name;

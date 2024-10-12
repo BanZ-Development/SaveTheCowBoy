@@ -458,10 +458,25 @@ function loadMain() {
 }
 
 function createPlanLink(plan) {
-	let link = document.createElement('li');
-	link.style = 'margin-inline: auto; margin-block: 15px;';
-	link.innerHTML = `<a href="#${plan._id}" style="text-decoration: underline;">${plan.title}</a>`;
-	document.querySelector('.tableContents > ul').appendChild(link);
+	let div = document.createElement('div');
+	div.className = 'tableContentsPlan';
+	div.id = plan._id;
+	div.innerHTML = `
+                <div class="tableContentsIcon" style="margin-inline: 7px;">
+                    <i class="fa-solid fa-book"></i>
+                </div>
+                <div class="display: flex; flex-direction: column; padding-top: 2px;">
+                    <h3 style="margin-block: 0px; margin-inline: 5px;">${plan.title}</h3>
+                    <p style="margin-block: 0px; margin-inline: 10px;">${plan.description}</p>
+                </div>
+            	`;
+	div.addEventListener('click', planLinkClick);
+	document.querySelector('.tableContents').appendChild(div);
+}
+
+function planLinkClick() {
+	let planID = event.target.closest('.tableContentsPlan').id;
+	window.location.assign(`/biblePlans?id=${planID}`);
 }
 
 function iteratePlans(plans) {

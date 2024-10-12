@@ -28,7 +28,7 @@ function load() {
 			<span id="navSep" class="line"></span>
             <a href="/" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-house"></i> Home</a>
 			<a id="logoutBtn2" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-            <div class="navLinkDrop">
+            <div class="navLinkDrop" style="display:none;">
                 <p>Community</p>
                 <i class="material-icons">keyboard_arrow_down</i>
             <div class="navDrop">
@@ -38,7 +38,7 @@ function load() {
                 <a style="border-radius: 0px 0px 4px 4px" href="cowboyStories" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
             </div>
         </div>
-            <a id="signupNav" href="signup" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i></a>
+            <a id="signupNav" href="login" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i></a>
             <div href="" style="display: none;"  id="navProfile" class="navProfile">
             <div class="navProfileUser">    
                 <p style="margin-inline: 10px;" id="username"></p>
@@ -105,6 +105,7 @@ function checkLogin() {
 					document.querySelector('#signupNav').style = 'display: none; !important';
 					document.querySelector('#navProfile').style = 'display: flex;';
 					document.querySelector('#logoutBtn1').style = 'display: flex; !important';
+					document.querySelector('.navLinkDrop').style.display = 'flex';
 					document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
 					if (data.pfp) {
 						document.querySelector('#pfp').src = `/image/${data.pfp}`;
@@ -118,9 +119,10 @@ function checkLogin() {
 					}
 				} else if (!isNonSubscriberPage()) location.replace('/login');
 			} else {
-				document.querySelector('#signupNav').innerHTML = '<i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Signup';
+				document.querySelector('#signupNav').innerHTML = '<i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Login';
 				document.querySelector('.navDrop').style = 'right: -35px';
 				document.querySelector('.navProfile').style = 'display: none !important;';
+				document.querySelector('.navLinkDrop').style.display = 'none';
 				document.querySelector('#logoutBtn2').style = 'display: none !important;';
 				document.querySelector('#navSep').style = 'display: none !important;';
 				if (!isNonSubscriberPage()) location.replace('/login');
@@ -197,9 +199,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });*/
 
 document.addEventListener('DOMContentLoaded', function () {
-	document.querySelector('#profile').setAttribute('href', '');
+	/*document.querySelector('#profile').setAttribute('href', '');
 	document.querySelector('#profile').addEventListener('click', construction);
-	document.querySelector('#navSub').addEventListener('click', construction);
+	document.querySelector('#navSub').addEventListener('click', construction);*/
 });
 
 function construction(event) {

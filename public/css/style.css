@@ -1408,6 +1408,13 @@ button {
 .tableContentsPlan {
     display: flex;
     flex-direction: row;
+    padding-block: 10px;
+    border-radius: 6px;
+}
+
+.tableContentsPlan:hover {
+    background-color: #d1d1d1;
+    cursor: pointer;
 }
 
 .tableContentsIcon {

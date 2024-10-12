@@ -19,11 +19,11 @@
 <body style="background-color: #f2f2f2 !important;">
     <div class="settings">
         <div class="settingSidebar">
-            <button onclick="switchSetting(0)" class="settingSidebarBtn"><i class="fa-solid fa-user"></i> <p>Account Settings</p></button>
-            <button onclick="switchSetting(1)" class="settingSidebarBtn"><i class="fa-solid fa-credit-card"></i> <p>Subscription</p></button>
-            <button onclick="switchSetting(2)" class="settingSidebarBtn"><i class="fa-solid fa-palette"></i> <p>Appearance</p></button>
-            <button onclick="switchSetting(3)" class="settingSidebarBtn"><i class="fa-solid fa-lock"></i> <p>Security</p></button>
-            <button onclick="switchSetting(4)" class="settingSidebarBtn"><i class="fa-solid fa-bell"></i> <p>Notifications</p></button>
+            <button id="account"class="settingSidebarBtn"><i class="fa-solid fa-user"></i> <p>Account Settings</p></button>
+            <button id="subscription"class="settingSidebarBtn"><i class="fa-solid fa-credit-card"></i> <p>Subscription</p></button>
+            <button id="appearance"class="settingSidebarBtn"><i class="fa-solid fa-palette"></i> <p>Appearance</p></button>
+            <button id="security"class="settingSidebarBtn"><i class="fa-solid fa-lock"></i> <p>Security</p></button>
+            <button id="notifications"class="settingSidebarBtn"><i class="fa-solid fa-bell"></i> <p>Notifications</p></button>
         </div>
         <div class="settingMainContent">
             <div>
@@ -33,26 +33,41 @@
                     <button id="confirmPopupBtn" style="height: 50px; width: 100px; margin-inline: auto; border: solid 2px #eee; font-family: 'Montserrat';" class="btnLink">Confirm</button>
                 </div>
             </div>
-            <div style="display: flex;" id="settingsType" class="settingSection">
+            <div style="display: flex;" id="accountMenu" class="settingSection">
                 <div class="settingColumn">
                     <h1>Account Settings</h1>
                     <span class="line"></span>
-                    <div class="avatar-upload">
-                        <div class="avatar-edit">
-                            <input name="file" type='file' id="imageUpload" accept=".png, .jpg, .jpeg"/>
-                            <label id="fileUploadLabel" for="imageUpload"></label>
+                    <div id="accountHeaderHolder" style="display: flex; flex-direction: row;">
+                        <div class="avatar-upload">
+                            <div class="avatar-edit">
+                                <input name="file" type='file' id="imageUpload" accept=".png, .jpg, .jpeg"/>
+                                <label id="fileUploadLabel" for="imageUpload"></label>
+                            </div>
+                            <div class="avatar-preview">
+                                <img style="border-radius: 50%; object-fit: cover; object-position: center; width: 192px; height: 192px;" id="imagePreview" src='../images/default-pfp.jpeg'>
+                            </div>
                         </div>
-                        <div class="avatar-preview">
-                            <img style="border-radius: 50%; object-fit: cover; object-position: center; width: 192px; height: 192px;" id="imagePreview" src='../images/default-pfp.jpeg'>
+                        <div style="margin-inline: 20px; padding-top: 4vw;">
+                            <h2 style="margin-bottom: 5px;">Your Username</h2>
+                            <div style="display:flex; flex-direction: row; margin-bottom: 10px;">
+                                <input id='settingUsername' placeholder="" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="text">
+                                <button id="changeUserBtn" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 5px;border: solid 1px #ccc; border-radius: 6px; margin-block: 0px;">Update Username <i class="fa-solid fa-pencil"></i></button>
+                            </div>
                         </div>
                     </div>
-                    <h2>Username</h2>
-                    <input id='settingUsername' placeholder="Username" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="text" disabled>
-                    <button id="changeUserBtn" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;border: solid 1px #ccc;"><i class="fa-solid fa-pencil"></i> Change Username</button>
-                    <textarea class="biographyType" name="" id=""></textarea>
+                    <span class="line"></span>
+                    
+                    
+                    
+                    
+                    <h2>Your Biography</h2>
+                    <div style="display:flex; flex-direction: row; margin-bottom: 10px;">
+                        <textarea class="biographyType" name="" id=""></textarea> 
+                        <button id="changeUserBtn" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 5px;border: solid 1px #ccc; border-radius: 6px; margin-block: 0px;"><i class="fa-solid fa-pencil"></i> Update Biography</button>
+                    </div>
                 </div>
             </div>
-            <div style="display: none;" id="settingsType" class="settingSection">
+            <div style="display: none;" id="subscriptionMenu" class="settingSection">
                 <div class="settingColumn">
                     <h1>Subscription Settings</h1>
                     <span class="line"></span>
@@ -141,25 +156,25 @@
                     </div>
                 </div>
             </div>
-            <div style="display: none;" id="settingsType" class="settingSection">
+            <div style="display: none;" id="appearanceMenu" class="settingSection">
                 <div style="width: 85%; margin-inline: auto;">
                     <h1>Appearance Settings</h1>
                     <span class="line"></span>
                 </div>
             </div>
-            <div style="display: none;" id="settingsType" class="settingSection">
+            <div style="display: none;" id="securityMenu" class="settingSection">
                 <div style="width: 85%; margin-inline: auto;">
                     <h1>Security Settings</h1>
                     <span class="line"></span>
-                    <h2>password</h2>
+                    <h2>Change your password</h2>
                     <div style="display: flex; flex-direction: column;">
-                        <input id="settingPassword" placeholder="Password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
-                        <input id="settingOldPassword" placeholder="Old Password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
+                        <input id="settingOldPassword" placeholder="Enter old password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
+                        <input id="settingNewPassword" placeholder="Enter new password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
                         <button onclick="changePassword()" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;border: solid 1px #ccc;"><i class="fa-solid fa-pencil"></i> Change Password</button>
                     </div>
                 </div>
             </div>
-            <div style="display: none;" id="settingsType" class="settingSection">
+            <div style="display: none;" id="notificationsMenu" class="settingSection">
                 <div style="width: 85%; margin-inline: auto;">
                     <h1>Notification Settings</h1>
                     <span class="line"></span>

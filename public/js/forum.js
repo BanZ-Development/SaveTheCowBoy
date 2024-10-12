@@ -195,7 +195,7 @@ function createPostElement(post, currentUserID, pfp) {
 		<span class="line"></span>
 		<div class="forumPost" href="/forum?id=${_id}" id=${_id}>
 		<div class="inlineForumUser">
-			<img class="forumPfp" src="/image/${pfp}"></img>
+			<img class="forumPfp" src="../images/default-pfp.jpeg"></img>
 			<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
 			<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
 		</div>
@@ -240,12 +240,30 @@ function createPostElement(post, currentUserID, pfp) {
 	document.querySelector('#posts').appendChild(div);
 }
 
+function setBackButton(type) {
+	switch (type) {
+		case 'post':
+			document.querySelector('.backBtn').href = '/forum';
+			document.querySelector('#forumPageTitle').innerHTML = 'Long X Ranch Cowboys Forums';
+			break;
+		case 'devotion':
+			document.querySelector('.backBtn').href = '/devotions';
+			document.querySelector('#forumPageTitle').innerHTML = 'Long X Ranch Cowboys Daily Devotions';
+			break;
+		case 'story':
+			document.querySelector('.backBtn').href = '/cowboyStories';
+			document.querySelector('#forumPageTitle').innerHTML = 'Long X Ranch Cowboys Stories';
+			break;
+	}
+}
+
 function loadSinglePost(post, currentUserID, pfp) {
-	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount, images } = post;
+	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount, images, type } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
 	let profilePic = '../images/default-pfp.jpeg';
 	if (pfp) profilePic = `/image/${pfp.name}`;
+	setBackButton(type);
 	document.querySelector('.backBtn').style.display = 'flex';
 	document.querySelector('#sorting').style.display = 'none';
 
