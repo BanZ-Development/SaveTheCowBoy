@@ -936,9 +936,20 @@ async function openBiblePlans() {
 		event.stopPropagation();
 	});
 	document.querySelector('#bpPopupOverlay').addEventListener('click', hideBiblePlansPopup);
+	document.querySelector('#closePostMainBtn').addEventListener('click', hideBiblePlansPopup);
 	document.querySelector('#createBiblePlanBtn').addEventListener('click', createBiblePlan);
 	initBiblePlans();
+	let children = document.querySelector('#bpHolder').childNodes;
+	console.log(children.length);
+	let length = children.length;
+	if (length > 0) {
+		for (let i = length - 1; i >= 0; i--) {
+			children[i].remove();
+		}
+	}
+
 	getBiblePlans();
+	document.querySelector('#bpHolder').style.display = 'flex';
 }
 
 function showBiblePlansPopup() {

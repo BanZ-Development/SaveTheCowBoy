@@ -244,15 +244,18 @@ function setBackButton(type) {
 	switch (type) {
 		case 'post':
 			document.querySelector('.backBtn').href = '/forum';
-			document.querySelector('#forumPageTitle').innerHTML = 'Long X Ranch Cowboys Forums';
+			document.querySelector('#forumPageTitle').innerHTML = 'Forums';
+			document.title = 'Forum | Long X Ranch Cowboys';
 			break;
 		case 'devotion':
 			document.querySelector('.backBtn').href = '/devotions';
-			document.querySelector('#forumPageTitle').innerHTML = 'Long X Ranch Cowboys Daily Devotions';
+			document.querySelector('#forumPageTitle').innerHTML = 'Daily Devotions';
+			document.title = 'Daily Devotions | Long X Ranch Cowboys';
 			break;
 		case 'story':
 			document.querySelector('.backBtn').href = '/cowboyStories';
-			document.querySelector('#forumPageTitle').innerHTML = 'Long X Ranch Cowboys Stories';
+			document.querySelector('#forumPageTitle').innerHTML = 'Cowboy Stories';
+			document.title = 'Cowboy Stories | Long X Ranch Cowboys';
 			break;
 	}
 }

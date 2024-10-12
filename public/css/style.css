@@ -1857,8 +1857,7 @@ button {
   }
 
   .biographyType {
-    width: 40%;
-    height: 250px;
+    height: 75px;
     resize: none;
     outline: none;
     font-family: 'Roboto';
