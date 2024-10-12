@@ -18,7 +18,9 @@ function loadProfile() {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
-			createProfile(data.profile);
+			if (data.status) {
+				createProfile(data.profile);
+			}
 		});
 }
 

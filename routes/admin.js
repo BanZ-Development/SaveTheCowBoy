@@ -272,4 +272,62 @@ router.post('/create-bible-plan', async (req, res) => {
 	}
 });
 
+router.post('/update-user', async (req, res) => {
+	try {
+		const { updateFirstName, updateLastName, updateEmail, updatePhoneNumber, updateState, updateCity, updateAddress, updateZip, updateAdmin } = req.body;
+		let user = await User.findById(req.user.id);
+		if (updateEmail) user.meta.email = updateEmail;
+		if (updateFirstName) user.meta.firstName = updateFirstName;
+		if (updateLastName) user.meta.lastName = updateLastName;
+		if (updatePhoneNumber) user.meta.phoneNumber = updatePhoneNumber;
+		if (updateAddress) user.meta.shipping.address = updateAddress;
+		if (updateCity) user.meta.shipping.city = updateCity;
+		if (updateState) user.meta.shipping.state = updateState;
+		if (updateZip) user.meta.shipping.zip = updateZip;
+		if (updateAdmin) user.admin = updateAdmin;
+		let update = await user.save();
+		if (update) {
+			res.send({
+				status: true,
+				message: 'User found and updated!'
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'User not found and update failed.'
+			});
+		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			err: err.message
+		});
+	}
+});
+
+router.post('/delete-user', async (req, res) => {
+	try {
+		const { uid } = req.body;
+		let user = await User.findByIdAndDelete(uid);
+		if (user) {
+			res.send({
+				status: true,
+				message: 'User found and deleted'
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'Termination failed. User not found!'
+			});
+		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: err.message
+		});
+	}
+});
+
 module.exports = router;

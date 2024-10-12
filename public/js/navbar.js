@@ -116,13 +116,14 @@ function checkLogin() {
 						adminLink.href = 'admin';
 						document.querySelector('#navSub').insertAdjacentElement('afterend', adminLink);
 					}
-				} else if (isNonSubscriberPage()) location.replace('/login');
+				} else if (!isNonSubscriberPage()) location.replace('/login');
 			} else {
 				document.querySelector('#signupNav').innerHTML = '<i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Signup';
 				document.querySelector('.navDrop').style = 'right: -35px';
 				document.querySelector('.navProfile').style = 'display: none !important;';
 				document.querySelector('#logoutBtn2').style = 'display: none !important;';
 				document.querySelector('#navSep').style = 'display: none !important;';
+				if (!isNonSubscriberPage()) location.replace('/login');
 			}
 		})
 		.catch((err) => {

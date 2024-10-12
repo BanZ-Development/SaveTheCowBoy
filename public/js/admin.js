@@ -516,6 +516,8 @@ function checkAdmin() {
 			console.log(data);
 			if (data.status) {
 				sendToRequest();
+			} else {
+				location.replace('/');
 			}
 		});
 }
@@ -610,6 +612,23 @@ const viewUserProfileClick = () => {
 const deleteUserClick = () => {
 	let button = event.target;
 	console.log(button);
+	let uid = button.closest('.tableRow').id;
+	let data = new FormData();
+	data.append('uid', uid);
+	fetch('api/admin/update-user', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				button.closest('#memberElement').remove();
+			}
+		});
 };
 
 const createMemberElement = (user) => {
@@ -618,17 +637,17 @@ const createMemberElement = (user) => {
 	let div = document.createElement('div');
 	div.id = 'memberElement';
 	div.innerHTML = `
-		<div class="tableRow">
+		<div class="tableRow" id="${uid}">
 		<div class="tableRowInfo" id="editableInfo">
 		<button id="dropInformation" class="tableDropBtn"> <i class="fa-solid fa-chevron-right"></i></button>
-		<p id="firstNameAdmin">${SafeHTML(firstName)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update first name..."></input>
-		<p id="lastNameAdmin">${SafeHTML(lastName)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update last name..."></input>
-		<p id="emailAdmin">${SafeHTML(email)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update email..."></input>
-		<p id="phoneNumberAdmin">${SafeHTML(formattedPhoneNumber)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update phone number..."></input>
-		<p id="stateAdmin">${SafeHTML(state)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update state (abbreviated)..."></input>
-        <p id="cityAdmin">${SafeHTML(city)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update city..."></input>
-		<p id="addressAdmin">${SafeHTML(address)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update address..."></input>
-		<p id="zipAdmin">${SafeHTML(zip)}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update zip..."></input>
+		<p id="firstNameAdmin">${SafeHTML(firstName)}</p><input class="updateUserInfoInput" type="text" id="updateFirstName" placeholder="Update first name..."></input>
+		<p id="lastNameAdmin">${SafeHTML(lastName)}</p><input class="updateUserInfoInput" type="text" id="updateLastName" placeholder="Update last name..."></input>
+		<p id="emailAdmin">${SafeHTML(email)}</p><input class="updateUserInfoInput" type="text" id="updateEmail" placeholder="Update email..."></input>
+		<p id="phoneNumberAdmin">${SafeHTML(formattedPhoneNumber)}</p><input class="updateUserInfoInput" type="text" id="updatePhoneNumber" placeholder="Update phone number..."></input>
+		<p id="stateAdmin">${SafeHTML(state)}</p><input class="updateUserInfoInput" type="text" id="updateState" placeholder="Update state (abbreviated)..."></input>
+        <p id="cityAdmin">${SafeHTML(city)}</p><input class="updateUserInfoInput" type="text" id="updateCity" placeholder="Update city..."></input>
+		<p id="addressAdmin">${SafeHTML(address)}</p><input class="updateUserInfoInput" type="text" id="updateAddress" placeholder="Update address..."></input>
+		<p id="zipAdmin">${SafeHTML(zip)}</p><input class="updateUserInfoInput" type="text" id="updateZip" placeholder="Update zip..."></input>
 		<p id="adminAdmin">${admin}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update admin..."></input>
 		</div>
 		<div style="display: flex; flex-direction: row;">
@@ -657,6 +676,8 @@ const createMemberElement = (user) => {
 	div.querySelector('#editBtn').addEventListener('click', editUserClick);
 	div.querySelector('#profileBtn').addEventListener('click', viewUserProfileClick);
 	div.querySelector('#deleteMemberBtn').addEventListener('click', deleteUserClick);
+	div.querySelector('#confirmEditBtn').addEventListener('click', updateUser);
+	div.querySelector('#cancelEditBtn').addEventListener('click', cancelEdit);
 	document.querySelector('.membersTable').appendChild(div);
 };
 
@@ -1292,3 +1313,64 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 	});
 });
+
+function cancelEdit(m) {
+	let member;
+	try {
+		member = event.target.closest('#memberElement');
+	} catch (err) {
+		member = m;
+	}
+	let pElems = member.querySelectorAll('#editableInfo > p');
+	let updateElements = member.querySelectorAll('.updateUserInfoInput');
+	pElems.forEach((elem) => {
+		elem.style.display = 'block';
+	});
+	updateElements.forEach((update) => {
+		update.style.display = 'none';
+	});
+	member.querySelector('#confirmEditBtn').style.display = 'none';
+	member.querySelector('#cancelEditBtn').style.display = 'none';
+	member.querySelector('#editBtn').style.display = 'inline';
+}
+
+function updateUser() {
+	let member = event.target.closest('#memberElement');
+	let updateElements = member.querySelectorAll('.updateUserInfoInput');
+	let body = new FormData();
+	updateElements.forEach((update) => {
+		if (update.value != '') {
+			body.append(update.id, update.value);
+		}
+	});
+	fetch('api/admin/update-user', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(body)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				console.log('success!');
+				//close editing window
+				cancelEdit(member);
+				//update element
+				console.log([...body.entries()]); // Log all entries
+
+				for (const entry of body.entries()) {
+					const [key, value] = entry;
+					updateEditHTML(member, key, value);
+				}
+			}
+		});
+}
+
+function updateEditHTML(member, key, value) {
+	member.querySelector('#' + key).value = value;
+	let admin = key.split('update')[1];
+	admin = admin.charAt(0).toLowerCase() + admin.slice(1) + 'Admin';
+	member.querySelector('#' + admin).innerHTML = value;
+}
