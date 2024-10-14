@@ -52,7 +52,6 @@ const LoadAnalytics = () => {
 			LoadDailyActiveUsers(dailyActiveUsers, 10, 'days');
 			LoadTotalUsers(totalUsers, usersCalendar);
 			LoadTotalPosts(totalPosts, postsCalendar);
-			LoadNewMembers();
 			LoadPageVisits();
 			LoadDatabasePercent();
 		});
@@ -317,51 +316,6 @@ const LoadTotalUsers = (totalUsers, usersCalendar) => {
 	myChart.update();
 };
 
-const LoadNewMembers = () => {
-	let ctx = document.getElementById('newMembers').getContext('2d');
-	ctx.canvas.parentNode.style.height = '70%';
-	ctx.canvas.parentNode.style.width = '100%';
-	var myChart = new Chart(ctx, {
-		type: 'line',
-		data: {
-			labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
-			datasets: [
-				{
-					label: 'My First Dataset',
-					data: [80, 70, 90, 50, 60], // Data points
-					borderColor: 'rgb(247, 82, 82)',
-					backgroundColor: 'rgba(247, 82, 82, 0.1)', // Optional: Adding a background color for better visibility
-					fill: false, // Ensures no area fill below the line
-					tension: 0.5
-				}
-			]
-		},
-		options: {
-			scales: {
-				y: {
-					display: false, // Hide Y axis labels
-					stacked: false
-				},
-				x: {
-					beginAtZero: true,
-					display: false // Hide X axis labels
-				}
-			},
-			plugins: {
-				legend: {
-					display: false
-				}
-			},
-			elements: {
-				point: {
-					radius: 1
-				}
-			}
-		}
-	});
-	myChart.update();
-};
-
 const SetPreview = (data, title) => {
 	let first = data[0];
 	let last = data[data.length - 1];
@@ -464,13 +418,13 @@ const LoadPageVisits = () => {
 	ctx.canvas.parentNode.style.height = '70%';
 	ctx.canvas.parentNode.style.width = '100%';
 	var myChart = new Chart(ctx, {
-		type: 'line',
+		type: 'bar',
 		data: {
-			labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
+			labels: ['Home', 'Forums', 'Devotions', 'Bible Plans', 'Cowboy Stories'], // Adjusted to match the number of data points
 			datasets: [
 				{
-					label: 'My First Dataset',
-					data: [60, 65, 80, 70, 90], // Data points
+					label: 'Page Visits',
+					data: [95, 65, 40, 75, 55], // Data points
 					borderColor: 'rgba(61, 213, 152, 0.945)',
 					backgroundColor: 'rgba(61, 213, 152, 0.945)', // Optional: Adding a background color for better visibility
 					fill: false, // Ensures no area fill below the line
@@ -884,8 +838,12 @@ async function openDevotions() {
 	document.querySelector('#devotionPopupContents').addEventListener('click', (event) => {
 		event.stopPropagation();
 	});
-	document.querySelector('#popupOverlay').addEventListener('click', hideDevotionsPopup);
+	document.querySelector('#devotionPopupOverlay').addEventListener('click', hideDevotionsPopup);
+	document.querySelector('#closeDevotionMainBtn').addEventListener('click', hideDevotionsPopup);
 	document.querySelector('#scheduleDevotionBtn').addEventListener('click', createDevotion);
+	let today = new Date();
+	let localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+	document.querySelector('#releaseDate').value = localDate;
 	initDevotions();
 }
 
@@ -1246,12 +1204,12 @@ document.addEventListener('click', function (event) {
 });
 
 function showDevotionPopup() {
-	const popupOverlay = document.getElementById('popupOverlay');
+	const popupOverlay = document.getElementById('devotionPopupOverlay');
 	popupOverlay.style.display = 'flex';
 }
 
 function hideDevotionsPopup() {
-	const popupOverlay = document.getElementById('popupOverlay');
+	const popupOverlay = document.getElementById('devotionPopupOverlay');
 	popupOverlay.style.display = 'none';
 }
 

@@ -140,7 +140,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="width: 70%; height: 684px;" class="graphSec">
+                        <div style="width: 75%; height: 684px;" class="graphSec">
                             <h4>Daily Active Users</h4>
                             <label for="typeSelector">View the past </label>
                             <input type="number" id="timeframeSelector" placeholder="10 (default)" value="">
@@ -152,28 +152,12 @@
                             <button id="updateDauBtn">Go</button>
                             <canvas id="dailyActiveUsers" width="600" height="400"></canvas>
                         </div>
-                        <div class="inlineGraphs">
-                            <div class="graphSec">
-                                <h4>Percent of Database Used</h4>
-                                <div style="display: flex; flex-direction: row; padding-block: 20px;">
-                                    <div style=" margin-left: 15px; width: 45%;">
-                                        <div style="display: flex; flex-direction: row;">
-                                            <span style="height: 15px; width: 15px; background-color: #2782f2; display: inline-block; border-radius: 50%; margin-block: auto; margin-right: 10px;"></span>
-                                            <p style="font-size: 20px;">Used (65%)</p>
-                                        </div>
-                                        <div style="display: flex; flex-direction: row;">
-                                            <span style="height: 15px; width: 15px; background-color: #ffffff; display: inline-block; border-radius: 50%; margin-block: auto; margin-right: 10px;"></span>
-                                            <p style="font-size: 20px;">Not Used (35%)</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <canvas id="databasePercent" width="300" height="300"></canvas>
-                                    </div>
+                        <div class="graphSec" style="width: 75%;">
+                            <h4>Page Visits</h4>
+                            <div style="display: flex; flex-direction: row; padding-block: 20px;">
+                                <div>
+                                    <canvas id="pageVisits" width="600" height="250"></canvas>
                                 </div>
-                                
-                            </div>
-                            <div class="graphSec">
-                                <h4>Extra spot for analytics</h4>
                             </div>
                         </div>
                     </div>
@@ -197,9 +181,16 @@
                 </div>
             </div>
             <div id="devotions" class="settingSection">
-                <div id="popupOverlay" class="deleteOverlay">
+                <div id="devotionPopupOverlay" class="deleteOverlay">
                     <div id="devotionPopupContents"class="deletePopup" style="color: #333">
-                          <h2>Create Daily Devotion</h2>
+                        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                            <h2>Create Daily Devotion</h2>
+                            <button id="closeDevotionMainBtn" class="submitImageText" style="background: none;
+                  border: none;
+                  padding: none;
+                  display: inline-block;
+                  cursor: pointer; font-size: 16pt;"><i class="fa-solid fa-circle-xmark"></i></button>
+                        </div>
                           <label for="releaseDate">Release Date: </label>  
                           <input type="date" id="releaseDate" name="releaseDate">
                           <input style="width: 99%; height: 3%;margin-block: 20px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="devotionTitle" placeholder="Enter Title"type="text">
@@ -228,14 +219,15 @@
                   display: inline-block;
                   cursor: pointer; font-size: 16pt;"><i class="fa-solid fa-circle-xmark"></i></button>
                         </div>
-                          
                           <h3>Setup</h3>
-                          <input style="width: 99%; height: 3%;margin-block: 10px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="bpTitle" placeholder="Enter title"type="text">
-                          <input style="width: 99%; height: 3%;margin-block: 10px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="bpDescription" placeholder="Enter description"type="text">
+                          <label style="align-self: flex-start; display: flex; margin-inline: 10px; font-family: 'Roboto'; font-size: 13pt; margin-bottom: 0px;">Title</label>
+                          <input style="width: 99%; height: 3%;margin-block: 5px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="bpTitle" placeholder="Enter title"type="text">
+                          <label style="align-self: flex-start; display: flex; margin-inline: 10px; font-family: 'Roboto'; font-size: 13pt; margin-bottom: 0px;">Description</label>
+                          <input style="width: 99%; height: 3%;margin-block: 5px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="bpDescription" placeholder="Enter description"type="text">
                           <label for="bpIcon">Icon: </label>
                           <input type="file" name="" id="bpIcon" style="margin-block: 10px">
                           <h3>Content</h3>
-                          <label for="">Select Your Books/Chapters/Verses</label>
+                          <label for="">Select the books and chapters for this plan.</label>
                           <div id="booksHolder" style="overflow-y:scroll; max-height: 500px;"></div>
                           <button style="margin-top: 50px; width: 60%;" id="createBiblePlanBtn" class="filterBtn">Create Bible Plan</button>
                     </div>
