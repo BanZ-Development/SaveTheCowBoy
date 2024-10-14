@@ -222,7 +222,8 @@ button {
     display: flex;
     flex-direction: column;
     width: 374px;
-    height: 550px;
+    max-height: fit-content !important; 
+    min-height: 497px;
     color: #2B2118;
     font-family: 'Montserrat';
     background-color: #ffff;
@@ -233,6 +234,7 @@ button {
     position: relative;
     transition: ease all 0.3s;
     flex-shrink: 0;
+    justify-content: space-between;
 }
 
 .subscription:hover {
@@ -241,7 +243,7 @@ button {
     color: #fff;
 }
 
-.subscription:hover > .subBtn {
+.subscription > .subBtn:hover {
     color: #2B2118;
     background-color: #fff;
 }
@@ -283,10 +285,8 @@ button {
     width: 80%;
     margin-inline: auto;
     cursor: pointer;
-    position: absolute;
-    bottom: 20px;
-    left: 0;
-    right: 0;
+    position: relative;
+    margin-bottom: 20px;
 
 }
 
@@ -549,6 +549,7 @@ button {
 
   .filterBtn:hover {
     background-color: #f2f2f2;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 1);
   }
 
   .searchInput {
@@ -671,6 +672,7 @@ button {
     flex-direction: row;
     align-items: center;
     height: 100%;
+    cursor: default
 }
 
 .navProfileUser > img {
@@ -686,6 +688,9 @@ button {
 .navProfileUser > p {
     font-size: 20px;
     font-family: 'Roboto';
+}
+.navProfileUser:hover > p, .navProfileUser:hover > i {
+    color: #c9c9c9;
 }
 
 .navProfileDrop {
@@ -1292,6 +1297,7 @@ button {
     padding: 20px;
     border-radius: 15px;
     z-index: 3;
+    cursor: default;
 }
 
 #filterBtn:hover > .filterDrop {
@@ -1477,6 +1483,7 @@ button {
     z-index: 1000;
     background-color: #333;
     border: 2px #c4c4c4 solid;
+    user-select: none;
 }
 
 .innerBiblePlanProg {

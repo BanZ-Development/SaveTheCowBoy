@@ -4,6 +4,14 @@ const SafeHTML = (html) => {
 	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 };
 
+const DateText = (date) => {
+	const options = { month: 'long' };
+	const month = new Intl.DateTimeFormat('en-US', options).format(date);
+	const day = date.getDate();
+	const year = date.getFullYear();
+	return `${month} ${day}, ${year}`;
+};
+
 const getCookie = (name) => {
 	let value = null;
 	let cookies = document.cookie.split(';');
@@ -63,7 +71,7 @@ function cancelSubscriptionConfirm() {
 				RemoveError('confirmPopupBtn');
 				ErrorMessage(
 					'confirmPopupBtn',
-					`Your subscription has been cancelled.<br>You will still have access to LXR until ${new Date(data.subscription.current_period_end * 1000).toDateString()}`,
+					`Your subscription has been cancelled.<br>You will still have access to LXR until ${DateText(new Date(data.subscription.current_period_end * 1000))}`,
 					'green'
 				);
 			} else {
@@ -81,21 +89,72 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#imageUpload').addEventListener('change', uploadPfp);
 });
 
+function compressPfp(file) {
+	var reader = new FileReader();
+
+	reader.onload = function (e) {
+		var img = new Image();
+		img.src = e.target.result;
+
+		img.onload = function () {
+			var canvas = document.createElement('canvas');
+			var ctx = canvas.getContext('2d');
+
+			// Set desired width and height (for resizing)
+			var maxWidth = 128; // Example: resize to max 400px width
+			var maxHeight = 128;
+			var width = img.width;
+			var height = img.height;
+			// Calculate the new width and height, maintaining the aspect ratio
+			if (width > height) {
+				if (width > maxWidth) {
+					height *= maxWidth / width;
+					width = maxWidth;
+				}
+			} else {
+				if (height > maxHeight) {
+					width *= maxHeight / height;
+					height = maxHeight;
+				}
+			}
+			canvas.width = width;
+			canvas.height = height;
+			// Draw the image on the canvas
+			ctx.drawImage(img, 0, 0, width, height);
+			// Compress the image and convert to Blob (for uploading)
+			return canvas.toBlob(
+				function (blob) {
+					// Blob is the compressed image data
+					// You can now upload the blob to your server or show a preview
+
+					// Example: Preview the compressed image
+					console.log(blob);
+					const data = new FormData();
+					data.append('file', blob);
+					fetch('api/profile/upload-pfp', {
+						method: 'post',
+						body: data
+					})
+						.then((res) => res.json())
+						.then(async (data) => {
+							console.log(data);
+							location.reload();
+						});
+				},
+				'image/jpeg',
+				1
+			); // 0.7 is the quality level (0.0 - 1.0)
+		};
+	};
+
+	reader.readAsDataURL(file);
+}
+
 function uploadPfp() {
 	const fileInput = document.querySelector('#imageUpload');
 	const file = fileInput.files[0];
 	try {
-		const data = new FormData();
-		data.append('file', file);
-		fetch('api/profile/upload-pfp', {
-			method: 'post',
-			body: data
-		})
-			.then((res) => res.json())
-			.then(async (data) => {
-				console.log(data);
-				location.reload();
-			});
+		compressPfp(file);
 	} catch (error) {
 		console.log('Error uploading image:', error);
 	}
@@ -202,6 +261,7 @@ function createChangeSubButtons(index) {
 		let button = document.createElement('button');
 		button.className = 'subBtn';
 		button.id = 'changeSubscriptionBtn';
+		button.style = 'position: initial; margin-bottom: 15px;';
 		button.onclick = openChangePopup;
 		button.innerHTML = '<i class="fa-solid fa-repeat"></i> Change Subscription';
 		subs[i].appendChild(button);
@@ -216,6 +276,7 @@ function createCancelSubButton(index, isCancelled) {
 	let button = document.createElement('button');
 	button.style.backgroundColor = '#fff';
 	button.style.color = '#44372c';
+	button.style = 'position: initial; margin-bottom: 15px;';
 	button.className = 'subBtn';
 	button.id = 'changeSubscriptionBtn';
 	if (!isCancelled) {
@@ -324,7 +385,7 @@ function changeSubscriptionConfirm() {
 				});
 				InputValidation('confirmPopupBtn', 'green');
 				RemoveError('confirmPopupBtn');
-				ErrorMessage('confirmPopupBtn', `Your subscription has been charged.<br>You will still be charged on ${new Date(data.subscription.current_period_end * 1000).toDateString()}`, 'green');
+				ErrorMessage('confirmPopupBtn', `Your subscription has been changed.<br>You will still be charged on ${DateText(new Date(data.subscription.current_period_end * 1000))}`, 'green');
 			} else {
 				InputValidation('confirmPopupBtn', 'red');
 				RemoveError('confirmPopupBtn');
@@ -357,7 +418,7 @@ function renewSubscriptionConfirm() {
 				});
 				InputValidation('confirmPopupBtn', 'green');
 				RemoveError('confirmPopupBtn');
-				ErrorMessage('confirmPopupBtn', `Your subscription has been renewed.<br>You will still be charged on ${new Date(data.subscription.current_period_end * 1000).toDateString()}`, 'green');
+				ErrorMessage('confirmPopupBtn', `Your subscription has been renewed.<br>You will still be charged on ${DateText(new Date(data.subscription.current_period_end * 1000))}`, 'green');
 			} else {
 				InputValidation('confirmPopupBtn', 'red');
 				RemoveError('confirmPopupBtn');

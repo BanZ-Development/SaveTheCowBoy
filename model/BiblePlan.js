@@ -12,7 +12,7 @@ const biblePlanSchema = new Schema({
 	},
 	icon: {
 		required: true,
-		type: String
+		type: Object
 	},
 	books: {
 		required: true,

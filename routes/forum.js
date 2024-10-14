@@ -9,6 +9,8 @@ const { GridFsStorage } = require('multer-gridfs-storage');
 const Image = require('../model/Image');
 const crypto = require('crypto');
 const path = require('path');
+const mongoose = require('mongoose');
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 require('dotenv').config();
 router.use(bodyParser.json());
 
@@ -163,6 +165,35 @@ router.post('/loadComment', async function (req, res) {
 	}
 });
 
+const returnSubscription = async (customerID) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const subscriptions = await stripe.subscriptions.list({
+				customer: customerID,
+				limit: 1
+			});
+			const subscription = subscriptions.data[0];
+			let response = !subscription ? false : subscription;
+			resolve(response);
+		} catch (err) {
+			console.log(err);
+			reject(err);
+		}
+	});
+};
+let planToSize = {
+	'5cc9c4dade2a2': 2.5,
+	'5cc9c50d875e5': 5,
+	'5cc9c54839744': 10,
+	'5cc9c565839f9': 20,
+	'5cc9c5b9deeca': 50,
+	'5cc9c5c85507e': Number.MAX_SAFE_INTEGER
+};
+
+function bytesToMB(bytes) {
+	return bytes / (1024 * 1024); // Divide by 1,048,576
+}
+
 router.post('/post', upload.array('files'), async (req, res) => {
 	try {
 		let body = { ...req.body };
@@ -178,37 +209,61 @@ router.post('/post', upload.array('files'), async (req, res) => {
 			images: []
 		};
 		const files = req.files;
-		console.log(files);
+		let tooLarge = false;
 		if (files && files.length > 0) {
+			let customerID = req.user.subscription.customer;
+			let maxSize;
+			await returnSubscription(customerID).then((subscription) => {
+				try {
+					let planID = subscription.plan.id;
+					maxSize = planToSize[planID];
+					console.log('Max Size:', maxSize);
+				} catch (err) {
+					maxSize = null;
+				}
+			});
 			files.forEach((file) => {
 				const { originalname, filename, size, uploadDate, contentType, id } = file;
 				if (!contentType.includes('image')) return;
-				const image = new Image({
-					name: filename,
-					contentType: contentType,
-					uploadDate: uploadDate,
-					fileID: id
-				});
-				params['images'].push(image);
+				if (!req.user.admin && bytesToMB(size) > maxSize) {
+					tooLarge = true;
+					return res.send({
+						status: false,
+						message: 'Upload failed because file size too large!',
+						maxSize: maxSize,
+						filename: filename,
+						uploadedSize: bytesToMB(size)
+					});
+				} else {
+					const image = new Image({
+						name: filename,
+						contentType: contentType,
+						uploadDate: uploadDate,
+						fileID: id
+					});
+					params['images'].push(image);
+				}
 			});
 		}
-		const post = await Post.create(params);
-		let user = await User.findById(req.user.id);
-		user.posts.push(post.id);
-		await user.save();
-		if (post) {
-			res.send({
-				status: true,
-				message: 'Post created',
-				id: post.id,
-				uID: req.user._id,
-				username: req.user.meta.username
-			});
-		} else {
-			res.send({
-				status: false,
-				message: 'Error while creating post'
-			});
+		if (!tooLarge) {
+			const post = await Post.create(params);
+			let user = await User.findById(req.user.id);
+			user.posts.push(post.id);
+			await user.save();
+			if (post) {
+				res.send({
+					status: true,
+					message: 'Post created',
+					id: post.id,
+					uID: req.user._id,
+					username: req.user.meta.username
+				});
+			} else {
+				res.send({
+					status: false,
+					message: 'Error while creating post'
+				});
+			}
 		}
 	} catch (error) {
 		console.log(error);
@@ -483,6 +538,7 @@ router.post('/delete-post', async (req, res) => {
 		const { postID } = req.body;
 		let post = await Post.findById(postID);
 		if (req.user.id == post.uID) {
+			deleteImages(post);
 			await deletePostReports(postID);
 			await Post.findByIdAndDelete(postID);
 			res.send({
@@ -556,5 +612,20 @@ router.post('/delete-comment', async (req, res) => {
 		});
 	}
 });
+
+function deleteImages(post) {
+	deleteImage(post.fileID);
+}
+
+function deleteImage(fileId) {
+	mongoose.connection.db.collection('uploads.chunks').deleteMany({ files_id: new mongoose.Types.ObjectId(fileId) }, (err, result) => {
+		if (err) {
+			console.error('Error deleting chunks:', err);
+			return;
+		}
+
+		console.log(`Deleted ${result.deletedCount} chunk(s) for file ID ${fileId}`);
+	});
+}
 
 module.exports = router;

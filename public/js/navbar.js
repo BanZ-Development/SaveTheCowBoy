@@ -28,7 +28,7 @@ function load() {
 			<span id="navSep" class="line"></span>
             <a href="/" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-house"></i> Home</a>
 			<a id="logoutBtn2" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-            <div class="navLinkDrop" style="display:none;">
+            <div class="navLinkDrop" style="display:none; cursor: default; line-height: 60px;">
                 <p>Community</p>
                 <i class="material-icons">keyboard_arrow_down</i>
             <div class="navDrop">

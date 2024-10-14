@@ -415,7 +415,6 @@ function createPost() {
 	data.append('title', title);
 	data.append('message', message);
 	const fileInput = document.querySelector('#addImage');
-	const files = fileInput.files;
 	console.log('All Files Uploaded:', allFiles);
 	if (allFiles.length > 0) {
 		// Check if there are files selected
@@ -436,10 +435,15 @@ function createPost() {
 				console.log('success');
 				window.location.replace(`/forum?id=${data.id}`);
 			} else {
-				if (data.message == 'Please make sure all the fields are filled in') {
-					//red border around
+				switch (data.message) {
+					case 'Please make sure all the fields are filled in':
+						//red border around
+						break;
+					case 'Upload failed because file size too large!':
+						let { maxSize, filename, uploadedSize } = data;
+						alert(`Upload failed because ${filename} was bigger than ${maxSize}MB [${uploadedSize.toFixed(1)}MB]\n\nUpgrade your plan for a larger upload size!`);
+						break;
 				}
-				console.log('error!');
 			}
 		})
 		.catch((err) => {

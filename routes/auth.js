@@ -42,14 +42,7 @@ async function isSubscribed(customerID) {
 		});
 		// Check if any subscription is still active
 		const activeSubscription = subscriptions.data.find((sub) => sub.status === 'active' || sub.status === 'trialing');
-
-		if (activeSubscription) {
-			console.log('Customer has an active subscription');
-			return true;
-		} else {
-			console.log('No active subscriptions found for the customer');
-			return false;
-		}
+		return activeSubscription;
 	} catch (error) {
 		console.error('Error retrieving subscriptions:', error);
 		return false;

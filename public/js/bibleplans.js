@@ -1,4 +1,8 @@
 loadMainOrPlan();
+const SafeHTML = (html) => {
+	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+};
+
 function returnID() {
 	let urlParams = window.location.search;
 	let getQuery = urlParams.split('?')[1];
@@ -320,7 +324,8 @@ async function createPlanWindow(plan) {
         </div>
         <div id="sidebar" style="overflow: auto;">
             <div id="tableOfContents" style="flex-direction: column; display: flex;">
-                
+                <h1 style="margin-bottom:0px;text-align: center; font-family: 'Noto Serif';">Table of Contents</h1>
+				<label style="text-align: center; margin-bottom: 10px; font-family: 'Noto Serif';">Find chapters and track your completion here!</label>
             </div>
             <div id="annotations" style="display: none; flex-direction: column;">
 				<h1 style="margin-bottom:0px; text-align: center; font-family: 'Noto Serif';">Annotations</h1>
@@ -365,9 +370,9 @@ async function createPlanWindow(plan) {
             </div>
             <div id="translations" style="display:none; flex-direction: column;">
 				<h1 style="margin-bottom:0px; text-align: center; font-family: 'Noto Serif';">Translations</h1>
-				<label style="text-align:center; margin-bottom: 15px; font-family: 'Noto Serif';" id="currentTranslation">Current Translation: </label>
-				<label for="languageDropdown">Language:</label>
-				<select class="custom-select" id="languageDropdown"></select>
+				<label style="text-align:center; margin-bottom: 5px; font-family: 'Noto Serif';" for="languageDropdown">Your Language:</label>
+				<select class="signupInput" style="text-indent: 0px; border-radius: 12px; width: 92.5%;" id="languageDropdown"></select>
+				<label style="text-align:center; margin-top: 20px; font-family: 'Noto Serif';" id="currentTranslation">Current Translation: </label>
 				<div id="translationsHolder" style="display:flex; flex-direction: column;"></div>
             </div>
         </div>
@@ -505,12 +510,14 @@ function createPlanObject(plan) {
 	let { _id, books, description, icon, title } = plan;
 	let { booksCount, chaptersCount } = returnBooksAndChaptersCount(plan);
 	let obj = document.createElement('div');
+	let planIcon = 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg';
+	if (icon.name) planIcon = '/image/' + icon.name;
 	obj.className = 'biblePlan';
 	obj.id = _id;
 	obj.style = 'width: 100%;';
 	obj.innerHTML = `
                 <div style="width: 45%;">
-                    <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: fill;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg" alt="">
+                    <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: fill;" src="${planIcon}" alt="">
                 </div>
                 <div style="padding-left: 20px; width: 55%; position: relative;">
                     <h3 style="font-style: italic; font-family: 'spectral'; font-weight: 500; text-align: center;">${title}</h3>
@@ -533,7 +540,7 @@ function openWindow(id) {
 	document.querySelector(`#${id}`).style.display = 'flex';
 }
 
-document.addEventListener('mouseup', function (event) {
+function selectedText(yOffset) {
 	try {
 		let selected = window.getSelection();
 		let anchor = selected.anchorNode;
@@ -547,13 +554,15 @@ document.addEventListener('mouseup', function (event) {
 			const rect = range.getBoundingClientRect();
 
 			popup.style.left = `${rect.left + window.scrollX}px`;
-			popup.style.top = `${rect.bottom + window.scrollY + 10}px`;
+			popup.style.top = `${rect.bottom + window.scrollY + yOffset}px`;
 			popup.style.display = 'block';
 		} else {
 			popup.style.display = 'none';
 		}
 	} catch (err) {}
-});
+}
+document.addEventListener('mouseup', () => selectedText(10));
+document.addEventListener('selectionchange', () => selectedText(10));
 
 function returnBookAndChapterName() {
 	let bookName = document.querySelector('#chapterTitle').innerHTML.split(' |')[0];
@@ -850,7 +859,7 @@ function createCommentElements(comments) {
 				<a class="navProfileUser" id="commentProfile" href="/profile?uid=${uID}"></a>
 				<label style="margin-left: auto; color: #797979; font-family: 'Noto Serif'; margin-block: auto;" id="location"for="comment">${location}</label>
 			</div>
-			<p style="padding-bottom: 15px;" class="annotationText" id="comment">${comment}</p>
+			<p style="padding-bottom: 15px;" class="annotationText" id="comment">${SafeHTML(comment)}</p>
 		</div>
 		
 		`;
@@ -866,8 +875,12 @@ function createCommentElements(comments) {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				let { username, pfp } = data.profile;
-				div.querySelector('#commentProfile').innerHTML = `<img src="/image/${pfp}" alt="Profile pic"> <p>${username}</p>`;
+				if (data.status) {
+					let { username, pfp } = data.profile;
+					div.querySelector('#commentProfile').innerHTML = `<img src="/image/${pfp}" alt="Profile pic"> <p>${username}</p>`;
+				} else if (!data.profile) {
+					div.remove();
+				}
 			});
 	});
 }
@@ -957,7 +970,7 @@ function createAnnotationElements(annotations) {
 				<label class="annotationTitle" id="location"for="comment">${location}</label>
 				<button class="viewVerseBtn">View Verse</button>
 			</div>
-			<p class="annotationText" id="comment">${annotation}</p>
+			<p class="annotationText" id="comment">${SafeHTML(annotation)}</p>
 			<div style="display:flex;flex-direction:row;">
 				<button style="height: 45px; line-height:0px;" class="btnLink deleteBtn"><i class="fa-solid fa-trash"></i> Delete</button>
 				<button class="annotationDrop"><i class="fa-solid fa-chevron-down"></i></button>

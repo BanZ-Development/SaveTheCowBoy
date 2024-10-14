@@ -686,6 +686,19 @@ const removeAllMembers = () => {
 	members.forEach((member) => member.remove());
 };
 
+function clearFilter() {
+	let inputs = document.querySelectorAll('#filterPopup input');
+	console.log(inputs);
+	let changed = false;
+	inputs.forEach((input) => {
+		if (input.value != '') {
+			input.value = '';
+			changed = true;
+		}
+	});
+	if (changed) openMembers();
+}
+
 const returnMembers = async () => {
 	//add form data
 	let filter = {};
@@ -742,6 +755,7 @@ async function openMembers() {
 	let members = await returnMembers();
 	members.forEach((member) => createMemberElement(member));
 	document.querySelector('#applyFilterBtn').addEventListener('click', applyFilterClick);
+	document.querySelector('#clearFilterBtn').addEventListener('click', clearFilter);
 }
 
 const updateURL = (view) => {
@@ -910,6 +924,8 @@ function returnBooksAndChaptersCount(plan) {
 
 function createPlanObject(plan) {
 	let { _id, books, description, icon, title } = plan;
+	let planIcon = 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg';
+	if (icon.name) planIcon = '/image/' + icon.name;
 	let { booksCount, chaptersCount } = returnBooksAndChaptersCount(plan);
 	let obj = document.createElement('div');
 	obj.className = 'biblePlan';
@@ -917,7 +933,7 @@ function createPlanObject(plan) {
 	obj.style = 'width: 100%; color: black; border: 0px;';
 	obj.innerHTML = `
                 <div style="width: 45%;">
-                    <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: cover; object-position: top;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg" alt="">
+                    <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: cover; object-position: top;" src="${planIcon}" alt="">
                 </div>
                 <div style="padding-left: 20px; width: 55%; position: relative;">
                     <h3 style="font-style: italic; font-family: 'spectral'; font-weight: 500; text-align: center;">${title}</h3>
@@ -1098,16 +1114,15 @@ function resetBiblePlanMenu() {
 function createBiblePlan() {
 	let data = new FormData();
 	let books = getBibleData();
+	let file = document.querySelector('#bpIcon').files[0];
+	console.log(file);
 	data.append('title', document.querySelector('#bpTitle').value);
 	data.append('description', document.querySelector('#bpDescription').value);
-	data.append('icon', 'testing');
+	data.append('file', file);
 	data.append('books', JSON.stringify(books));
 	fetch('api/admin/create-bible-plan', {
 		method: 'post',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: new URLSearchParams(data)
+		body: data
 	})
 		.then((res) => res.json())
 		.then((data) => {
@@ -1115,6 +1130,7 @@ function createBiblePlan() {
 			if (data.status) {
 				hideBiblePlansPopup();
 				resetBiblePlanMenu();
+				openBiblePlans();
 			}
 		});
 }

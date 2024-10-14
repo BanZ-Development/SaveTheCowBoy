@@ -66,7 +66,7 @@ router.post('/upload-pfp', upload.single('file'), async (req, res) => {
 		const uid = req.user.id;
 		const file = req.file;
 		const { originalname, filename, size, uploadDate, contentType, id } = file;
-		if (!contentType.includes('image')) return;
+		if (!contentType.includes('image')) throw Error('Image not provided.');
 		const image = new Image({
 			name: filename,
 			contentType: contentType,

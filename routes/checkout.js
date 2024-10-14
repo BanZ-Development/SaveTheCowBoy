@@ -223,26 +223,26 @@ router.post('/renew-subscription', async (req, res) => {
 async function changeSubscription(customerId, newPriceId) {
 	try {
 		// Retrieve the customer's subscriptions
-		const subscriptions = await stripe.subscriptions.list({
-			customer: customerId,
-			status: 'active',
-			limit: 1
-		});
+		const [activeSubscriptions, trialingSubscriptions] = await Promise.all([
+			stripe.subscriptions.list({ customer: customerId, status: 'active', limit: 1 }),
+			stripe.subscriptions.list({ customer: customerId, status: 'trialing', limit: 1 })
+		]);
 
-		if (subscriptions.data.length === 0) {
+		const subscriptions = [...activeSubscriptions.data, ...trialingSubscriptions.data];
+		if (subscriptions.length === 0) {
 			throw new Error('No active subscription found for this customer.');
 		}
-
-		const subscriptionId = subscriptions.data[0].id;
+		const subscriptionId = subscriptions[0].id;
 
 		// Update the subscription to the new price
 		const changedSubscription = await stripe.subscriptions.update(subscriptionId, {
 			items: [
 				{
-					id: subscriptions.data[0].items.data[0].id,
+					id: subscriptions[0].items.data[0].id,
 					price: newPriceId
 				}
 			],
+			cancel_at_period_end: false,
 			proration_behavior: 'none' // Ensure changes take effect from the next billing period
 		});
 
@@ -259,7 +259,7 @@ router.post('/change-subscription', async (req, res) => {
 		const { priceID } = req.body;
 		const customerID = req.user.subscription.customer;
 		console.log(customerID, priceID);
-		changeSubscription(customerID, priceID)
+		await changeSubscription(customerID, priceID)
 			.then((subscription) => {
 				res.send({
 					status: true,
@@ -290,7 +290,6 @@ router.post('/get-subscription', async (req, res) => {
 				limit: 1
 			});
 			const subscription = subscriptions.data[0];
-			console.log(subscription);
 			if (subscription) {
 				res.send({
 					status: true,

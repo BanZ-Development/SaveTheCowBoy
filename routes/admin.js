@@ -1,18 +1,43 @@
 const router = require('express').Router();
 const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
 const User = require('../model/User');
 const Post = require('../model/Post');
 const Report = require('../model/Report');
 const BiblePlan = require('../model/BiblePlan');
 const Devotion = require('../model/Devotion');
+const Image = require('../model/Image');
 const hasher = require('../controllers/hasher');
 const validate = require('../controllers/validate');
 const analytics = require('../controllers/analytics');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
+const path = require('path');
 require('dotenv').config();
 require('../controllers/local');
+const storage = new GridFsStorage({
+	url: process.env.MONGODB_URI,
+	file: (req, file) => {
+		return new Promise((resolve, reject) => {
+			crypto.randomBytes(16, (err, buf) => {
+				if (err) {
+					console.log(error);
+					return reject(err);
+				}
+				const filename = buf.toString('hex') + path.extname(file.originalname);
+				const fileInfo = {
+					filename: filename,
+					bucketName: 'uploads'
+				};
+				resolve(fileInfo);
+			});
+		}).catch((error) => {
+			console.log(error);
+		});
+	}
+});
+const upload = multer({ storage });
 
 const DateText = (date) => {
 	const options = { month: 'long' };
@@ -125,12 +150,30 @@ router.post('/get-reports', async (req, res) => {
 	}
 });
 
+function deleteImages(post) {
+	post.images.forEach((image) => {
+		deleteImage(image.fileID);
+	});
+}
+
+function deleteImage(fileID) {
+	mongoose.connection.db.collection('uploads.chunks').deleteMany({ files_id: mongoose.Types.ObjectId(fileId) }, (err, result) => {
+		if (err) {
+			console.error('Error deleting chunks:', err);
+			return;
+		}
+
+		console.log(`Deleted ${result.deletedCount} chunk(s) for file ID ${fileId}`);
+	});
+}
+
 router.post('/delete-report', async (req, res) => {
 	try {
 		let { reportID } = req.body;
 		let report = await Report.findByIdAndDelete(reportID);
 		let { postID } = report;
 		let post = await Post.findByIdAndDelete(postID);
+		deleteImages(post);
 		if (report) {
 			if (post) {
 				res.send({
@@ -248,14 +291,30 @@ router.post('/get-devotions', async (req, res) => {
 	}
 });
 
-router.post('/create-bible-plan', async (req, res) => {
+router.post('/create-bible-plan', upload.single('file'), async (req, res) => {
 	try {
-		const { title, description, icon, books } = req.body;
+		const { title, description, books } = req.body;
+		const file = req.file;
+		console.log(file);
+		if (!file) {
+			return res.send({
+				status: false,
+				message: 'No icon uploaded'
+			});
+		}
+		const { originalname, filename, size, uploadDate, contentType, id } = file;
+		if (!contentType.includes('image')) throw Error('Image not provided.');
+		const image = new Image({
+			name: filename,
+			contentType: contentType,
+			uploadDate: uploadDate,
+			fileID: id
+		});
 		let newBooks = new Function('return [' + books + '];')();
 		let options = {
 			title: title,
 			description: description,
-			icon: icon,
+			icon: image,
 			books: newBooks[0]
 		};
 		let biblePlan = await BiblePlan.create(options);
