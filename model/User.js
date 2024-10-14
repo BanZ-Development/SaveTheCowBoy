@@ -16,6 +16,7 @@ const userSchema = new Schema({
 			type: String,
 			required: true
 		},
+		bio: String,
 		firstName: String,
 		lastName: String,
 		phoneNumber: String,

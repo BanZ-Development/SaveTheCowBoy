@@ -190,10 +190,11 @@ router.get('/logout', function (req, res) {
 });
 
 router.post('/check-unique-username', async (req, res) => {
-	const { username } = req.body;
-	let status = true;
-	let message = 'User has a unique username.';
 	try {
+		const { username } = req.body;
+		let status = true;
+		let message = 'User has a unique username.';
+
 		const query = User.where({
 			'meta.username': username
 		});
@@ -202,12 +203,17 @@ router.post('/check-unique-username', async (req, res) => {
 			status = false;
 			message = 'Please choose a unique username!';
 		}
-	} catch (e) {}
 
-	res.send({
-		status: status,
-		message: message
-	});
+		res.send({
+			status: status,
+			message: message
+		});
+	} catch (e) {
+		res.send({
+			status: false,
+			err: e.message
+		});
+	}
 });
 
 router.post('/check-unique-email', async (req, res) => {

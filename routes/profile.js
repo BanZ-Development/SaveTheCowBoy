@@ -42,6 +42,7 @@ router.post('/load', async (req, res) => {
 		if (user.meta.pfp) pfp = user.meta.pfp.name;
 		const profile = {
 			username: user.meta.username,
+			bio: user.meta.bio,
 			uid: user.id,
 			posts: user.posts,
 			isSubscribed: user.subscription.isSubscribed,
@@ -128,6 +129,66 @@ router.post('/getPfp', async (req, res) => {
 		res.send({
 			status: false,
 			error: err.message
+		});
+	}
+});
+
+router.post('/update-bio', async (req, res) => {
+	try {
+		const { bio } = req.body;
+		if (bio.length < 500) {
+			let user = await User.findById(req.user.id);
+			user.meta.bio = bio;
+			user = await user.save();
+			if (user) {
+				res.send({
+					status: true,
+					message: 'Your bio has been updated!',
+					bio: bio
+				});
+			} else throw Error('User not found!');
+		} else {
+			res.send({
+				status: false,
+				message: 'Cannot set bio because yours is over 500 characters!'
+			});
+		}
+	} catch (err) {
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
+router.post('/update-username', async (req, res) => {
+	try {
+		const { username } = req.body;
+		const query = User.where({
+			'meta.username': username
+		});
+		let user = await query.findOne();
+		if (user) {
+			res.send({
+				status: false,
+				message: 'Please choose a unique username!'
+			});
+		} else {
+			user = await User.findById(req.user.id);
+			console.log(user);
+			user.meta.username = username;
+			await user.save();
+			res.send({
+				status: true,
+				message: 'Username has been updated!',
+				username: username
+			});
+		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			err: err.message
 		});
 	}
 });

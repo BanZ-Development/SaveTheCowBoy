@@ -485,7 +485,8 @@ function loadUserMeta() {
 			console.log(data);
 			if (data.status) {
 				let { username, bio } = data.profile;
-				document.querySelector('#settingUsername').placeholder = username;
+				document.querySelector('#usernameInput').placeholder = username;
+				document.querySelector('#bioInput').placeholder = bio;
 			}
 		});
 }
@@ -500,11 +501,132 @@ function loadMenu() {
 	load(menuID);
 }
 
+let timeoutId;
+let delay = 500;
+const debounce = (func, delay) => {
+	clearTimeout(timeoutId);
+	timeoutId = setTimeout(func, delay);
+};
+
+const validateUsername = (username) => {
+	if (username == '') {
+		InputValidation('usernameInput', 'red');
+		ErrorMessage('usernameInput', 'Username cannot be left empty!', 'red');
+		return false;
+	} else if (username.length < 3) {
+		InputValidation('usernameInput', 'red');
+		ErrorMessage('usernameInput', 'Username cannot be less than 3 characters!', 'red');
+		return false;
+	} else if (username.length > 20) {
+		InputValidation('usernameInput', 'red');
+		ErrorMessage('usernameInput', 'Username cannot be more than 20 characters!', 'red');
+		return false;
+	}
+	return true;
+};
+
+function usernameCheck() {
+	let username = document.querySelector('#usernameInput').value;
+	validateUsername(username);
+	const data = new FormData();
+	data.append('username', username);
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			fetch('api/auth/check-unique-username', {
+				method: 'post',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: new URLSearchParams(data)
+			})
+				.then((res) => res.json())
+				.then((data) => {
+					console.log(data);
+					if (data.status) {
+						InputValidation('usernameInput', 'green');
+						RemoveError('usernameInput');
+						validateUsername(username);
+					} else {
+						InputValidation('usernameInput', 'red');
+						ErrorMessage('usernameInput', 'Please choose a unique username!', 'red');
+					}
+					resolve(data.status);
+				});
+		}, 100);
+	}).catch((error) => {
+		reject(error);
+	});
+}
+
+async function updateUsername() {
+	let checked = await usernameCheck();
+	console.log(checked);
+	if (checked) {
+		let data = new FormData();
+		data.append('username', document.querySelector('#usernameInput').value);
+		fetch('api/profile/update-username', {
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			body: new URLSearchParams(data)
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log(data);
+				if (data.status) {
+					RemoveError('usernameInput');
+					InputValidation('usernameInput', 'transparent');
+					document.querySelector('#usernameInput').value = '';
+					document.querySelector('#usernameInput').placeholder = data.username;
+					document.querySelector('#username').innerHTML = data.username;
+				} else {
+					console.log('Error while changing username.');
+					RemoveError('usernameInput');
+					ErrorMessage('usernameInput', 'Error while changing your username.', 'red');
+					InputValidation('usernameInput', 'red');
+				}
+			});
+	}
+}
+
+function updateBio() {
+	let data = new FormData();
+	data.append('bio', document.querySelector('#bioInput').value);
+	fetch('api/profile/update-bio', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				RemoveError('bioInput');
+				InputValidation('bioInput', 'transparent');
+				document.querySelector('#bioInput').value = '';
+				document.querySelector('#bioInput').placeholder = data.bio;
+			} else {
+				console.log('Error while changing biography.');
+				RemoveError('bioInput');
+				ErrorMessage('bioInput', data.message, 'red');
+				InputValidation('bioInput', 'red');
+			}
+		});
+}
+
 function load(menuID) {
 	let menu = document.querySelector('#' + menuID + 'Menu');
 	menu.style.display = 'flex';
 	switch (menuID) {
 		case 'account':
+			document.querySelector('#usernameInput').addEventListener('input', () => {
+				debounce(usernameCheck, delay);
+			});
+			document.querySelector('#changeUserBtn').addEventListener('click', updateUsername);
+			document.querySelector('#changeBioBtn').addEventListener('click', updateBio);
 			loadUserMeta();
 			break;
 	}
