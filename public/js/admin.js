@@ -425,8 +425,8 @@ const LoadPageVisits = () => {
 				{
 					label: 'Page Visits',
 					data: [95, 65, 40, 75, 55], // Data points
-					borderColor: 'rgba(61, 213, 152, 0.945)',
-					backgroundColor: 'rgba(61, 213, 152, 0.945)', // Optional: Adding a background color for better visibility
+					borderColor: 'rgb(39, 130, 242)',
+					backgroundColor: 'rgb(39, 130, 242)', // Optional: Adding a background color for better visibility
 					fill: false, // Ensures no area fill below the line
 					tension: 0.5
 				}

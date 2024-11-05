@@ -378,8 +378,8 @@ async function createPlanWindow(plan) {
         </div>
     </div>
     <div style="display: flex; flex-direction: column; height: 90vh; width: 65%; padding-top: 110px; padding-left: 30%;">
-        <h1 style="font-family: 'Spectral'; color: #767676; font-size: 40px; text-align: center; margin-block: 0px; margin-top: 10px;">${title}</h1>
-        <h2 id="chapterTitle" style="font-family: 'Spectral'; color: #767676; font-size: 30px; text-align: center; margin-block: 10px;"></h2>
+        <h1 style="font-family: 'Noto Serif'; color: #767676; font-size: 40px; text-align: center; margin-block: 0px; margin-top: 10px;">${title}</h1>
+        <h2 id="chapterTitle" style="font-family: 'Noto Serif'; color: #767676; font-size: 30px; text-align: center; margin-block: 10px;"></h2>
         <div class="biblePlanPages">
 			<div class="biblePlanPopup" id="biblePlanPopup"><button class="filterBtn" id="annotateBtn"><i class="fa-regular fa-note-sticky"></i> Annotate</button><button class="filterBtn" id="commentBtn"><i class="fa-regular fa-comment"></i> Comment</button></div>
             <div class="biblePlanPage" id="page1"></div>
@@ -472,7 +472,7 @@ function createPlanLink(plan) {
                 </div>
                 <div class="display: flex; flex-direction: column; padding-top: 2px;">
                     <h3 style="margin-block: 0px; margin-inline: 5px;">${plan.title}</h3>
-                    <p style="margin-block: 0px; margin-inline: 10px;">${plan.description}</p>
+                    <p style="margin-block: 0px; margin-inline: 5px; color: #6f6f6f;">${plan.description}</p>
                 </div>
             	`;
 	div.addEventListener('click', planLinkClick);
@@ -520,10 +520,10 @@ function createPlanObject(plan) {
                     <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: fill;" src="${planIcon}" alt="">
                 </div>
                 <div style="padding-left: 20px; width: 55%; position: relative;">
-                    <h3 style="font-style: italic; font-family: 'spectral'; font-weight: 500; text-align: center;">${title}</h3>
-                    <p>${description}</p>
-                    <p>${booksCount} books, ${chaptersCount} chapters</p>
-					<label for="${chaptersCount}" id="progressCounter">0% completed</label>
+                    <h3 style="font-style: italic; font-family: 'Noto Serif'; font-weight: 500; text-align: center; font-size: 1.8vw">${title}</h3>
+                    <p style="font-size: 1.25vw;">${description}</p>
+                    <p style="font-size: 1.25vw;">${booksCount} books, ${chaptersCount} chapters</p>
+					<label for="${chaptersCount}" id="progressCounter" style="font-size: 1.25vw;">0% completed</label>
                     <div class="biblePlanProg">
                         <span style="width: 0%"id="${chaptersCount}" class="innerBiblePlanProg"></span>
                     </div>

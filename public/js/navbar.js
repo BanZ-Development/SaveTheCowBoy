@@ -216,3 +216,15 @@ function construction(event) {
 		duration: 200
 	});
 }
+
+const navbar = document.querySelector('#nav')
+
+window.addEventListener('scroll', () => {
+	const scrollPosition = window.scrollY;
+
+	if (scrollPosition > 0) {
+		navbar.style.backgroundColor = '#00000085';
+	} else {
+		navbar.style.backgroundColor = 'var(--bistre)';
+	}
+});
