@@ -97,14 +97,30 @@ function createProfile(profile) {
 	console.log(profile);
 	document.title = `${profile.username} | Long X Ranch Cowboys`;
 	let div = document.createElement('div');
-	div.innerHTML = `<br><br><br><br><br><br><br><br><br><br><br><br><div id="profile">
-		<div style="display: flex; flex-direction: row; color: #333; margin-bottom: 20px;">
-			<img style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; object-position: center;" id="pfp" src="/image/${profile.pfp}">
-			<h1 style="line-height: 15px; margin-left: 10px;">${profile.username}</h1>
+	div.innerHTML = `<div class="profile" id="profile">
+		<div style="height: 45vh; width: 80%; margin-inline: auto; padding-block: 60px; display: flex; flex-direction: row; justify-content: center;"> 
+			<div style="display: flex; flex-direction: column; color: #333; margin-bottom: 20px; width: 40%;">
+				<img style="width: 10vw; height: 10vw; border-radius: 50%; object-fit: cover; object-position: center; margin-inline: auto;" id="pfp" src="/image/${profile.pfp}">
+				<h1 style="line-height: 15px; margin-left: 10px; font-size: 2.4vw; text-align: center;">${profile.username}</h1>
+				<h1 style="line-height: 15px; margin-left: 10px; font-size: 1.7vw; text-align: center;">Colorado, USA</h1>
+			</div>
+			<div style="width: 40%;">
+				<h1 style="margin-top: 0px;">Biography</h1>
+				<p class="profileBiography"></p>
+			</div>
 		</div>
-		<span class="line"></span>
-		<h2 style="color: #333;">Posts</h2>
-		<div id="posts"></div>
+		<div class="buttonRack">
+			<button data-target="posts" class="highlighted-border" id="profileSwitchViewBtn">Posts</button>
+			<button data-target="comments" id="profileSwitchViewBtn">Comments</button>
+			<button data-target="annotations" id="profileSwitchViewBtn">Annotations</button>
+			<button data-target="favorites" id="profileSwitchViewBtn">Favorites</button>
+			<button data-target="followers" id="profileSwitchViewBtn">Followers</button>
+		</div>
+		<div style="width: 80%; margin-inline: auto;" id="posts"></div>
+		<div style="width: 80%; margin-inline: auto;" id="comments"></div>
+		<div style="width: 80%; margin-inline: auto;" id="annotations"></div>
+		<div style="width: 80%; margin-inline: auto;" id="favorites"></div>
+		<div style="width: 80%; margin-inline: auto;" id="followers"></div>
 		</div>
 		`;
 	document.body.appendChild(div);
@@ -176,3 +192,25 @@ function forumReport() {
 }
 
 loadProfile();
+
+document.addEventListener('click', function(event) {
+	if (event.target && event.target.id === 'profileSwitchViewBtn') {
+	  document.querySelectorAll('#posts, #comments, #annotations, #favorites, #followers').forEach(div => {
+		div.style.display = 'none';
+	  });
+	  
+		const buttons = document.querySelectorAll('#profileSwitchViewBtn');
+		for (let i = 0; i < buttons.length; i++) {
+			buttons[i].classList.remove('highlighted-border');
+		}
+
+	  event.target.classList.add('highlighted-border');
+
+	  const targetDivId = event.target.getAttribute('data-target').toLowerCase();
+	  const targetDiv = document.getElementById(targetDivId);
+  
+	  if (targetDiv) {
+		targetDiv.style.display = 'flex';
+	  }
+	}
+  });

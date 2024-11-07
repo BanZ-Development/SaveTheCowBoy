@@ -106,7 +106,7 @@
                     <span class="line"></span>
                     <div style="width: 95%;" class="settingColumn">
                         <div class="inlineGraphs">
-                            <div class="graphSec" style="width: 100%; padding-inline: 25px; padding-block: 30px;">
+                            <div class="graphSec" style="padding-inline: 25px; padding-block: 30px;">
                                 <div class="inlineGraphs">
                                     <div class="topGraph">
                                         <div style="display: flex; flex-direction: row;">
@@ -140,8 +140,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="width: 100%; height: 60%;" class="graphSec">
-                            <h4>Daily Active Users</h4>
+                        <h2 class="analyticHeader">Daily Active Users</h2>
+                        <div style="height: 60%;" class="graphSec">
                             <label for="typeSelector">View the past </label>
                             <input type="number" id="timeframeSelector" placeholder="10 (default)" value="">
                             <select id="typeSelector">
@@ -150,12 +150,14 @@
                                 <option value="years">Years</option>
                             </select>
                             <button id="updateDauBtn">Go</button>
-                            <canvas id="dailyActiveUsers" width="600" height="400"></canvas>
+                            <div class="chartSizing">
+                                <canvas id="dailyActiveUsers" width="600" height="400"></canvas>
+                            </div>
                         </div>
-                        <div class="graphSec" style="width: 100%;">
-                            <h4>Page Visits</h4>
+                        <h2 class="analyticHeader">Page Visits</h2>
+                        <div class="graphSec" style="height: 60%;">
                             <div style="display: flex; flex-direction: row; padding-block: 20px;">
-                                <div>
+                                <div class="chartSizing">
                                     <canvas id="pageVisits" width="600" height="250"></canvas>
                                 </div>
                             </div>

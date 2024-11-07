@@ -2,6 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* Fonts Used: Montserrat, Inter, Noto Serif, Roboto, Spectral*/
+
 :root {
     --slate-gray: #6d8a96ff;
     --dark-goldenrod: #a98743ff;
@@ -1256,7 +1258,7 @@ button {
     margin-inline: 10px;
     margin-block: 30px;
     padding: 50px;
-    width: 47%;
+    width: 100%;
     padding: 10px;
     background-color: #fff;
     border: solid 1px #fff0;
@@ -1929,6 +1931,53 @@ button {
     font-family: 'Montserrat';
     border: solid 1px #ccc;
     border-radius: 5px;
+  }
+
+  .profile {
+    padding-top: 110px;
+  }
+
+  .profileBiography {
+    display: flex;
+    border-top: solid 1.5px #ccc;
+    border-bottom: solid 1.5px #ccc;
+    padding: 10px;
+    height: 60%;
+    width: 100%;
+  }
+
+  .buttonRack {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    margin-block: 80px;
+    margin-inline: auto;
+  }
+
+  .buttonRack > button {
+    font-size: 1.3vw;
+    background-color: #fff;
+    border: none;
+    padding-inline: 20px;
+    padding-block: 5px;
+    border-bottom: solid 3.5px #dddddd;
+    font-family: 'Roboto';
+    font-weight: 400;
+    cursor: pointer;
+  }
+
+  .highlighted-border {
+    border-bottom: solid 3.5px #2374d1 !important;
+  }
+
+  .chartSizing {
+    width: 80% !important;
+    height: 70% !important;
+    margin-inline: auto;
+  }
+
+  .analyticHeader {
+    margin-left: 20px;
   }
 
   @media only screen and (max-width: 1610px) {

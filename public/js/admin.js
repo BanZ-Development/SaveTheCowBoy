@@ -428,7 +428,9 @@ const LoadPageVisits = () => {
 					borderColor: 'rgb(39, 130, 242)',
 					backgroundColor: 'rgb(39, 130, 242)', // Optional: Adding a background color for better visibility
 					fill: false, // Ensures no area fill below the line
-					tension: 0.5
+					tension: 0.5,
+					borderRadius: 50,
+					borderSkipped: false
 				}
 			]
 		},
