@@ -104,9 +104,8 @@
                 <div class="settingColumn" id="memberColumn">
                     <h1>Analytics</h1>
                     <span class="line"></span>
-                    <div style="width: 95%;" class="settingColumn">
-                        <div class="inlineGraphs">
-                            <div class="graphSec" style="padding-inline: 25px; padding-block: 30px;">
+                    <div style="width: 100%;" class="settingColumn">
+                            <div class="graphSec" style="padding-inline: 25px; padding-block: 30px; width: calc(100% - 66px);">
                                 <div class="inlineGraphs">
                                     <div class="topGraph">
                                         <div style="display: flex; flex-direction: row;">
@@ -137,11 +136,29 @@
                                         </div>
                                         <p id="totalPostsPreview"><b style="color: #3dd598;">12%</b> vs preview . 28 days</p>
                                     </div>
+                                    <div style="width: 232px; flex-direction: column;" class="topGraph">
+                                        <div style="display: flex; flex-direction: row;">
+                                            <div>
+                                                <h4 style="margin-block: 0px; font-size: 14px; margin-bottom: 10px;">Website Storage</h4>
+                                                <div style="display: flex; flex-direction: row;">
+                                                    <p style="font-size: 14px; margin-block: 5px;" id="usedStorage">65% Used</p>
+                                                    <span class="dot" style="margin-inline: 4px; margin-block: auto;"></span>
+                                                </div>
+                                                <div style="display: flex; flex-direction: row;">
+                                                    <p style="font-size: 14px; margin-block: 5px;" id="unusedStorage">35% Unused</p>
+                                                    <span class="dot" style="margin-inline: 4px; margin-block: auto; background-color: #f2f2f2;"></span>
+                                                </div>
+                                            </div>
+                                            <div style="margin-left: auto;">
+                                                <canvas id="databasePercent"></canvas>
+                                            </div>
+                                        </div>
+                                        <h5 style="font-size: 14px; color: #3dd598; margin-block: 0px; margin-top: auto;">No Upgrades Needed</h5>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         <h2 class="analyticHeader">Daily Active Users</h2>
-                        <div style="height: 60%;" class="graphSec">
+                        <div style="height: 60%; width: calc(100% - 35px);" class="graphSec">
                             <label for="typeSelector">View the past </label>
                             <input type="number" id="timeframeSelector" placeholder="10 (default)" value="">
                             <select id="typeSelector">
@@ -155,7 +172,7 @@
                             </div>
                         </div>
                         <h2 class="analyticHeader">Page Visits</h2>
-                        <div class="graphSec" style="height: 60%;">
+                        <div class="graphSec" style="height: 60%; width: calc(100% - 35px);">
                             <div style="display: flex; flex-direction: row; padding-block: 20px;">
                                 <div class="chartSizing">
                                     <canvas id="pageVisits" width="600" height="250"></canvas>

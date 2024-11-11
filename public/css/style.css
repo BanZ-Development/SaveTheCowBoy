@@ -16,6 +16,7 @@ html {
     scroll-behavior: smooth;
     font-family: 'Montserrat';
     height: 100%;
+    box-sizing: border-box;
     
 }
 
@@ -34,7 +35,7 @@ nav {
     display: flex;
     flex-direction: row;
     position: fixed;
-    width: 100%;
+    width: 100vw;
     z-index: 1;
     backdrop-filter: blur(3px);
     z-index: 3;
@@ -1017,6 +1018,8 @@ button {
 
   #navSep {
     display: none;
+    background-color: #333;
+    height: 0.9px;
   }
 
   #logoutBtn2 {
@@ -1248,6 +1251,7 @@ button {
     display: flex;
     flex-direction: row;
     height: 50%;
+    justify-content: space-evenly;
 }
 
 .inlineGraphs > div > h1 {
@@ -1263,6 +1267,7 @@ button {
     background-color: #fff;
     border: solid 1px #fff0;
     border-radius: 20px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
 .topGraph {
@@ -1419,6 +1424,7 @@ button {
     flex-direction: row;
     padding-block: 10px;
     border-radius: 6px;
+    margin-inline: 7%;
 }
 
 .tableContentsPlan:hover {
@@ -1512,7 +1518,8 @@ button {
 }
 
 .tableContents > h2 {
-    text-align: center;
+    margin-left: 1.8vw;
+    font-size: 25px;
 }
 
 .tableContents > ul {
@@ -1958,7 +1965,7 @@ button {
     font-size: 1.3vw;
     background-color: #fff;
     border: none;
-    padding-inline: 20px;
+    padding-inline: 2.2vw;
     padding-block: 5px;
     border-bottom: solid 3.5px #dddddd;
     font-family: 'Roboto';
@@ -1978,6 +1985,13 @@ button {
 
   .analyticHeader {
     margin-left: 20px;
+  }
+
+  .dot {
+    height: 16px;
+    width: 16px;
+    border-radius: 100%;
+    background-color: #0268db;
   }
 
   @media only screen and (max-width: 1610px) {
@@ -2297,6 +2311,15 @@ button {
         display: block;
         margin-left: auto;
     }
+
+    #accountHeaderHolder {
+        flex-direction: column !important;
+      }
+    
+      .accountNameAndPassword {
+    
+      }
+      
   }
 
   @media only screen and (max-width: 856px) {
@@ -2560,4 +2583,20 @@ button {
     .forumTitle > a {
         margin-inline: auto;
     }
+  }
+
+  @media only screen and (max-width: 443px) {
+
+    .filterBtn {
+        padding: 7px;
+        width: 80px;
+        margin-inline: 0px;
+        margin-block: 5px;
+        font-size: 12px;
+    }
+
+    .forumTitle {
+        font-size: 4.5vw;
+    }
+
   }

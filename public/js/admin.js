@@ -386,8 +386,8 @@ const LoadTotalPosts = (totalPosts, postsCalendar) => {
 
 const LoadDatabasePercent = () => {
 	let ctx = document.getElementById('databasePercent').getContext('2d');
-	ctx.canvas.parentNode.style.height = '300px';
-	ctx.canvas.parentNode.style.width = '300px';
+	ctx.canvas.parentNode.style.height = '100%';
+	ctx.canvas.parentNode.style.width = '40%';
 	let myChart = new Chart(ctx, {
 		type: 'doughnut',
 		data: {
@@ -396,7 +396,7 @@ const LoadDatabasePercent = () => {
 				{
 					label: 'Database Storage',
 					data: [65, 35],
-					backgroundColor: ['rgb(39, 130, 242)', 'rgb(255, 255, 255)'],
+					backgroundColor: ['rgb(39, 130, 242)', 'rgb(242, 242, 242)'],
 					hoverOffset: 4
 				}
 			]

@@ -105,7 +105,7 @@ function createProfile(profile) {
 				<h1 style="line-height: 15px; margin-left: 10px; font-size: 1.7vw; text-align: center;">Colorado, USA</h1>
 			</div>
 			<div style="width: 40%;">
-				<h1 style="margin-top: 0px;">Biography</h1>
+				<h1 style="margin-top: 0px; color: #333;">Biography</h1>
 				<p class="profileBiography"></p>
 			</div>
 		</div>

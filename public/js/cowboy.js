@@ -13,6 +13,7 @@ document.addEventListener('click', function (event) {
 	if (!shrinkableDiv.contains(event.target)) {
 		shrinkableDiv.style = 'flex-direction: row; width: 50%;';
 		document.querySelector('#createStoryTitle').style = 'display: none;';
+		document.querySelector('#createStoryDesc').style = 'display: none;';
 		document.querySelector('#storyInput').style = 'margin-inline: none; width: calc(100% - 125px); margin-top: 0px; border: none; padding: 0px;';
 	}
 });
