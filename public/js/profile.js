@@ -102,11 +102,11 @@ function createProfile(profile) {
 			<div style="display: flex; flex-direction: column; color: #333; margin-bottom: 20px; width: 40%;">
 				<img style="width: 10vw; height: 10vw; border-radius: 50%; object-fit: cover; object-position: center; margin-inline: auto;" id="pfp" src="/image/${profile.pfp}">
 				<h1 style="line-height: 15px; margin-left: 10px; font-size: 2.4vw; text-align: center;">${profile.username}</h1>
-				<h1 style="line-height: 15px; margin-left: 10px; font-size: 1.7vw; text-align: center;">Colorado, USA</h1>
+				<h1 style="line-height: 15px; margin-left: 10px; font-size: 1.7vw; text-align: center;">${profile.city}, ${profile.state}</h1>
 			</div>
 			<div style="width: 40%;">
 				<h1 style="margin-top: 0px; color: #333;">Biography</h1>
-				<p class="profileBiography"></p>
+				<p class="profileBiography">${profile.bio}</p>
 			</div>
 		</div>
 		<div class="buttonRack">
@@ -193,24 +193,24 @@ function forumReport() {
 
 loadProfile();
 
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
 	if (event.target && event.target.id === 'profileSwitchViewBtn') {
-	  document.querySelectorAll('#posts, #comments, #annotations, #favorites, #followers').forEach(div => {
-		div.style.display = 'none';
-	  });
-	  
+		document.querySelectorAll('#posts, #comments, #annotations, #favorites, #followers').forEach((div) => {
+			div.style.display = 'none';
+		});
+
 		const buttons = document.querySelectorAll('#profileSwitchViewBtn');
 		for (let i = 0; i < buttons.length; i++) {
 			buttons[i].classList.remove('highlighted-border');
 		}
 
-	  event.target.classList.add('highlighted-border');
+		event.target.classList.add('highlighted-border');
 
-	  const targetDivId = event.target.getAttribute('data-target').toLowerCase();
-	  const targetDiv = document.getElementById(targetDivId);
-  
-	  if (targetDiv) {
-		targetDiv.style.display = 'flex';
-	  }
+		const targetDivId = event.target.getAttribute('data-target').toLowerCase();
+		const targetDiv = document.getElementById(targetDivId);
+
+		if (targetDiv) {
+			targetDiv.style.display = 'flex';
+		}
 	}
-  });
+});

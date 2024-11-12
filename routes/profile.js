@@ -46,7 +46,9 @@ router.post('/load', async (req, res) => {
 			uid: user.id,
 			posts: user.posts,
 			isSubscribed: user.subscription.isSubscribed,
-			pfp: pfp
+			pfp: pfp,
+			city: user.meta.shipping.city,
+			state: user.meta.shipping.state
 		};
 		res.send({
 			status: true,
