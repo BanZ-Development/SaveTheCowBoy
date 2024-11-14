@@ -35,7 +35,7 @@
             </div>
             <div style="display: flex;" id="accountMenu" class="settingSection">
                 <div class="settingColumn">
-                    <h1>Profile Settings</h1>
+                    <h1 class="settingHeader">Profile Settings</h1>
                     <span class="line"></span>
                     <div id="accountHeaderHolder" style="display: flex; flex-direction: row;">
                         <div class="avatar-upload">
@@ -49,18 +49,18 @@
                         </div>
                         <div class="accountNameAndPassword" style="margin-inline: 20px; ">
                             <h2 style="margin-bottom: 5px;">Your Username</h2>
-                            <div style="display:flex; flex-direction: row; margin-bottom: 10px;">
+                            <div id="currentAndEdit" style="display:flex; flex-direction: row; margin-bottom: 10px;">
                                 <div style="display: flex; flex-direction: column;">
                                     <input id='usernameInput' placeholder="" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="text">
                                 </div>
-                                <button id="changeUserBtn" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 5px;border: solid 1px #ccc; border-radius: 6px; margin-block: 0px;"><i class="fa-solid fa-pencil"></i> Update Username</button>
+                                <button id="changeUserBtn" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 5px;border: solid 1px #ccc; border-radius: 6px; margin-block: 0px; font-family: 'Montserrat';font-weight: 500;"><i class="fa-solid fa-pencil"></i> Update Username</button>
                             </div>
                             <h2 style="margin-bottom: 5px;">Your Biography</h2>
-                            <div style="display:flex; flex-direction: row; margin-bottom: 10px;">
+                            <div id="currentAndEdit" style="display:flex; flex-direction: row; margin-bottom: 10px;">
                                 <div style="display: flex; flex-direction: column;">
                                     <textarea style="width: 20em;" class="biographyType" name="" id="bioInput"></textarea> 
                                 </div>
-                                <button id="changeBioBtn" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 5px;border: solid 1px #ccc; border-radius: 6px; margin-block: 0px;"><i class="fa-solid fa-pencil"></i> Update Biography</button>
+                                <button id="changeBioBtn" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 5px;border: solid 1px #ccc; border-radius: 6px; margin-block: 0px;font-family: 'Montserrat';font-weight: 500;"><i class="fa-solid fa-pencil"></i> Update Biography</button>
                             </div>
                         </div>
                     </div>
@@ -69,11 +69,11 @@
             </div>
             <div style="display: none;" id="subscriptionMenu" class="settingSection">
                 <div class="settingColumn">
-                    <h1>Subscription Settings</h1>
+                    <h1 class="settingHeader">Subscription Settings</h1>
                     <span class="line"></span>
                 </div>
                 <div width: 85%; margin-inline: auto; flex-direction: column; margin-top: 50px;" class="subscriptionSlider">
-                    <h2 style="margin-left: 10px;">Change Current Subscription</h2>
+                    <h2 class="settingHeader" style="margin-left: 10px;">Change Current Subscription</h2>
                     <div id="subscriptions" class="subscriptions">
                         <div class="subscription">
                             <h2>Day Worker</h2>
@@ -164,13 +164,13 @@
             </div>
             <div style="display: none;" id="appearanceMenu" class="settingSection">
                 <div style="width: 85%; margin-inline: auto;">
-                    <h1>Appearance Settings</h1>
+                    <h1 class="settingHeader">Appearance Settings</h1>
                     <span class="line"></span>
                 </div>
             </div>
             <div style="display: none;" id="securityMenu" class="settingSection">
                 <div style="width: 85%; margin-inline: auto;">
-                    <h1>Security Settings</h1>
+                    <h1 class="settingHeader">Security Settings</h1>
                     <span class="line"></span>
                     <h2>Change your password</h2>
                     <div style="display: flex; flex-direction: column;">
@@ -182,7 +182,7 @@
             </div>
             <div style="display: none;" id="notificationsMenu" class="settingSection">
                 <div style="width: 85%; margin-inline: auto;">
-                    <h1>Notification Settings</h1>
+                    <h1 class="settingHeader">Notification Settings</h1>
                     <span class="line"></span>
                 </div>
             </div>
@@ -260,7 +260,7 @@
         @media only screen and (max-width: 856px) {
 
             .settingSection {
-                padding-right: 0px;
+                padding-right: 15px;
             }
 
             .subscriptions {
@@ -269,7 +269,7 @@
             }
 
             .subscription {
-                width: 99% !important;
+                width: 90% !important;
                 height: 450px !important;
                 margin-inline: auto !important;
             }
@@ -278,8 +278,8 @@
                 flex-direction: column !important;
             }
 
-            .settingSection > h1 {
-                font-size: min(max(32px), 5.6vw);
+            .settingHeader {
+                font-size: min(max(32px), 4.9vw);
             }
         }
 

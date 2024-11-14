@@ -319,8 +319,7 @@ button {
 }
 
 .subOption > i {
-    height: 40px;
-    line-height: 3;
+    margin-block: auto;
     margin-right: 10px;
 }
 
@@ -794,7 +793,6 @@ button {
     min-height: 100%;
     max-height: fit-content;
     color: #333;
-    padding-inline: 30px;
     padding-left: 20%;
     padding-bottom: 120px;
 }
@@ -1180,8 +1178,8 @@ button {
 }
 
 .faqBtn:hover {
-    background-color: #252525;
-    color: #bdbdbd !important;
+    background-color: var(--bistre);
+    color: #fff !important;
 }
 
 .faqBtn > p {
@@ -1951,6 +1949,8 @@ button {
     padding: 10px;
     height: 60%;
     width: 100%;
+    font-size: 1.3vw;
+    font-weight: 400;
   }
 
   .buttonRack {
@@ -1962,10 +1962,11 @@ button {
   }
 
   .buttonRack > button {
+    color: #333;
     font-size: 1.3vw;
     background-color: #fff;
     border: none;
-    padding-inline: 2.2vw;
+    padding-inline: 5.2vw;
     padding-block: 5px;
     border-bottom: solid 3.5px #dddddd;
     font-family: 'Roboto';
@@ -1992,6 +1993,16 @@ button {
     width: 16px;
     border-radius: 100%;
     background-color: #0268db;
+  }
+
+  .profileInformation {
+    height: 45vh;
+    width: 80%;
+    margin-inline: auto;
+    padding-block: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
   }
 
   @media only screen and (max-width: 1610px) {
@@ -2324,6 +2335,104 @@ button {
 
   @media only screen and (max-width: 856px) {
 
+    .profileBiography {
+        font-size: 2vw !important;
+    }
+
+    .profileInformation {
+        flex-direction: column;
+        width: fit-content;
+        margin-inline: auto;
+    }
+
+    .profileInformation > div {
+        width: 60vw !important;
+    }
+
+    .profileInformation > div > h1 {
+        margin-block: 10px;
+        margin-inline: 0px !important;
+    }
+
+    .profileInformation > div > img {
+        margin-bottom: 20px;
+        width: 15vw !important;
+        height: 15vw !important;
+    }
+
+    .biographyHeader {
+        display: none;
+    }
+
+    .buttonRack > button {
+        font-size: 2.2vw;
+        padding-inline: 3.2vw;
+    }
+
+    #bioInput {
+        width: 90% !important;
+        font-size: 16px;
+    }
+
+    .settingColumn {
+        margin-inline: 0px;
+        width: 100%;
+    }
+
+    #currentAndEdit {
+        flex-direction: column !important;
+    }
+
+    #readMore {
+        width: 15vw;
+        height: 6vw;
+        font-size: 2.2vw;
+        line-height: 0;
+        margin-top: 0px;
+    }
+
+    .createStory {
+        width: 90%;
+    }
+
+    .cowboyStoryExplore {
+        width: 100%;
+        border-radius: 0px;
+        padding-top: 100px;
+    }
+
+    .cowboyStoryExplore > img {
+        border-radius: 0px;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .cowboyStoryExplore > h1 {
+        font-size: 3.5vw;
+    }
+
+    .cowboyStory {
+        flex-direction: column;
+    }
+
+    .cowboyStory > img {
+        margin-inline: auto;
+        width: 70vw;
+    }
+
+    .cowboyStory > div {
+        padding-left: 0px;
+        margin-inline: auto;
+    }
+
+    .cowboyStory > div > h1 {
+        font-size: 4vw;
+    }
+
+    .cowboyStory > div > p {
+        font-size: 3vw;
+    }
+
     .fundraiserDiv {
         margin-top: 100px !important;
         width: 100% !important;
@@ -2443,10 +2552,6 @@ button {
     .subOption > p {
         line-height: 1.5;
         font-size: 12px;
-    }
-
-    .subOption > i {
-        line-height: 2.5;
     }
 
     .aboutSection {
@@ -2585,7 +2690,44 @@ button {
     }
   }
 
-  @media only screen and (max-width: 443px) {
+  @media only screen and (max-width: 500px) {
+
+    .buttonRack > button {
+        font-size: 3vw;
+        padding-inline: 1.65vw;
+    }
+
+    .profileBiography {
+        font-size: 3.5vw !important;
+        min-height: 60%;
+        max-height: fit-content;
+    }
+
+    .profileInformation {
+        padding-block: 0px;
+        padding-top: 10vw;
+    }
+
+    .profileInformation > div > img {
+        width: 40vw !important;
+        height: 40vw !important;
+    }
+
+    .profileInformation > div {
+        width: 75vw !important;
+    }
+
+    .profileUsername {
+        font-size: 6.5vw !important;
+    }
+
+    .profileLocation {
+        font-size: 5.5vw !important;
+    }
+
+    .cowboyStoryExplore > h1 {
+        font-size: 4.5vw;
+    }
 
     .filterBtn {
         padding: 7px;

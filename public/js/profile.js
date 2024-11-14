@@ -98,14 +98,14 @@ function createProfile(profile) {
 	document.title = `${profile.username} | Long X Ranch Cowboys`;
 	let div = document.createElement('div');
 	div.innerHTML = `<div class="profile" id="profile">
-		<div style="height: 45vh; width: 80%; margin-inline: auto; padding-block: 60px; display: flex; flex-direction: row; justify-content: center;"> 
+		<div class="profileInformation"> 
 			<div style="display: flex; flex-direction: column; color: #333; margin-bottom: 20px; width: 40%;">
-				<img style="width: 10vw; height: 10vw; border-radius: 50%; object-fit: cover; object-position: center; margin-inline: auto;" id="pfp" src="/image/${profile.pfp}">
-				<h1 style="line-height: 15px; margin-left: 10px; font-size: 2.4vw; text-align: center;">${profile.username}</h1>
-				<h1 style="line-height: 15px; margin-left: 10px; font-size: 1.7vw; text-align: center;">${profile.city}, ${profile.state}</h1>
+				<img style="order: 1; width: 10vw; height: 10vw; border-radius: 50%; object-fit: cover; object-position: center; margin-inline: auto;" id="pfp" src="/image/${profile.pfp}">
+				<h1 class="profileUsername" style="order: 2; line-height: 15px; margin-left: 10px; font-size: 2.4vw; text-align: center;">${profile.username}</h1>
+				<h1 class="profileLocation" style="order: 3; line-height: 15px; margin-left: 10px; font-size: 1.7vw; text-align: center;">${profile.city}, ${profile.state}</h1>
 			</div>
 			<div style="width: 40%;">
-				<h1 style="margin-top: 0px; color: #333;">Biography</h1>
+				<h1 class="biographyHeader" style="margin-top: 0px; color: #333;">Biography</h1>
 				<p class="profileBiography">${profile.bio}</p>
 			</div>
 		</div>
