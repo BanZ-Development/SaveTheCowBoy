@@ -204,8 +204,8 @@ function createPostElement(post, currentUserID, pfp) {
 		</div>
 		
 		
-		<p style="white-space:pre;">${message}</p>
-		<div id="images" style="display: flex; flex-direction: row; justify-content: flex-start;"></div>
+		<p style="white-space:pre;pointer-events:none;">${message}</p>
+		<div id="images" style="display: flex; flex-direction: row; justify-content: flex-start;pointer-events:none;"></div>
 		<div class="forumBtns">
 			<p id="likeCounter">${likesCount}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
@@ -284,8 +284,8 @@ function loadSinglePost(post, currentUserID, pfp) {
 		</div>
 		
 		
-		<p style="white-space:pre;">${message}</p>
-		<div id="images" style="display: flex; flex-direction: row; justify-content: flex-start;"></div>
+		<p style="white-space:pre;pointer-events:none;">${message}</p>
+		<div id="images" style="display: flex; flex-direction: row; justify-content: flex-start;pointer-events:none;"></div>
 		<div class="forumBtns">
 			<p id="likeCounter">${likesCount}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
@@ -657,7 +657,7 @@ function openReplies() {
 						<a class="forumUser" href="/profile?uid=${authorID}">${SafeHTML(author)}</a>
 						<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
 						</div>
-						<p style="white-space:pre;font-family: 'roboto';font-size: 19px;color: #333;">${SafeHTML(content)}</p>
+						<p style="white-space:pre;font-family: 'roboto';font-size: 19px;color: #333;pointer-events: none;">${SafeHTML(content)}</p>
 						<div class="forumBtns">
 							<p style="color: #333;" id="likeCounter">${likesCount}</p>
 							<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
@@ -991,3 +991,11 @@ function showDeletePopup() {
 	const popupOverlay = document.getElementById('popupOverlay');
 	popupOverlay.style.display = 'flex';
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+	document.addEventListener('click', (event) => {
+	  if (event.target.matches('.forumPost')) {
+		location.href = window.location.href + `?id=${event.target.id}`;
+	  }
+	});
+});

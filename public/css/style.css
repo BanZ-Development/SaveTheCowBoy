@@ -888,6 +888,7 @@ button {
     overflow-x: hidden;
     line-height: 35px;
     color: #333;
+    pointer-events: none;
   }
 
   .forumTitle > h3 > a {
@@ -913,6 +914,7 @@ button {
   .forumTitle {
     display: flex;
     flex-direction: row;
+    pointer-events: none;
   }
 
   .forumTitle > p {
@@ -1070,6 +1072,7 @@ button {
   .inlineForumUser {
     display: flex;
     flex-direction: row;
+    pointer-events: none;
   }
 
   .forumPost {
