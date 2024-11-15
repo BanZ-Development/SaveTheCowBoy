@@ -928,6 +928,7 @@ button {
     line-height: 40px;
     margin-inline: 20px;
     margin-right: 0px;
+    pointer-events: fill;
   }
 
   .forumUser:hover {
@@ -2041,7 +2042,84 @@ button {
 
   .biblePlanInformation {
       width: 55%;
+      position: relative;
   }
+
+  #forumDate, .forumPfp {
+    pointer-events: none !important;
+  }
+
+  .filterBtns {
+    margin-block: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+  }
+
+  .canvasDiv {
+    margin-left: 30px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 30%;
+    margin-left: 80px;
+  }
+
+  .reportCheckbox {
+        position: absolute;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        width: 1px;
+        margin: -1px;
+        padding: 0; border: 0; 
+    }
+    
+    #inputPreview {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+    }
+    
+    .reportCheckbox + label {
+        position: relative;
+        font-size: 14px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        height: 22px; color: rgb(0, 0, 0); 
+    }
+    
+    .reportCheckbox + label::before {
+        content: " ";
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px;
+        width: 20px;
+        height: 20px;
+        background-color: var(--bistre);
+        border-width: 1px;
+        border-style: solid;
+        border-color: var(--bistre);
+        border-radius: 50%;
+        box-shadow: none; 
+    }
+    
+    .reportCheckbox:checked + label::after {
+        content: " ";
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjZmZmZmZmIiBkPSJNMTczLjg5OCA0MzkuNDA0bC0xNjYuNC0xNjYuNGMtOS45OTctOS45OTctOS45OTctMjYuMjA2IDAtMzYuMjA0bDM2LjIwMy0zNi4yMDRjOS45OTctOS45OTggMjYuMjA3LTkuOTk4IDM2LjIwNCAwTDE5MiAzMTIuNjkgNDMyLjA5NSA3Mi41OTZjOS45OTctOS45OTcgMjYuMjA3LTkuOTk3IDM2LjIwNCAwbDM2LjIwMyAzNi4yMDRjOS45OTcgOS45OTcgOS45OTcgMjYuMjA2IDAgMzYuMjA0bC0yOTQuNCAyOTQuNDAxYy05Ljk5OCA5Ljk5Ny0yNi4yMDcgOS45OTctMzYuMjA0LS4wMDF6Ii8+PC9zdmc+");
+        background-repeat: no-repeat;
+        background-size: 12px 12px;
+        background-position: center center;
+        position: absolute; display: flex;
+        justify-content: center; align-items: center;
+        margin-left: 0px; left: 0px; top: 0px; text-align: center;
+        background-color: transparent;
+        font-size: 10px;
+        height: 22px;
+        width: 22px; 
+    }
 
   @media only screen and (max-width: 1610px) {
 
@@ -2179,6 +2257,40 @@ button {
 
   @media only screen and (max-width: 1060px) {
 
+    .deletePopup {
+        width: 100% !important;
+        margin-top: 10px !important;
+    }
+
+    .canvasDiv {
+        margin-left: auto;
+    }
+
+    .inlineGraphs {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .topGraph {
+        margin-block: 20px;
+        width: 80% !important;
+        height: fit-content;
+    }
+
+    #totalUsersPreview, #totalPostsPreview {
+        margin-block: 0px;
+    }
+
+    .topGraph > div > div > h4 {
+        font-size: 3.25vw !important;
+        letter-spacing: 1.5px;
+    }
+
+    #totalUsersNum, #totalPostsNum, #loadedReportsTitle {
+        font-size: 4vw !important;
+    }
+
     .tableRow {
         overflow-x: scroll;
     }
@@ -2225,6 +2337,10 @@ button {
         order: 2;
         margin-block: 2px;
     }
+
+    #memberSettingColumn, #memberColumn {
+        width: 95%;
+      }
 
     #pfp {
         order: 1;
@@ -2364,11 +2480,6 @@ button {
     #accountHeaderHolder {
         flex-direction: column !important;
       }
-    
-      .accountNameAndPassword {
-    
-      }
-      
   }
 
   @media only screen and (max-width: 856px) {
@@ -2770,6 +2881,23 @@ button {
 
   @media only screen and (max-width: 500px) {
 
+    .topGraph > div > div > h4 {
+        font-size: 4vw !important;
+        letter-spacing: 0px;
+    }
+
+    #totalUsersNum, #totalPostsNum {
+        font-size: 4.5vw !important;
+    }
+
+    #totalUsersPreview, #totalPostsPreview {
+        font-size: 2.5vw;
+    }
+
+    .forumUser {
+        font-size: 3.5vw;
+    }
+
     #bpH1 {
         font-size: 6vw;
     }
@@ -2876,6 +3004,19 @@ button {
 
     .forumTitle {
         font-size: 4.5vw;
+    }
+
+    .filterBtns {
+        justify-content: space-evenly;
+    }
+
+    .tableRowInfo > p {
+        height: fit-content;
+    }
+
+    .tableDropBtn {
+        padding-block: 1px;
+        padding-inline: 4px;
     }
 
   }

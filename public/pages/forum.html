@@ -70,34 +70,23 @@
           <div style="display: none;" id="reportInformation" class="postInformation">
               <h1 id="reportTitle"style="color: #333; width: 94%; margin-inline: auto;">Report</h1>
               <h3>Choose what applies...</h3>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="spam">
-                  Spam
-              </label><br>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="misleading">
-                  Misleading or incorrect
-              </label><br>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="harmful">
-                  Harmful or violent
-              </label><br>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="harassment">
-                  Harassment or Bullying
-              </label><br>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="hate-speech">
-                  Hate Speech
-              </label><br>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="advertisement">
-                  Advertisement
-              </label><br>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="other">
-                  Other
-              </label><br>
+              <div id="inputPreview">
+                <input type="checkbox" id="spam" class="reportCheckbox">
+                <label for="spam">Spam</label>
+                <input type="checkbox" id="misleading" class="reportCheckbox">
+                <label for="misleading">Misleading or incorrect</label>
+                <input type="checkbox" id="harmful" class="reportCheckbox">
+                <label for="harmful">Harmful or Violent</label>
+                <input type="checkbox" id="harassment" class="reportCheckbox">
+                <label for="harassment">Harassment or Bullying</label>
+                <input type="checkbox" id="hate-speech" class="reportCheckbox">
+                <label for="hate-speech">Hate Speech</label>
+                <input type="checkbox" id="advertisement" class="reportCheckbox">
+                <label for="advertisement">Advertisement</label>
+                <input type="checkbox" id="other" class="reportCheckbox">
+                <label for="other">Other</label>
+              </div>
+              
               <input style="width: 95%; margin-block: 20px; font-family: 'Roboto';" class="signupInput" id="reportMessage" placeholder="Describe your complaint... (optional)"type="text">
               <button style="background-color: #f3f3f3; height: 40px; padding-block: 0px; font-family: 'Roboto';" class="btnLink" id="submitReportButton">Submit Report</button>
           </div>

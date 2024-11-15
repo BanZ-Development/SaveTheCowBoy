@@ -759,12 +759,12 @@ function replySubmit() {
 
 function submitReport() {
 	let reasons = [];
-	const reportCheckboxes = document.querySelectorAll('#reportCheckbox');
+	const reportCheckboxes = document.querySelectorAll('.reportCheckbox');
 	const message = document.querySelector('#reportMessage').value;
 	const postID = document.querySelector('#reportTitle').querySelector('a').href.split('=')[1];
 	console.log(postID);
 	reportCheckboxes.forEach((checkbox) => {
-		if (checkbox.checked) reasons.push(checkbox.value);
+		if (checkbox.checked) reasons.push(checkbox.id);
 	});
 	const data = new FormData();
 	data.append('reasons', reasons);

@@ -273,8 +273,13 @@ const LoadTotalUsers = (totalUsers, usersCalendar) => {
 	const { labels, data } = returnCalendarData(usersCalendar);
 	let color = SetPreview(data, 'totalUsers');
 	let ctx = document.getElementById('totalUsers').getContext('2d');
-	ctx.canvas.parentNode.style.height = '70%';
 	ctx.canvas.parentNode.style.width = '100%';
+	if (window.innerWidth <= 1060) {
+		ctx.canvas.parentNode.style.height = '100%';
+	} else {
+		ctx.canvas.parentNode.style.height = '70%';
+	}
+	
 	var myChart = new Chart(ctx, {
 		type: 'line',
 		data: {
@@ -892,13 +897,13 @@ function createPlanObject(plan) {
 	obj.id = _id;
 	obj.style = 'width: 100%; color: black; border: 0px;';
 	obj.innerHTML = `
-                <div style="width: 45%;">
+                <div class="biblePlanImage">
                     <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: cover; object-position: top;" src="${planIcon}" alt="">
                 </div>
-                <div style="padding-left: 20px; width: 55%; position: relative;">
-                    <h3 style="font-style: italic; font-family: 'spectral'; font-weight: 500; text-align: center;">${title}</h3>
-                    <p>${description}</p>
-                    <p>${booksCount} books, ${chaptersCount} chapters</p>
+                <div class="biblePlanInformation">
+                    <h3 class="biblePlanHeader">${title}</h3>
+                    <p class="biblePlanDescriptor">${description}</p>
+                    <p class="biblePlanDescriptor">${booksCount} books, ${chaptersCount} chapters</p>
                     <a class="biblePlanBtn" href="/biblePlans?id=${_id}">Open</a>
                 </div>`;
 	document.querySelector('#bpHolder').appendChild(obj);
