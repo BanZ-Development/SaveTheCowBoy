@@ -637,3 +637,19 @@ document.querySelectorAll('.settingSidebarBtn').forEach((btn) => {
 });
 
 load('account');
+
+const inputField = document.querySelector('#bioInput');
+let errors = false;
+
+inputField.addEventListener('input', function () {
+	if (inputField.value.length > 300) {
+		inputField.classList.add('maxLength');
+		document.querySelector('#biographyWarning').style = 'display: block; color: #f75252;';
+		document.querySelector('#biographyWarning').innerHTML = "Your Biography is too long...";
+		errors = true;
+		} else if (errors === true && inputField.value.length <= 300){
+		document.querySelector('#biographyWarning').style = 'display: block; color: #3dd598;';
+		document.querySelector('#biographyWarning').innerHTML = "Your Biography is proper length";
+		inputField.classList.remove('maxLength');
+	}
+});

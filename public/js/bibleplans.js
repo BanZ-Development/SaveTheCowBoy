@@ -516,14 +516,14 @@ function createPlanObject(plan) {
 	obj.id = _id;
 	obj.style = 'width: 100%;';
 	obj.innerHTML = `
-                <div style="width: 45%;">
+                <div class="biblePlanImage" style="width: 45%;">
                     <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: fill;" src="${planIcon}" alt="">
                 </div>
-                <div style="padding-left: 20px; width: 55%; position: relative;">
-                    <h3 style="font-style: italic; font-family: 'Noto Serif'; font-weight: 500; text-align: center; font-size: 1.8vw">${title}</h3>
-                    <p style="font-size: 1.25vw;">${description}</p>
-                    <p style="font-size: 1.25vw;">${booksCount} books, ${chaptersCount} chapters</p>
-					<label for="${chaptersCount}" id="progressCounter" style="font-size: 1.25vw;">0% completed</label>
+                <div class="biblePlanInformation" style="padding-left: 20px; width: 55%; position: relative;">
+                    <h3 class="biblePlanHeader">${title}</h3>
+                    <p class="biblePlanDescriptor">${description}</p>
+                    <p class="biblePlanDescriptor">${booksCount} books, ${chaptersCount} chapters</p>
+					<label class="biblePlanDescriptor" for="${chaptersCount}" id="progressCounter">0% completed</label>
                     <div class="biblePlanProg">
                         <span style="width: 0%"id="${chaptersCount}" class="innerBiblePlanProg"></span>
                     </div>
