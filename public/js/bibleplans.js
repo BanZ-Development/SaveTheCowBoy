@@ -1092,13 +1092,10 @@ const observer = new MutationObserver((mutationsList, observer) => {
     if (btn) {
         console.log('Button found!');
         btn.addEventListener('click', () => {
-            // Navigate to the parent element of #bookDropBtn
             const parentElement = btn.parentElement;
             if (parentElement) {
-                // Find the sibling with the id #chapters
                 const chapterList = parentElement.nextElementSibling;
                 if (chapterList && chapterList.id === 'chapters') {
-                    // Toggle the display style between 'flex' and 'none'
                     if (chapterList.style.display === 'flex') {
                         chapterList.style.display = 'none';
 						btn.parentElement.style.marginBottom = '0vw';
@@ -1117,5 +1114,4 @@ const observer = new MutationObserver((mutationsList, observer) => {
     }
 });
 
-// Optional: Ensure observer targets the correct node(s) for mutation
 observer.observe(document.body, { childList: true, subtree: true });
