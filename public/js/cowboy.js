@@ -1,24 +1,53 @@
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#storyInput').addEventListener('click', function () {
             let page = document.querySelector('.createStory');
-            page.style = 'height: calc(60vh - 30px); flex-direction: column; width: 95%;';
-            document.querySelector('#createStoryTitle').style = 'display: block; padding: 10px; font-family: "Roboto"; background-color: #fff;';
-            document.querySelector('#createStoryDesc').style = 'display: block; padding: 10px; font-family: "Roboto"; background-color: #fff;';
-            document.querySelector('#storyInput').style = 'margin-inline: auto; width: 70%; margin-top: 10px; border: solid 1px #ccc; padding: 10px;';
+            page.style = 'height: calc(60vh - 30px); flex-direction: column;';
+			anime({
+				targets: '.createStory',
+				width: ['50%', '94%'],
+				height: ['fit-content', 'calc(70vh - 55px)'],
+				easing: 'easeInOutQuad',
+				duration: 1000
+			});
+			document.querySelector('.tox').style = 'display: flex; height: 500px; width: 93%; margin-inline: auto;';
+            document.querySelector('#createStoryTitle').style = 'display: block; padding: 10px; font-family: "Roboto"; background-color: #fff; width: 90%;';
+            document.querySelector('#createStoryDesc').style = 'display: block; padding: 10px; font-family: "Roboto"; background-color: #fff; width: 90%;';
+            document.querySelector('#storyInput').style.display = 'none';
+			document.querySelector('.submitImage').style.display = 'flex';
     });
 });
 
 document.addEventListener('click', function (event) {
 	let shrinkableDiv = document.querySelector('.createStory');
+	let parent = document.querySelector('.cowboyStoryExplore');
 	if (!shrinkableDiv.contains(event.target)) {
-		if (window.innerWidth <= 856) {
-			shrinkableDiv.style = 'flex-direction: row; width: 90%;'
-		} else {
-			shrinkableDiv.style = 'flex-direction: row; width: 50%;';
+		const currentWidth = parseFloat(window.getComputedStyle(shrinkableDiv).getPropertyValue('width'));
+		const parentWidth = parseFloat(window.getComputedStyle(parent).getPropertyValue('width'));
+		const windowWidth = window.innerWidth;
+		if (currentWidth / windowWidth != 0.9 && window.innerWidth <= 856) {
+			anime({
+				targets: '.createStory',
+				width: ['94%', '90%'],
+				height: ['calc(70vh - 55px)', '7vh'],
+				easing: 'easeInOutQuad',
+				duration: 1000
+			});
+			shrinkableDiv.style.flexDirection = 'row';
+		} else if (currentWidth / parentWidth != 0.5 && window.innerWidth > 856) {
+				anime({
+					targets: '.createStory',
+					width: ['94%', '50%'],
+					height: ['calc(70vh - 55px)', '7vh'],
+					easing: 'easeInOutQuad',
+					duration: 1000
+				});
+				shrinkableDiv.style.flexDirection = 'row';
 		}
-		document.querySelector('#createStoryTitle').style = 'display: none;';
-		document.querySelector('#createStoryDesc').style = 'display: none;';
-		document.querySelector('#storyInput').style = 'margin-inline: none; width: calc(100% - 125px); margin-block: 1px; border: none; padding-inline: 2px;';
+		document.querySelector('.tox').style.display ='none';
+		document.querySelector('#createStoryTitle').style.display = 'none';
+		document.querySelector('#createStoryDesc').style.display = 'none';
+		document.querySelector('#storyInput').style = 'margin-inline: none; width: 100%; margin-block: 1px; border: none; padding-inline: 2px;';
+		document.querySelector('.submitImage').style.display = 'none';
 	}
 });
 

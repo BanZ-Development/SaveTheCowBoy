@@ -1840,7 +1840,7 @@ button {
   }
 
   .createStory {
-    bottom: 30px;
+    bottom: 20px;
     position: absolute;
     display: flex;
     flex-direction: row;
@@ -1850,6 +1850,7 @@ button {
     padding: 10px;
     border: solid 1px #ccc;
     width: 50%;
+    overflow-x: hidden;
   }
 
   #storyInput {
@@ -1873,6 +1874,8 @@ button {
     font-size: 17px;
     cursor: pointer;
     margin-left: auto;
+    height: 43.4px;
+    margin-block: auto;
   }
 
   .biographyType {
@@ -2121,6 +2124,50 @@ button {
         width: 22px; 
     }
 
+    .cowboyStoryRead {
+        display: flex;
+        flex-direction: column;
+        padding-top: 20vh;
+        width: 85vw;
+        margin-inline: auto;
+    }
+
+    .cowboyStoryDescription {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+
+    .cowboyStoryDescription > div {
+        width: 45%;
+    }
+
+    .cowboyStoryDescription > div > h1 {
+        color: #333;
+        font-size: 3.5vw;
+    }
+
+    .cowboyStoryDescription > div > p {
+        color: #946B4F;
+        font-size: 2vw;
+    }
+
+    .cowboyStoryDescription > div > img {
+        width: 100%;
+        border-radius: 10px;
+    }
+
+    .cowboyStoryText {
+        margin-top: 5.5vw;
+        font-size: 1.75vw;
+        line-height: 3vw;
+    }
+
+    .cowboyStoryText > p {
+        margin-top: 0px;
+        margin-bottom: 5vw;
+    }
+
   @media only screen and (max-width: 1610px) {
 
     .settingSidebarBtn {
@@ -2256,6 +2303,10 @@ button {
   }
 
   @media only screen and (max-width: 1060px) {
+
+    .postInformation {
+        width: 90%;
+    }
 
     .deletePopup {
         width: 100% !important;
@@ -3017,6 +3068,32 @@ button {
     .tableDropBtn {
         padding-block: 1px;
         padding-inline: 4px;
+    }
+
+    .cowboyStoryRead {
+        width: 90vw !important;
+    }
+
+    .cowboyStoryDescription {
+        flex-direction: column-reverse;
+        align-items: center;
+    }
+
+    .cowboyStoryDescription > div {
+        width: 100%;
+    }
+
+    .cowboyStoryDescription > div > h1 {
+        font-size: 5.5vw;
+    }
+
+    .cowboyStoryDescription > div > p {
+        font-size: 4vw;
+    }
+
+    .cowboyStoryText {
+        font-size: 4vw;
+        line-height: 6.5vw;
     }
 
   }
