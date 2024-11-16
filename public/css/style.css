@@ -2031,6 +2031,12 @@ button {
     text-align: center;
   }
 
+  .biblePlanChapter {
+    text-decoration: none;
+    color: #333;
+    margin-block: 5px;
+  }
+
   .biblePlanHeader {
     font-style: italic;
     font-family: 'Noto Serif';

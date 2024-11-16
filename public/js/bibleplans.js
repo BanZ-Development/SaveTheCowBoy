@@ -118,7 +118,7 @@ function createTableOfContents(books, scroll) {
 				div.innerHTML = `
                 <div class="bookChapterList" id="book">
 				<div class="inlineBookTitle">
-					<h3 id=${bookNum}>${title} (0/${chaptersCount})</h3>
+					<h3 style="font-size: 1.48vw;" id=${bookNum}>${title} (0/${chaptersCount})</h3>
 					<button style="position: static;border: none;" class="bookTitleDropBtn" id="bookDropBtn"><i class="fa-solid fa-chevron-right"></i></button>
 				</div>
                         
@@ -131,6 +131,7 @@ function createTableOfContents(books, scroll) {
 					let chapterElem = document.createElement('a');
 					chapterElem.id = `${bookNum}:${chapterNum}`;
 					chapterElem.innerHTML = `Chapter ${chapterNum}`;
+					chapterElem.className = 'biblePlanChapter'
 					let id = returnID();
 					chapterElem.href = `/biblePlans?id=${id}&b=${bookNum + 1}&c=${chapterNum}`;
 					div.querySelector('#chapters').appendChild(chapterElem);
@@ -980,3 +981,23 @@ function createAnnotationElements(annotations) {
 		document.querySelector('#annotationsHolder').appendChild(div);
 	});
 }
+
+const observer = new MutationObserver((mutationsList, observer) => {
+    const btn = document.querySelector('#bookDropBtn');
+    if (btn) {
+        console.log('Button found!');
+        btn.addEventListener('click', (event) => {
+            const closestBookChapterList = event.target.closest('.bookChapterList');
+            if (closestBookChapterList) {
+                if (closestBookChapterList.style.height === 'fit-content') {
+                    closestBookChapterList.style.height = '50px';
+                } else {
+                    closestBookChapterList.style.height = 'fit-content';
+                }
+            }
+        });
+        observer.disconnect();
+    }
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
