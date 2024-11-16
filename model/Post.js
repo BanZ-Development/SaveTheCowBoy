@@ -50,6 +50,10 @@ const postSchema = new Schema({
 		type: Date,
 		default: new Date(),
 		required: false
+	},
+	description: {
+		type: String,
+		required: false
 	}
 });
 

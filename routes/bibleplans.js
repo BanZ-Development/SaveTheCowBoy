@@ -239,34 +239,4 @@ router.post('/get-annotations', async (req, res) => {
 	}
 });
 
-router.post('/get-resume-verse', async (req, res) => {
-	try {
-		let user = await User.findById(req.user.id);
-		let result = [];
-		user.biblePlans.forEach((plan) => {
-			result.push({
-				id: plan.id,
-				verse: plan.chaptersFinished[plan.chaptersFinished.length - 1]
-			});
-		});
-		if (result.length > 0) {
-			res.send({
-				status: true,
-				result: result
-			});
-		} else {
-			res.send({
-				status: true,
-				result: null
-			});
-		}
-	} catch (err) {
-		console.log(err);
-		res.send({
-			status: false,
-			message: err.message
-		});
-	}
-});
-
 module.exports = router;

@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		document.querySelector('#storyInput').style.display = 'none';
 		document.querySelector('.submitImage').style.display = 'flex';
 	});
+	document.querySelector('#postStoryBtn').addEventListener('click', postStory);
 });
 
 document.addEventListener('click', function (event) {
@@ -74,7 +75,7 @@ const ErrorMessage = (elementName, message, color) => {
 	}
 };
 
-function checkTitleAndMessage(title, message) {
+function checkTitleAndMessage(title, message, description) {
 	console.log(title, message);
 	let failed = false;
 	if (title == '') {
@@ -82,7 +83,11 @@ function checkTitleAndMessage(title, message) {
 		failed = true;
 	}
 	if (message == '') {
-		InputValidation('storyInput', 'red');
+		InputValidation('message_ifr', 'red');
+		failed = true;
+	}
+	if (description == '') {
+		InputValidation('createStoryDesc', 'red');
 		failed = true;
 	}
 	return failed;
@@ -90,25 +95,23 @@ function checkTitleAndMessage(title, message) {
 
 function postStory() {
 	let title = document.querySelector('#createStoryTitle').value;
-	let message = document.querySelector('#storyInput').value;
-	//let message = tinymce.get('message').getContent();
-	if (checkTitleAndMessage(title, message)) return;
+	let description = document.querySelector('#createStoryDesc').value;
+	let message = tinymce.get('message').getContent();
+	if (checkTitleAndMessage(title, message, description)) return;
 	let data = new FormData();
 	data.append('title', title);
 	data.append('message', message);
+	data.append('description', description);
+	data.append('file', document.querySelector('#addImage').files);
 	fetch('api/cowboy/create-story', {
 		method: 'post',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: new URLSearchParams(data)
+		body: data
 	})
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
 			if (data.status) {
-				hideCreateStoryMenu();
-				window.location.replace(`/forum?id=${data.cowboyStory._id}`);
+				window.location.replace(`/forum?id=${data.id}`);
 			}
 		});
 }
