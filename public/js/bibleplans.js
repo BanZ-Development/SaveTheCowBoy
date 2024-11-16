@@ -1088,29 +1088,24 @@ function createAnnotationElements(annotations) {
 }
 
 const observer = new MutationObserver((mutationsList, observer) => {
-    const btn = document.querySelector('#bookDropBtn');
-    if (btn) {
-        console.log('Button found!');
-        btn.addEventListener('click', () => {
-            const parentElement = btn.parentElement;
-            if (parentElement) {
-                const chapterList = parentElement.nextElementSibling;
-                if (chapterList && chapterList.id === 'chapters') {
-                    if (chapterList.style.display === 'flex') {
-                        chapterList.style.display = 'none';
-						btn.parentElement.style.marginBottom = '0vw';
-                    } else {
-                        chapterList.style.display = 'flex';
-						btn.parentElement.style.marginBottom = '2vw';
+    const buttons = document.querySelectorAll('#bookDropBtn');
+    if (buttons.length > 0) {
+        buttons.forEach((btn) => {
+            if (!btn.hasAttribute('data-listener-added')) {
+                btn.addEventListener('click', (event) => {
+                    const btn = event.target;
+                    const bookChapterList = btn.closest('.bookChapterList');
+                    if (bookChapterList) {
+                        const chapterList = bookChapterList.querySelector('#chapters');
+                        if (chapterList) {
+                            chapterList.style.display = (chapterList.style.display === 'flex') ? 'none' : 'flex';
+                            btn.parentElement.style.marginBottom = (chapterList.style.display === 'flex') ? '2vw' : '0vw';
+                        }
                     }
-                } else {
-                    console.warn('No sibling element with id "chapters" found.');
-                }
-            } else {
-                console.warn('Parent element of #bookDropBtn not found.');
+                });
+                btn.setAttribute('data-listener-added', 'true');
             }
         });
-        observer.disconnect();
     }
 });
 
