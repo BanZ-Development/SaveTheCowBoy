@@ -389,4 +389,28 @@ router.post('/delete-user', async (req, res) => {
 	}
 });
 
+router.post('/delete-devotion', async (req, res) => {
+	try {
+		const { devotionID } = req.body;
+		let devotion = await Post.findByIdAndDelete(devotionID);
+		if (devotion && devotion.type == 'devotion') {
+			res.send({
+				status: true,
+				message: 'Devotion found and deleted'
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'Termination failed. Devotion not found!'
+			});
+		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: err.message
+		});
+	}
+});
+
 module.exports = router;

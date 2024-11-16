@@ -131,7 +131,7 @@ function createTableOfContents(books, scroll) {
 					let chapterElem = document.createElement('a');
 					chapterElem.id = `${bookNum}:${chapterNum}`;
 					chapterElem.innerHTML = `Chapter ${chapterNum}`;
-					chapterElem.className = 'biblePlanChapter'
+					chapterElem.className = 'biblePlanChapter';
 					let id = returnID();
 					chapterElem.href = `/biblePlans?id=${id}&b=${bookNum + 1}&c=${chapterNum}`;
 					div.querySelector('#chapters').appendChild(chapterElem);
@@ -446,6 +446,33 @@ function updateCompletion(userPlans) {
 	});
 }
 
+function returnBookNumberToName(bookNum) {
+	return booksOfTheBible[bookNum - 1];
+}
+
+function returnResumeVerse(plans) {
+	let result = [];
+	plans.forEach((plan) => {
+		result.push({
+			id: plan.id,
+			verse: plan.chaptersFinished[plan.chaptersFinished.length - 1]
+		});
+	});
+	if (result.length > 0) {
+		console.log(result);
+		result.forEach((plan) => {
+			let escapedId = CSS.escape(plan.id);
+			let bp = document.querySelector('.tableContents').querySelector('#' + escapedId);
+			let resumeText = bp.querySelector('#resumeText');
+			let bookNum = plan.verse.split(':')[0];
+			let chapterNum = plan.verse.split(':')[1];
+			resumeText.innerHTML = `${returnBookNumberToName(bookNum)} ${chapterNum}`;
+		});
+	} else {
+		console.log(null);
+	}
+}
+
 function loadMain() {
 	console.log('Loading Main');
 	fetch('api/biblePlans/get-bible-plans', {
@@ -459,21 +486,97 @@ function loadMain() {
 			if (data.status) {
 				iteratePlans(data.biblePlans);
 				updateCompletion(data.userPlans);
+				returnResumeVerse(data.userPlans);
 			}
 		});
 }
 
+const booksOfTheBible = [
+	// Old Testament
+	'Genesis',
+	'Exodus',
+	'Leviticus',
+	'Numbers',
+	'Deuteronomy',
+	'Joshua',
+	'Judges',
+	'Ruth',
+	'1 Samuel',
+	'2 Samuel',
+	'1 Kings',
+	'2 Kings',
+	'1 Chronicles',
+	'2 Chronicles',
+	'Ezra',
+	'Nehemiah',
+	'Esther',
+	'Job',
+	'Psalms',
+	'Proverbs',
+	'Ecclesiastes',
+	'Song of Solomon',
+	'Isaiah',
+	'Jeremiah',
+	'Lamentations',
+	'Ezekiel',
+	'Daniel',
+	'Hosea',
+	'Joel',
+	'Amos',
+	'Obadiah',
+	'Jonah',
+	'Micah',
+	'Nahum',
+	'Habakkuk',
+	'Zephaniah',
+	'Haggai',
+	'Zechariah',
+	'Malachi',
+
+	// New Testament
+	'Matthew',
+	'Mark',
+	'Luke',
+	'John',
+	'Acts',
+	'Romans',
+	'1 Corinthians',
+	'2 Corinthians',
+	'Galatians',
+	'Ephesians',
+	'Philippians',
+	'Colossians',
+	'1 Thessalonians',
+	'2 Thessalonians',
+	'1 Timothy',
+	'2 Timothy',
+	'Titus',
+	'Philemon',
+	'Hebrews',
+	'James',
+	'1 Peter',
+	'2 Peter',
+	'1 John',
+	'2 John',
+	'3 John',
+	'Jude',
+	'Revelation'
+];
+
 function createPlanLink(plan) {
+	console.log(plan);
 	let div = document.createElement('div');
 	div.className = 'tableContentsPlan';
 	div.id = plan._id;
+	let title = returnBookNumberToName[plan.books[0].book];
+	let num = plan.books[0].chapters[0].number;
 	div.innerHTML = `
                 <div class="tableContentsIcon" style="margin-inline: 7px;">
                     <i class="fa-solid fa-book"></i>
                 </div>
                 <div class="display: flex; flex-direction: column; padding-top: 2px;">
                     <h3 style="margin-block: 0px; margin-inline: 5px;">${plan.title}</h3>
-                    <p style="margin-block: 0px; margin-inline: 5px; color: #6f6f6f;">${plan.description}</p>
+                    <p id="resumeText"style="margin-block: 0px; margin-inline: 5px; color: #6f6f6f;">${title} ${num}</p>
                 </div>
             	`;
 	div.addEventListener('click', planLinkClick);
@@ -482,7 +585,9 @@ function createPlanLink(plan) {
 
 function planLinkClick() {
 	let planID = event.target.closest('.tableContentsPlan').id;
-	window.location.assign(`/biblePlans?id=${planID}`);
+	let bookID = booksOfTheBible.indexOf(event.target.closest('.tableContentsPlan').querySelector('#resumeText').innerHTML.split(' ')[0]) + 1;
+	let chapterID = event.target.closest('.tableContentsPlan').querySelector('#resumeText').innerHTML.split(' ')[1];
+	window.location.assign(`/biblePlans?id=${planID}&b=${bookID}&c=${chapterID}`);
 }
 
 function iteratePlans(plans) {

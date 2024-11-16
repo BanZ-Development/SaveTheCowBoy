@@ -21,6 +21,10 @@ const reportSchema = new Schema({
 	ignored: {
 		type: Boolean,
 		default: false
+	},
+	reportType: {
+		type: String,
+		required: true
 	}
 });
 
