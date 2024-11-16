@@ -459,7 +459,8 @@ router.post('/comment', async (req, res) => {
 	try {
 		const { content, postID } = req.body;
 		let post = await Post.findById(postID);
-		let user = req.user;
+		let uID = req.user;
+		let user = await User.findById(uID);
 
 		if (post && user) {
 			try {
@@ -473,6 +474,8 @@ router.post('/comment', async (req, res) => {
 				post.comments.push(newComment.id);
 				post.commentsCount += 1;
 				await post.save();
+				user['comments'].push(newComment.id);
+				await user.save();
 				res.send({
 					status: true,
 					message: 'Comment posted!',
