@@ -504,6 +504,56 @@ router.post('/report', async (req, res) => {
 		const { reasons, message, postID } = req.body;
 		const uid = req.user.id;
 
+		let type;
+		let post = await Post.findById(postID);
+		let comment = await Comment.findById(postID);
+		if (post) type = 'post';
+		if (comment) type = 'comment';
+
+		await Report.create({
+			reasons: reasons,
+			message: message,
+			postID: postID,
+			reporterID: uid,
+			ignored: false,
+			reportType: type
+		})
+			.then(async (report) => {
+				let Obj = null;
+				if (type == 'post') {
+					Obj = Post;
+				} else if (type == 'comment') {
+					Obj = Comment;
+				}
+				let post = await Obj.findById(postID);
+				post.reports.push(report._id);
+				post.save();
+				res.send({
+					status: true,
+					message: 'Report sent'
+				});
+			})
+			.catch((error) => {
+				console.log(error);
+				res.send({
+					status: false,
+					error: error
+				});
+			});
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: false,
+			error: error
+		});
+	}
+});
+
+router.post('/report-post', async (req, res) => {
+	try {
+		const { reasons, message, postID } = req.body;
+		const uid = req.user.id;
+
 		await Report.create({
 			reasons: reasons,
 			message: message,

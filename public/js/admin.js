@@ -279,7 +279,7 @@ const LoadTotalUsers = (totalUsers, usersCalendar) => {
 	} else {
 		ctx.canvas.parentNode.style.height = '70%';
 	}
-	
+
 	var myChart = new Chart(ctx, {
 		type: 'line',
 		data: {
@@ -733,7 +733,7 @@ const reasonsToSentence = (string) => {
 	return string.replaceAll(',', ', ');
 };
 
-const createReportObject = (message, reasons, post, pfp, postID, _id, ignored) => {
+const createReportObject = (message, reasons, post, pfp, postID, _id, ignored, reportType) => {
 	let date = new Date(post.postDate);
 	let div = document.createElement('div');
 
@@ -769,6 +769,7 @@ const createReportObject = (message, reasons, post, pfp, postID, _id, ignored) =
         </div>
         </div>
         <span class="line"></span>
+		<p>Media type: ${reportType.capitalize()}</p>
         <p>Report category: ${reasonsToSentence(reasons).capitalize()}</p>
         <p>Report message: ${SafeHTML(message)}</p>
         <div class="inlineButtons">
@@ -791,7 +792,7 @@ const deleteReportObjects = () => {
 };
 
 const initReportObject = (report) => {
-	const { message, reasons, postID, reporterID, _id, ignored } = report;
+	const { message, reasons, postID, reportType, reporterID, _id, ignored } = report;
 	const data = new FormData();
 	data.append('id', postID);
 	fetch('api/forum/loadPost', {
@@ -806,7 +807,7 @@ const initReportObject = (report) => {
 			console.log(data);
 			if (data.status) {
 				const { post, pfp } = data;
-				createReportObject(message, reasons, post, pfp, postID, _id, ignored);
+				createReportObject(message, reasons, post, pfp, postID, _id, ignored, reportType);
 			} else {
 				console.log('error!');
 			}
