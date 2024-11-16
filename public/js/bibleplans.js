@@ -117,15 +117,15 @@ function createTableOfContents(books, scroll) {
 				let div = document.createElement('div');
 				div.innerHTML = `
                 <div class="bookChapterList" id="book">
-				<div class="inlineBookTitle">
-					<h3 style="font-size: 1.48vw;" id=${bookNum}>${title} (0/${chaptersCount})</h3>
-					<button style="position: static;border: none;" class="bookTitleDropBtn" id="bookDropBtn"><i class="fa-solid fa-chevron-right"></i></button>
-				</div>
+					<div class="inlineBookTitle">
+						<h3 style="font-size: 1.30vw;margin-block: auto;color: #333;" id=${bookNum}>${title} (0/${chaptersCount})</h3>
+						<button style="position: static;border: none;margin: 0px; margin-left: auto;" class="bookTitleDropBtn" id="bookDropBtn"><i class="fa-solid fa-chevron-right"></i></button>
+					</div>
                         
-                        <div id="chapters" style="display: flex; flex-direction: column;">
-                            
-                        </div>
-                    </div>`;
+					<div id="chapters">
+						
+					</div>
+                </div>`;
 				book.chapters.forEach((chapter) => {
 					let chapterNum = chapter.number;
 					let chapterElem = document.createElement('a');
@@ -325,8 +325,8 @@ async function createPlanWindow(plan) {
         </div>
         <div id="sidebar" style="overflow: auto;">
             <div id="tableOfContents" style="flex-direction: column; display: flex;">
-                <h1 style="margin-bottom:0px;text-align: center; font-family: 'Noto Serif';">Table of Contents</h1>
-				<label style="text-align: center; margin-bottom: 10px; font-family: 'Noto Serif';">Find chapters and track your completion here!</label>
+                <h1 style="margin-bottom:0px;text-align: center; font-family: 'Noto Serif';font-size: 2vw;color: #333;">Table of Contents</h1>
+				<label style="text-align: center; margin-bottom: 10px; font-family: 'Noto Serif';width: 70%;margin-inline: auto;font-size: 1.5vw;color: #333;">Find chapters and track your completion here!</label>
             </div>
             <div id="annotations" style="display: none; flex-direction: column;">
 				<h1 style="margin-bottom:0px; text-align: center; font-family: 'Noto Serif';">Annotations</h1>
@@ -379,8 +379,8 @@ async function createPlanWindow(plan) {
         </div>
     </div>
     <div style="display: flex; flex-direction: column; height: 90vh; width: 65%; padding-top: 110px; padding-left: 30%;">
-        <h1 style="font-family: 'Noto Serif'; color: #767676; font-size: 40px; text-align: center; margin-block: 0px; margin-top: 10px;">${title}</h1>
-        <h2 id="chapterTitle" style="font-family: 'Noto Serif'; color: #767676; font-size: 30px; text-align: center; margin-block: 10px;"></h2>
+        <h1 style="color: #333; font-family: 'Noto Serif'; font-size: 40px; text-align: center; margin-block: 0px; margin-top: 10px;">${title}</h1>
+        <h2 id="chapterTitle" style="color: #333; font-weight: 400; font-family: 'Noto Serif'; font-size: 30px; text-align: center; margin-block: 10px;"></h2>
         <div class="biblePlanPages">
 			<div class="biblePlanPopup" id="biblePlanPopup"><button class="filterBtn" id="annotateBtn"><i class="fa-regular fa-note-sticky"></i> Annotate</button><button class="filterBtn" id="commentBtn"><i class="fa-regular fa-comment"></i> Comment</button></div>
             <div class="biblePlanPage" id="page1"></div>
@@ -986,18 +986,31 @@ const observer = new MutationObserver((mutationsList, observer) => {
     const btn = document.querySelector('#bookDropBtn');
     if (btn) {
         console.log('Button found!');
-        btn.addEventListener('click', (event) => {
-            const closestBookChapterList = event.target.closest('.bookChapterList');
-            if (closestBookChapterList) {
-                if (closestBookChapterList.style.height === 'fit-content') {
-                    closestBookChapterList.style.height = '50px';
+        btn.addEventListener('click', () => {
+            // Navigate to the parent element of #bookDropBtn
+            const parentElement = btn.parentElement;
+            if (parentElement) {
+                // Find the sibling with the id #chapters
+                const chapterList = parentElement.nextElementSibling;
+                if (chapterList && chapterList.id === 'chapters') {
+                    // Toggle the display style between 'flex' and 'none'
+                    if (chapterList.style.display === 'flex') {
+                        chapterList.style.display = 'none';
+						btn.parentElement.style.marginBottom = '0vw';
+                    } else {
+                        chapterList.style.display = 'flex';
+						btn.parentElement.style.marginBottom = '2vw';
+                    }
                 } else {
-                    closestBookChapterList.style.height = 'fit-content';
+                    console.warn('No sibling element with id "chapters" found.');
                 }
+            } else {
+                console.warn('Parent element of #bookDropBtn not found.');
             }
         });
         observer.disconnect();
     }
 });
 
+// Optional: Ensure observer targets the correct node(s) for mutation
 observer.observe(document.body, { childList: true, subtree: true });
