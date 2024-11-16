@@ -1164,6 +1164,28 @@ function deleteReport() {
 		});
 }
 
+function deleteDevotion() {
+	let button = event.target;
+	let devotion = button.closest('#post');
+	let devotionID = devotion.querySelector('div').id;
+	let data = new FormData();
+	data.append('devotionID', devotionID);
+	fetch('api/admin/delete-devotion', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				devotion.remove();
+			}
+		});
+}
+
 function ignoreReport() {
 	let button = event.target;
 	let report = button.closest('#report');
@@ -1268,6 +1290,7 @@ function loadDevotion(devotion) {
 		</div>
 		</div>
 	`;
+	div.querySelector('#deleteDevotionBtn').addEventListener('click', deleteDevotion);
 	document.querySelector('#devotionHolder').appendChild(div);
 }
 
