@@ -50,6 +50,7 @@ const userSchema = new Schema({
 		expirationDate: Date
 	},
 	posts: [String],
+	comments: [String],
 	activeDate: Date,
 	biblePlans: Array
 });
