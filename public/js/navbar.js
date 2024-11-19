@@ -217,7 +217,7 @@ function construction(event) {
 	});
 }
 
-const navbar = document.querySelector('#nav')
+const navbar = document.querySelector('#nav');
 
 window.addEventListener('scroll', () => {
 	const scrollPosition = window.scrollY;

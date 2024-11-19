@@ -193,7 +193,7 @@ function createPostElement(post, currentUserID, pfp) {
 	let date = new Date(postDate);
 	div.innerHTML = `<div id="post">
 		<span class="line"></span>
-		<div class="forumPost" href="/forum?id=${_id}" id=${_id}>
+		<div class="forumPost" id=${_id}>
 		<div class="inlineForumUser">
 			<img class="forumPfp" src="../images/default-pfp.jpeg"></img>
 			<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
@@ -237,6 +237,14 @@ function createPostElement(post, currentUserID, pfp) {
 	div.querySelector('#commentIcon').addEventListener('click', openPostComments);
 	div.querySelector('#likeBtn').addEventListener('click', likePost);
 	div.querySelector('#reportBtn').addEventListener('click', forumReport);
+	div.addEventListener('click', postClick);
+	div.addEventListener('mouseover', () => {
+		document.body.style.cursor = 'pointer';
+	});
+
+	div.addEventListener('mouseout', () => {
+		document.body.style.cursor = 'default'; // Reset the cursor when not hovering
+	});
 	document.querySelector('#posts').appendChild(div);
 }
 
@@ -992,10 +1000,13 @@ function showDeletePopup() {
 	popupOverlay.style.display = 'flex';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-	document.addEventListener('click', (event) => {
-	  if (event.target.matches('.forumPost')) {
+function postClick() {
+	console.log(event.target);
+	if (event.target.className == 'forumPost') {
 		location.href = window.location.href + `?id=${event.target.id}`;
-	  }
-	});
-});
+	}
+}
+
+function postHover() {
+	event.target.style.cursor = 'pointer';
+}

@@ -475,11 +475,15 @@ function replyClick() {
 }
 
 function loadComments() {
+	const urlParams = new URLSearchParams(window.location.search);
+	let data = new FormData();
+	data.append('uid', urlParams.get('uid'));
 	fetch('api/profile/return-comments', {
 		method: 'post',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
-		}
+		},
+		body: new URLSearchParams(data)
 	})
 		.then((res) => res.json())
 		.then((data) => {
@@ -494,11 +498,15 @@ function loadComments() {
 }
 
 function loadPosts() {
+	const urlParams = new URLSearchParams(window.location.search);
+	let data = new FormData();
+	data.append('uid', urlParams.get('uid'));
 	fetch('api/profile/return-posts', {
 		method: 'post',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
-		}
+		},
+		body: new URLSearchParams(data)
 	})
 		.then((res) => res.json())
 		.then((data) => {

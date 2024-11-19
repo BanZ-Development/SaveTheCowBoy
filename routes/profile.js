@@ -199,7 +199,7 @@ router.post('/update-username', async (req, res) => {
 
 router.post('/return-comments', async (req, res) => {
 	try {
-		let uid = req.user.id;
+		let { uid } = req.body;
 		console.log('UID:', uid);
 		const user = await User.findById(uid);
 		console.log(user.comments);
@@ -234,7 +234,7 @@ router.post('/return-comments', async (req, res) => {
 
 router.post('/return-posts', async (req, res) => {
 	try {
-		let uid = req.user.id;
+		let { uid } = req.body;
 		console.log('UID:', uid);
 		const user = await User.findById(uid);
 		console.log(user.posts);
