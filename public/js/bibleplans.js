@@ -46,9 +46,14 @@ function endSearchSpin(id) {
 }
 
 function scrollToElement(elementId, smoothOrAuto) {
-	const element = document.getElementById(elementId);
-	if (element) {
-		element.scrollIntoView({ behavior: smoothOrAuto });
+	let element = document.getElementById(elementId);
+	let container = document.getElementById('sidebar');
+	if (container && element) {
+		const elementTop = element.offsetTop;
+		container.scrollTo({
+			top: elementTop - container.offsetTop,
+			behavior: smoothOrAuto
+		});
 	}
 }
 
@@ -116,7 +121,7 @@ function createTableOfContents(books, scroll) {
 				let title = bible[bookNum].name;
 				let div = document.createElement('div');
 				div.innerHTML = `
-                <div class="bookChapterList" id="book">
+                <div class="bookChapterList" id="book${bookNum}">
 					<div class="inlineBookTitle">
 						<h3 style="font-size: 1.30vw;margin-block: auto;color: #333;" id=${bookNum}>${title} (0/${chaptersCount})</h3>
 						<button style="position: static;border: none;margin: 0px; margin-left: auto;margin-block: auto;" class="bookTitleDropBtn" id="bookDropBtn"><i class="fa-solid fa-chevron-right"></i></button>
@@ -138,9 +143,32 @@ function createTableOfContents(books, scroll) {
 				});
 				document.querySelector('#tableOfContents').appendChild(div);
 			});
-			scrollToElement(`book${scroll - 1}`, 'auto');
+			scrollToElement(`book${scroll - 1}`, 'smooth');
 			setFinishedChapters();
+			openSelectedChapter(scroll);
 		});
+}
+
+function openSelectedChapter(scroll) {
+	let book = document.getElementById(`book${scroll - 1}`);
+	let btn = book.querySelector('#bookDropBtn');
+	const bookChapterList = book.closest('.bookChapterList');
+	if (bookChapterList) {
+		const chapterList = bookChapterList.querySelector('#chapters');
+		if (chapterList) {
+			const parentElement = bookChapterList.parentElement; // Get the parent of the whole bookChapterList container
+
+			if (chapterList.style.display === 'flex') {
+				btn.querySelector('i').style.transform = 'rotate(0deg)';
+				chapterList.style.display = 'none';
+				parentElement.style.marginBottom = '0vw'; // Apply margin to the parent of the entire container
+			} else {
+				btn.querySelector('i').style.transform = 'rotate(90deg)';
+				chapterList.style.display = 'flex';
+				parentElement.style.marginBottom = '2vw'; // Apply margin to the parent of the entire container
+			}
+		}
+	}
 }
 
 function setTitle(bookID, chapterID) {
@@ -1137,7 +1165,7 @@ const observer = new MutationObserver((mutationsList, observer) => {
 		buttons.forEach((btn) => {
 			if (!btn.hasAttribute('data-listener-added')) {
 				btn.addEventListener('click', (event) => {
-					const btn = event.target;
+					let btn = event.target.closest('button');
 
 					const bookChapterList = btn.closest('.bookChapterList');
 					if (bookChapterList) {
@@ -1146,11 +1174,11 @@ const observer = new MutationObserver((mutationsList, observer) => {
 							const parentElement = bookChapterList.parentElement; // Get the parent of the whole bookChapterList container
 
 							if (chapterList.style.display === 'flex') {
-								//btn.querySelector('i').style.transform = "rotate(0deg)";
+								btn.querySelector('i').style.transform = 'rotate(0deg)';
 								chapterList.style.display = 'none';
 								parentElement.style.marginBottom = '0vw'; // Apply margin to the parent of the entire container
 							} else {
-								//btn.querySelector('i').style.transform = "rotate(90deg)";
+								btn.querySelector('i').style.transform = 'rotate(90deg)';
 								chapterList.style.display = 'flex';
 								parentElement.style.marginBottom = '2vw'; // Apply margin to the parent of the entire container
 							}

@@ -34,7 +34,7 @@ const disableAllViews = () => {
 
 function refreshView(view) {
 	let viewElement = document.querySelector(`#${view}`);
-	viewElement.childNodes.forEach((child) => child.remove());
+	if (viewElement) viewElement.childNodes.forEach((child) => child.remove());
 }
 
 const enableView = (view) => {
@@ -72,7 +72,7 @@ const openView = (view) => {
 		case 'followers':
 			break;
 		default:
-			loadPosts();
+			openView('posts');
 			break;
 	}
 };
