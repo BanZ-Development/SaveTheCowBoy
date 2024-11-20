@@ -408,13 +408,15 @@ const LoadDatabasePercent = (usedStorage, totalStorage) => {
 	let myChart = new Chart(ctx, {
 		type: 'doughnut',
 		data: {
-			labels: ['Used', 'Not Used'],
+			labels: ['Used', 'Available'],
 			datasets: [
 				{
 					label: 'Database Storage',
 					data: [ratio, 1 - ratio],
 					backgroundColor: ['rgb(39, 130, 242)', 'rgb(242, 242, 242)'],
-					hoverOffset: 4
+					hoverOffset: 4,
+					borderColor: 'transparent', // Removes the white stroke
+					borderWidth: 0 // Sets the stroke width to 0
 				}
 			]
 		},
@@ -1449,13 +1451,13 @@ document.addEventListener('DOMContentLoaded', () => {
 	const timeBtns = document.querySelectorAll('#timeBtn');
 	document.querySelector('#typeSelectorHolder').addEventListener('click', () => {
 		btnHolder.style.display = 'flex';
-		timeBtns.forEach(timeBtn => {
+		timeBtns.forEach((timeBtn) => {
 			timeBtn.addEventListener('click', () => {
 				event.stopPropagation();
 				btnHolder.style.display = 'none';
 				document.querySelector('#timeText').innerHTML = `${timeBtn.value} <i class="fa-solid fa-chevron-down"></i>`;
 				graphTime = timeBtn.value;
 			});
-		})
+		});
 	});
 });
