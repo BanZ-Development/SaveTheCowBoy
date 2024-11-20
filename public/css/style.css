@@ -2044,6 +2044,10 @@ button {
     flex-direction: column;
   }
 
+  #chapters > a:first-of-type {
+    margin-top: 20px !important;
+  }
+
   .biblePlanChapter:hover {
     color: #5285ff;
   }
@@ -2185,6 +2189,116 @@ button {
         margin-bottom: 5vw;
     }
 
+    #typeSelectorHolder {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        border: solid 1px #ccc;
+        border-radius: 8px;
+        height: 30px;
+        padding-inline: 10px;
+        cursor: pointer;
+        width: 8vw;
+        min-width: 90px;
+    }
+
+    #typeSelectorHolder > p {
+        display: flex;
+        flex-direction: row;
+        margin: 0;
+        margin-block: auto;
+        color: #333;
+        font-family: 'Roboto';
+        text-transform: capitalize;
+    }
+
+    #typeSelectorHolder > p > i {
+        margin-left: auto;
+    }
+
+    #typeSelector {
+        z-index: 1;
+        display: none;
+        position: absolute;
+        flex-direction: column;
+        -moz-appearence: none;
+        font-family: 'Roboto';
+        background-color: #fff;
+        border: solid 1px #ccc;
+        cursor: pointer;
+        border-radius: 8px;
+        height: fit-content;
+        width: calc(8vw + 20px);
+        min-width: 110px;
+        top: 30px;
+        left: 0;
+    }
+
+    #typeSelector > button {
+        width: 100%;
+        height: 30px;
+        border-radius: 0px;
+        background-color: #fff;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #333;
+        font-weight: 300;
+    }
+
+    #typeSelector > button:hover {
+        background-color: #ccc;
+    }
+
+    #typeSelector > button:first-of-type {
+        border-radius: 8px 8px 0px 0px;
+    }
+
+    #typeSelector > button:last-of-type {
+        border-radius: 0px 0px 8px 8px;
+    }
+
+    #annotatePrerequisite, #commentPrerequisite {
+        position: absolute;
+        bottom: 0;
+        display: none;
+        background-color: #fff;
+        margin: 0px;
+        text-align: center;
+        font-size: 1rem;
+        padding-block: 15px;
+        width: 100%;
+        right: 0;
+        left: 0;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .biblePlanReadPage {
+        display: flex;
+        flex-direction: column;
+        height: 90vh;
+        width: 65%;
+        padding-top: 110px;
+        padding-left: 30%;
+    }
+
+    #mobileToolbar {
+        display: none;
+    }
+
+    .biblePlanReadBtn {
+        width: 50%;
+        border: solid 1px #ccc;
+        background-color: #fff;
+        margin-block: 10px;
+        font-size: 18px;
+        padding: 10px;
+        height: fit-content;
+        margin-inline: auto;
+        border-radius: 8px;
+    }
+
   @media only screen and (max-width: 1610px) {
 
     .settingSidebarBtn {
@@ -2215,6 +2329,12 @@ button {
   }
 
   @media only screen and (max-width: 1478px) {
+
+    .toolbar > button {
+        font-size: 1rem !important;
+        padding: 8px !important;
+        margin-inline: 0.6vw !important;
+    }
 
     .faqBtn > p {
         font-size: 16.5px;
@@ -2321,6 +2441,37 @@ button {
 
   @media only screen and (max-width: 1060px) {
 
+    .biblePlanSidebar {
+        display: none;
+        width: 30%;
+    }
+
+    .biblePlanReadPage {
+        padding-left: 0px !important;
+        width: 90% !important;
+        margin-inline: auto;
+    }
+
+    #desktopToolbar {
+        display: none;
+    }
+
+    #mobileToolbar {
+        display: flex;
+        position: fixed;
+        background-color: #fff;
+        left: 0;
+        right: 0;
+        bottom: 30px;
+        margin-inline: auto;
+        z-index: 1;
+        margin-top: 0px;
+    }
+
+    #tableOfContents, #annotations, #comments, #translations {
+        margin-top: 110px;
+    }
+
     .postInformation {
         width: 90%;
     }
@@ -2367,6 +2518,10 @@ button {
         position: static !important;
         margin-top: 10px;
         margin-right: 10px;
+    }
+
+    #commentProfile {
+        border-bottom: none !important;
     }
 
     .forumTitle > h3 > a {
@@ -2551,6 +2706,20 @@ button {
   }
 
   @media only screen and (max-width: 856px) {
+
+    .inlineBookTitle > h3 {
+        font-size: 2.5vw !important;
+    }
+
+    .biblePlanSidebar {
+        width: 100%;
+        height: 85vh;
+    }
+
+    #viewPast {
+        flex-direction: column !important;
+        align-items: start;
+    }
 
     .biblePlanHeader {
         font-size: 2.5vw !important;
@@ -2930,6 +3099,12 @@ button {
   }
 
   @media only screen and (max-width: 856px) {
+
+    #languageDropdown {
+        width: 85% !important;
+        font-size: 2.5vw;
+    }
+
     .forumDate, .forumUser {
         font-size: 16.5px;
     }
@@ -2945,9 +3120,53 @@ button {
     .forumTitle > a {
         margin-inline: auto;
     }
+
+    #annotateBox {
+        width: 100% !important;
+    }
+
+    #tableOfContents > h1 {
+        font-size: 2.5vw !important;
+    }
+
+    #tableOfContents > label {
+        font-size: 3vw !important;
+    }
+
+    .bibleTranslation > div > h2 {
+        font-size: 2.5vw !important;
+    }
+
+    .bibleTranslation > div > h3 {
+        font-size: 2vw !important;
+    }
   }
 
   @media only screen and (max-width: 500px) {
+
+    #languageDropdown {
+        font-size: 5vw;
+    }
+
+    .bibleTranslation > div > h2 {
+        font-size: 3.5vw !important;
+    }
+
+    .bibleTranslation > div > h3 {
+        font-size: 3vw !important;
+    }
+
+    #tableOfContents > h1 {
+        font-size: 7vw !important;
+    }
+
+    #tableOfContents > label {
+        font-size: 3vw !important;
+    }
+
+    .inlineBookTitle > h3 {
+        font-size: 4vw !important;
+    }
 
     .topGraph > div > div > h4 {
         font-size: 4vw !important;

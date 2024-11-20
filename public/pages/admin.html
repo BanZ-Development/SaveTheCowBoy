@@ -159,14 +159,19 @@
                             </div>
                         <h2 class="analyticHeader">Daily Active Users</h2>
                         <div style="height: 60%; width: calc(100% - 35px);" class="graphSec">
-                            <label for="typeSelector">View the past </label>
-                            <input type="number" id="timeframeSelector" placeholder="10 (default)" value="">
-                            <select id="typeSelector">
-                                <option value="days">Days</option>
-                                <option value="months">Months</option>
-                                <option value="years">Years</option>
-                            </select>
-                            <button id="updateDauBtn">Go</button>
+                            <div id="viewPast" style="display: flex; flex-direction: row; gap: 10px;">
+                                <label id="viewTextLbl" style="height: fit-content; margin-block: auto;" for="typeSelector">View the past </label>
+                            <input style="height: calc(30px - 1.6px); font-size: 16px; width: 15%;margin-inline: 0px;" class="signupInput" type="number" id="timeframeSelector" placeholder="10 (default)" value="">
+                            <div id="typeSelectorHolder">
+                                <p id="timeText">Days <i class="fa-solid fa-chevron-down"></i></p>
+                                <div id="typeSelector">
+                                    <button id="timeBtn" value="days">Days</button>
+                                    <button id="timeBtn" value="months">Months</button>
+                                    <button id="timeBtn" value="years">Years</button>
+                                </div>
+                            </div>
+                            <button style="line-height: 0; border: solid 1px #ccc; margin-block: auto; height: 30px;" class="btnLink" id="updateDauBtn">Go</button>
+                            </div>
                             <div class="chartSizing">
                                 <canvas id="dailyActiveUsers" width="600" height="400"></canvas>
                             </div>

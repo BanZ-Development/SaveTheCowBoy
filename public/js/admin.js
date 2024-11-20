@@ -33,8 +33,17 @@ const updateDAU = () => {
 			console.log(data);
 			const { dailyActiveUsers } = data;
 			let timeframe = parseInt(document.querySelector('#timeframeSelector').value);
-			let type = document.querySelector('#typeSelector').value;
-			LoadDailyActiveUsers(dailyActiveUsers, timeframe, type);
+			let type = graphTime;
+			if (isNaN(timeframe)) {
+				document.querySelector('#viewTextLbl').innerHTML = 'Enter a number';
+				document.querySelector('#viewTextLbl').style.color = '#f75252';
+				document.querySelector('#timeframeSelector').style.border = 'solid 1px #f75252';
+			} else {
+				LoadDailyActiveUsers(dailyActiveUsers, timeframe, type);
+				document.querySelector('#viewTextLbl').innerHTML = 'View the past';
+				document.querySelector('#viewTextLbl').style.color = '#333';
+				document.querySelector('#timeframeSelector').style.border = 'solid 1px #ccc';
+			}
 		});
 };
 
@@ -1392,3 +1401,21 @@ function updateEditHTML(member, key, value) {
 	admin = admin.charAt(0).toLowerCase() + admin.slice(1) + 'Admin';
 	member.querySelector('#' + admin).innerHTML = value;
 }
+
+let graphTime = 'days';
+
+document.addEventListener('DOMContentLoaded', () => {
+	const btnHolder = document.querySelector('#typeSelector');
+	const timeBtns = document.querySelectorAll('#timeBtn');
+	document.querySelector('#typeSelectorHolder').addEventListener('click', () => {
+		btnHolder.style.display = 'flex';
+		timeBtns.forEach(timeBtn => {
+			timeBtn.addEventListener('click', () => {
+				event.stopPropagation();
+				btnHolder.style.display = 'none';
+				document.querySelector('#timeText').innerHTML = `${timeBtn.value} <i class="fa-solid fa-chevron-down"></i>`;
+				graphTime = timeBtn.value;
+			});
+		})
+	});
+});

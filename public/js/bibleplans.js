@@ -119,7 +119,7 @@ function createTableOfContents(books, scroll) {
                 <div class="bookChapterList" id="book">
 					<div class="inlineBookTitle">
 						<h3 style="font-size: 1.30vw;margin-block: auto;color: #333;" id=${bookNum}>${title} (0/${chaptersCount})</h3>
-						<button style="position: static;border: none;margin: 0px; margin-left: auto;" class="bookTitleDropBtn" id="bookDropBtn"><i class="fa-solid fa-chevron-right"></i></button>
+						<button style="position: static;border: none;margin: 0px; margin-left: auto;margin-block: auto;" class="bookTitleDropBtn" id="bookDropBtn"><i class="fa-solid fa-chevron-right"></i></button>
 					</div>
                         
 					<div id="chapters">
@@ -317,11 +317,11 @@ async function createPlanWindow(plan) {
 	div.innerHTML = `
     <div class="biblePlanSidebar">
 	
-        <div class="toolbar">
-            <button id="tableOfContentsBtn"><i class="fa-solid fa-list"></i></button>
-            <button id="annotationsBtn"><i class="fa-regular fa-note-sticky"></i></button>
-            <button id="commentsBtn"><i class="fa-regular fa-comment"></i></button>
-            <button id="translationsBtn"><i class="fa-solid fa-language"></i></button>
+        <div id="desktopToolbar" class="toolbar">
+            <button class="tableOfContentsBtn"><i class="fa-solid fa-list"></i></button>
+            <button class="annotationsBtn"><i class="fa-regular fa-note-sticky"></i></button>
+            <button class="commentsBtn"><i class="fa-regular fa-comment"></i></button>
+            <button class="translationsBtn"><i class="fa-solid fa-language"></i></button>
         </div>
         <div id="sidebar" style="overflow: auto;">
             <div id="tableOfContents" style="flex-direction: column; display: flex;">
@@ -341,12 +341,12 @@ async function createPlanWindow(plan) {
 					color="black" 
 					></l-ring>
 				</div></div>
-				<div id="annotationsUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
+				<div id="annotationsUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%; background-color: #fff;">
 					<label id="annotateRoute"></label>
-					<textarea placeholder="Write down something important to you..." id="annotateBox" style="width=95%; height=6em; resize: none;"></textarea>
-					<button id="submitAnnotationBtn" style="width=95%;">Annotate</button>
+					<textarea placeholder="Write down something important to you..." id="annotateBox" style="width: calc(95% - 10px); resize: none; font-family: 'roboto'; border: solid 1px #ccc; height: 20vh; padding: 10px;"></textarea>
+					<button class="biblePlanReadBtn" id="submitAnnotationBtn">Annotate</button>
 				</div>
-				<h3 id="annotatePrerequisite" style="position: absolute;bottom: 0; display: none">Highlight text to create an annotation!</h3>
+				<h3 id="annotatePrerequisite">Highlight text to create an annotation!</h3>
             </div>
             <div id="comments" style="display: none; flex-direction: column;">
 				<h1 style="margin-bottom:0px;text-align: center; font-family: 'Noto Serif';">Comments</h1>
@@ -378,7 +378,14 @@ async function createPlanWindow(plan) {
             </div>
         </div>
     </div>
-    <div style="display: flex; flex-direction: column; height: 90vh; width: 65%; padding-top: 110px; padding-left: 30%;">
+    <div class="biblePlanReadPage">
+		<div id="mobileToolbar" class="toolbar">
+            <button class="tableOfContentsBtn"><i class="fa-solid fa-list"></i></button>
+            <button class="annotationsBtn"><i class="fa-regular fa-note-sticky"></i></button>
+            <button class="commentsBtn"><i class="fa-regular fa-comment"></i></button>
+            <button class="translationsBtn"><i class="fa-solid fa-language"></i></button>
+			<button style="display: none; color: #f75252;" class="closeBtn"><i class="fa-regular fa-circle-xmark"></i></button>
+        </div>
         <h1 style="color: #333; font-family: 'Noto Serif'; font-size: 40px; text-align: center; margin-block: 0px; margin-top: 10px;">${title}</h1>
         <h2 id="chapterTitle" style="color: #333; font-weight: 400; font-family: 'Noto Serif'; font-size: 30px; text-align: center; margin-block: 10px;"></h2>
         <div class="biblePlanPages">
@@ -421,15 +428,11 @@ async function createPlanWindow(plan) {
     `;
 	div.querySelector('#pageForward').addEventListener('click', loadNextChapter);
 	div.querySelector('#pageBackward').addEventListener('click', loadLastChapter);
-	div.querySelector('#tableOfContentsBtn').addEventListener('click', openTableOfContents);
-	div.querySelector('#commentsBtn').addEventListener('click', openComments);
-	div.querySelector('#translationsBtn').addEventListener('click', openTranslations);
 	div.querySelector('#languageDropdown').addEventListener('change', changeStoredLanguage);
 	div.querySelector('#commentBtn').addEventListener('click', openCommentsWithComment);
 	div.querySelector('#annotateBtn').addEventListener('click', openAnnotations);
 	div.querySelector('#submitCommentBtn').addEventListener('click', submitComment);
 	div.querySelector('#submitAnnotationBtn').addEventListener('click', submitAnnotation);
-	div.querySelector('#annotationsBtn').addEventListener('click', openAnnotations);
 	document.querySelector('body').appendChild(div);
 	createTableOfContents(books, bookID);
 	createTranslations();
@@ -738,6 +741,8 @@ document.addEventListener('mousedown', function (e) {
 
 function openTranslations() {
 	openWindow('translations');
+	document.querySelector('.biblePlanSidebar').style.display = 'flex';
+	document.querySelector('.closeBtn').style.display = 'block';
 }
 
 function setCommentsLabel() {
@@ -754,11 +759,15 @@ function openComments() {
 	} else {
 		noSelectionComment();
 		openWindow('comments');
+		document.querySelector('.biblePlanSidebar').style.display = 'flex';
+		document.querySelector('.closeBtn').style.display = 'block';
 	}
 }
 
 function openAnnotations() {
 	openWindow('annotations');
+	document.querySelector('.biblePlanSidebar').style.display = 'flex';
+	document.querySelector('.closeBtn').style.display = 'block';
 	loadAnnotations();
 	let selected = window.getSelection();
 	if (selected.toString().trim()) {
@@ -776,10 +785,14 @@ function openCommentsWithComment() {
 	document.querySelector('#commentPrerequisite').style.display = 'none';
 	document.querySelector('#commentUserInput').style.display = 'flex';
 	openWindow('comments');
+	document.querySelector('.biblePlanSidebar').style.display = 'flex';
+	document.querySelector('.closeBtn').style.display = 'block';
 }
 
 function openTableOfContents() {
 	openWindow('tableOfContents');
+	document.querySelector('.biblePlanSidebar').style.display = 'flex';
+	document.querySelector('.closeBtn').style.display = 'block';
 }
 
 function createTranslationElements(data) {
@@ -1094,12 +1107,20 @@ const observer = new MutationObserver((mutationsList, observer) => {
             if (!btn.hasAttribute('data-listener-added')) {
                 btn.addEventListener('click', (event) => {
                     const btn = event.target;
+					
                     const bookChapterList = btn.closest('.bookChapterList');
                     if (bookChapterList) {
                         const chapterList = bookChapterList.querySelector('#chapters');
                         if (chapterList) {
-                            chapterList.style.display = (chapterList.style.display === 'flex') ? 'none' : 'flex';
-                            btn.parentElement.style.marginBottom = (chapterList.style.display === 'flex') ? '2vw' : '0vw';
+                            const parentElement = bookChapterList.parentElement; // Get the parent of the whole bookChapterList container
+                            
+                            if (chapterList.style.display === 'flex') {
+                                chapterList.style.display = 'none';
+                                parentElement.style.marginBottom = '0vw'; // Apply margin to the parent of the entire container
+                            } else {
+                                chapterList.style.display = 'flex';
+                                parentElement.style.marginBottom = '2vw'; // Apply margin to the parent of the entire container
+                            }
                         }
                     }
                 });
@@ -1110,3 +1131,35 @@ const observer = new MutationObserver((mutationsList, observer) => {
 });
 
 observer.observe(document.body, { childList: true, subtree: true });
+
+document.addEventListener('DOMContentLoaded', function() {
+	const interval = setInterval(() => {
+
+	  const buttons = document.querySelectorAll('.tableOfContentsBtn');
+  
+	  if (buttons.length > 0) {
+		buttons.forEach(button => {
+		  button.addEventListener('click', openTableOfContents);
+		});
+  
+		document.querySelectorAll('.commentsBtn').forEach(button => {
+		  button.addEventListener('click', openComments);
+		});
+  
+		document.querySelectorAll('.translationsBtn').forEach(button => {
+		  button.addEventListener('click', openTranslations);
+		});
+  
+		document.querySelectorAll('.annotationsBtn').forEach(button => {
+		  button.addEventListener('click', openAnnotations);
+		});
+
+		document.querySelector('.closeBtn').addEventListener('click', () => {
+			document.querySelector('.biblePlanSidebar').style.display = 'none';
+			document.querySelector('.closeBtn').style.display = 'none';
+		})
+  
+		clearInterval(interval);
+	  }
+	}, 100);
+  });
