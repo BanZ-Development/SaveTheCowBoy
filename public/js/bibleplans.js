@@ -137,6 +137,7 @@ function createTableOfContents(books, scroll) {
 					div.querySelector('#chapters').appendChild(chapterElem);
 				});
 				document.querySelector('#tableOfContents').appendChild(div);
+				setFinishedChapters();
 			});
 			scrollToElement(`book${scroll - 1}`, 'auto');
 		});
@@ -252,6 +253,34 @@ function setCompletionText(completion) {
 		let string = `${before}(${value}/${after}`;
 		title.innerHTML = string;
 	}
+}
+
+function setFinishedChapters() {
+	let data = new FormData();
+	let id = returnID();
+	data.append('id', id);
+	fetch('api/biblePlans/get-completed-chapters', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			if (data.status) {
+				console.log(data.chaptersFinished);
+				data.chaptersFinished.forEach((chapter) => {
+					let split = chapter.split(':');
+					let adjustedChapter = `${parseInt(split[0]) - 1}:${split[1]}`;
+					let element = document.getElementById(adjustedChapter);
+					console.log(element);
+					//add icon here lucky
+					element.innerHTML = '[x] ' + element.innerHTML;
+				});
+			}
+		});
+	document.addEventListener('DOMContentLoaded', () => {});
 }
 
 function checkForCompletion() {
@@ -1101,65 +1130,64 @@ function createAnnotationElements(annotations) {
 }
 
 const observer = new MutationObserver((mutationsList, observer) => {
-    const buttons = document.querySelectorAll('#bookDropBtn');
-    if (buttons.length > 0) {
-        buttons.forEach((btn) => {
-            if (!btn.hasAttribute('data-listener-added')) {
-                btn.addEventListener('click', (event) => {
-                    const btn = event.target;
-					
-                    const bookChapterList = btn.closest('.bookChapterList');
-                    if (bookChapterList) {
-                        const chapterList = bookChapterList.querySelector('#chapters');
-                        if (chapterList) {
-                            const parentElement = bookChapterList.parentElement; // Get the parent of the whole bookChapterList container
-                            
-                            if (chapterList.style.display === 'flex') {
-                                chapterList.style.display = 'none';
-                                parentElement.style.marginBottom = '0vw'; // Apply margin to the parent of the entire container
-                            } else {
-                                chapterList.style.display = 'flex';
-                                parentElement.style.marginBottom = '2vw'; // Apply margin to the parent of the entire container
-                            }
-                        }
-                    }
-                });
-                btn.setAttribute('data-listener-added', 'true');
-            }
-        });
-    }
+	const buttons = document.querySelectorAll('#bookDropBtn');
+	if (buttons.length > 0) {
+		buttons.forEach((btn) => {
+			if (!btn.hasAttribute('data-listener-added')) {
+				btn.addEventListener('click', (event) => {
+					const btn = event.target;
+
+					const bookChapterList = btn.closest('.bookChapterList');
+					if (bookChapterList) {
+						const chapterList = bookChapterList.querySelector('#chapters');
+						if (chapterList) {
+							const parentElement = bookChapterList.parentElement; // Get the parent of the whole bookChapterList container
+
+							if (chapterList.style.display === 'flex') {
+								chapterList.style.display = 'none';
+								parentElement.style.marginBottom = '0vw'; // Apply margin to the parent of the entire container
+							} else {
+								chapterList.style.display = 'flex';
+								parentElement.style.marginBottom = '2vw'; // Apply margin to the parent of the entire container
+							}
+						}
+					}
+				});
+				btn.setAttribute('data-listener-added', 'true');
+			}
+		});
+	}
 });
 
 observer.observe(document.body, { childList: true, subtree: true });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 	const interval = setInterval(() => {
+		const buttons = document.querySelectorAll('.tableOfContentsBtn');
 
-	  const buttons = document.querySelectorAll('.tableOfContentsBtn');
-  
-	  if (buttons.length > 0) {
-		buttons.forEach(button => {
-		  button.addEventListener('click', openTableOfContents);
-		});
-  
-		document.querySelectorAll('.commentsBtn').forEach(button => {
-		  button.addEventListener('click', openComments);
-		});
-  
-		document.querySelectorAll('.translationsBtn').forEach(button => {
-		  button.addEventListener('click', openTranslations);
-		});
-  
-		document.querySelectorAll('.annotationsBtn').forEach(button => {
-		  button.addEventListener('click', openAnnotations);
-		});
+		if (buttons.length > 0) {
+			buttons.forEach((button) => {
+				button.addEventListener('click', openTableOfContents);
+			});
 
-		document.querySelector('.closeBtn').addEventListener('click', () => {
-			document.querySelector('.biblePlanSidebar').style.display = 'none';
-			document.querySelector('.closeBtn').style.display = 'none';
-		})
-  
-		clearInterval(interval);
-	  }
+			document.querySelectorAll('.commentsBtn').forEach((button) => {
+				button.addEventListener('click', openComments);
+			});
+
+			document.querySelectorAll('.translationsBtn').forEach((button) => {
+				button.addEventListener('click', openTranslations);
+			});
+
+			document.querySelectorAll('.annotationsBtn').forEach((button) => {
+				button.addEventListener('click', openAnnotations);
+			});
+
+			document.querySelector('.closeBtn').addEventListener('click', () => {
+				document.querySelector('.biblePlanSidebar').style.display = 'none';
+				document.querySelector('.closeBtn').style.display = 'none';
+			});
+
+			clearInterval(interval);
+		}
 	}, 100);
-  });
+});

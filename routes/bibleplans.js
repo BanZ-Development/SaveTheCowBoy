@@ -239,4 +239,24 @@ router.post('/get-annotations', async (req, res) => {
 	}
 });
 
+router.post('/get-completed-chapters', async (req, res) => {
+	try {
+		let { id } = req.body;
+		let user = await User.findById(req.user.id);
+		let plan = user.biblePlans.find((item) => item.id == id);
+		let chaptersFinished = plan.chaptersFinished;
+		res.send({
+			status: true,
+			chaptersFinished: chaptersFinished,
+			message: `${chaptersFinished.length} chapters received!`
+		});
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: err.message
+		});
+	}
+});
+
 module.exports = router;
