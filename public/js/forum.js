@@ -874,7 +874,6 @@ function MCEtoMessage(mce) {
 
 // this like uploads image or whatever, idgaf
 
-let inputFile = document.getElementById('addImage');
 let imagePreview = document.getElementById('imageUploadPreview');
 
 document.getElementById('addImage').addEventListener('change', uploadImage);
@@ -898,6 +897,7 @@ function deleteImage() {
 }
 
 function uploadImage() {
+	console.log('Uploading...');
 	const files = Array.from(event.target.files);
 	allFiles = allFiles.concat(files);
 	console.log(allFiles);
@@ -932,7 +932,7 @@ document.getElementById('dropArea').addEventListener('dragover', function (e) {
 document.getElementById('dropArea').addEventListener('drop', uploadImage);
 
 document.querySelector('#removeImageBtn').addEventListener('click', function () {
-	imagePreview.setAttribute('src', '');
+	document.getElementById('imageUploadPreview').setAttribute('src', '');
 	document.querySelector('.submitImageText').style.display = 'flex';
 	document.querySelector('.imageUploadPreviewDiv').style.display = 'none';
 	document.querySelector('#removeImageBtn').style.display = 'none';

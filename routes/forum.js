@@ -219,7 +219,11 @@ router.post('/post', upload.array('files'), async (req, res) => {
 					maxSize = planToSize[planID];
 					console.log('Max Size:', maxSize);
 				} catch (err) {
-					maxSize = null;
+					if (req.user.admin) {
+						maxSize = Infinity;
+					} else {
+						maxSize = 0;
+					}
 				}
 			});
 			files.forEach((file) => {
