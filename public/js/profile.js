@@ -10,6 +10,80 @@ const DateText = (date) => {
 	return `${month} ${day}, ${year}`;
 };
 
+const sendToRequest = () => {
+	let view = returnView();
+	disableAllViews();
+	enableView(view);
+	openView(view);
+};
+
+function returnView() {
+	let urlParams = window.location.search;
+	let getQuery = urlParams.split('?')[2];
+	console.log(getQuery);
+	if (!getQuery) return null;
+	return getQuery.split('=')[1];
+}
+
+const disableAllViews = () => {
+	let views = document.querySelectorAll('.profileBox');
+	views.forEach((view) => {
+		view.style.display = 'none';
+	});
+};
+
+function refreshView(view) {
+	let viewElement = document.querySelector(`#${view}`);
+	viewElement.childNodes.forEach((child) => child.remove());
+}
+
+const enableView = (view) => {
+	disableAllViews();
+	let viewElement = document.querySelector(`#${view}`);
+	if (viewElement) {
+		viewElement.style.display = 'flex';
+		updateURL(view);
+		const buttons = document.querySelectorAll('#profileSwitchViewBtn');
+		buttons.forEach((button) => {
+			if (button.getAttribute('data-target').toLowerCase() == view.toLowerCase()) {
+				button.classList.add('highlighted-border');
+			} else {
+				button.classList.remove('highlighted-border');
+			}
+		});
+	} else document.querySelector('#posts').style.display = 'flex';
+};
+
+const openView = (view) => {
+	enableView(view);
+	refreshView(view);
+	switch (view) {
+		case 'posts':
+			loadPosts();
+			break;
+		case 'comments':
+			console.log('load comments');
+			loadComments();
+			break;
+		case 'annotations':
+			break;
+		case 'favorites':
+			break;
+		case 'followers':
+			break;
+		default:
+			loadPosts();
+			break;
+	}
+};
+
+const updateURL = (view) => {
+	const urlParams = new URLSearchParams(window.location.search);
+	let uid = urlParams.get('uid').split('?')[0];
+	let newUrl = `${window.location.origin}${window.location.pathname}?uid=${uid}?v=${view}`;
+	history.pushState(null, '', newUrl);
+};
+
 function deletePostConfirm() {
 	let button = event.target;
 	let postID = button.closest('.forumPost').id;
@@ -28,7 +102,7 @@ function deletePostConfirm() {
 			console.log(data);
 			if (data.status) {
 				console.log('success');
-				window.location.replace(`/forum`);
+				location.reload();
 			} else {
 				if (data.message == 'Please make sure all the fields are filled in') {
 					//red border around
@@ -168,16 +242,18 @@ function createProfile(profile) {
 			<button data-target="favorites" id="profileSwitchViewBtn">Favorites</button>
 			<button data-target="followers" id="profileSwitchViewBtn">Followers</button>
 		</div>
-		<div style="width: 80%; margin-inline: auto;" id="posts"></div>
-		<div style="width: 80%; margin-inline: auto;" id="comments"></div>
-		<div style="width: 80%; margin-inline: auto;" id="annotations"></div>
-		<div style="width: 80%; margin-inline: auto;" id="favorites"></div>
-		<div style="width: 80%; margin-inline: auto;" id="followers"></div>
+		<div style="width: 80%; margin-inline: auto;" id="posts" class="profileBox"></div>
+		<div style="width: 80%; margin-inline: auto;" id="comments" class="profileBox"></div>
+		<div style="width: 80%; margin-inline: auto;" id="annotations" class="profileBox"></div>
+		<div style="width: 80%; margin-inline: auto;" id="favorites" class="profileBox"></div>
+		<div style="width: 80%; margin-inline: auto;" id="followers" class="profileBox"></div>
 		</div>
 		`;
+	div.querySelectorAll('#profileSwitchViewBtn').forEach((v) => {
+		v.addEventListener('click', viewClick);
+	});
 	document.body.appendChild(div);
-	loadPosts();
-	loadComments();
+	sendToRequest();
 }
 
 function likePost() {
@@ -246,27 +322,10 @@ function forumReport() {
 
 loadProfile();
 
-document.addEventListener('click', function (event) {
-	if (event.target && event.target.id === 'profileSwitchViewBtn') {
-		document.querySelectorAll('#posts, #comments, #annotations, #favorites, #followers').forEach((div) => {
-			div.style.display = 'none';
-		});
-
-		const buttons = document.querySelectorAll('#profileSwitchViewBtn');
-		for (let i = 0; i < buttons.length; i++) {
-			buttons[i].classList.remove('highlighted-border');
-		}
-
-		event.target.classList.add('highlighted-border');
-
-		const targetDivId = event.target.getAttribute('data-target').toLowerCase();
-		const targetDiv = document.getElementById(targetDivId);
-
-		if (targetDiv) {
-			targetDiv.style.display = 'flex';
-		}
-	}
-});
+function viewClick() {
+	let id = event.target.getAttribute('data-target').toLowerCase();
+	openView(id);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
 	document.addEventListener('click', (event) => {
@@ -475,11 +534,15 @@ function replyClick() {
 }
 
 function loadComments() {
+	const urlParams = new URLSearchParams(window.location.search);
+	let data = new FormData();
+	data.append('uid', urlParams.get('uid').split('?')[0]);
 	fetch('api/profile/return-comments', {
 		method: 'post',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
-		}
+		},
+		body: new URLSearchParams(data)
 	})
 		.then((res) => res.json())
 		.then((data) => {
@@ -494,11 +557,15 @@ function loadComments() {
 }
 
 function loadPosts() {
+	const urlParams = new URLSearchParams(window.location.search);
+	let data = new FormData();
+	data.append('uid', urlParams.get('uid').split('?')[0]);
 	fetch('api/profile/return-posts', {
 		method: 'post',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
-		}
+		},
+		body: new URLSearchParams(data)
 	})
 		.then((res) => res.json())
 		.then((data) => {

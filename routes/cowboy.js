@@ -5,6 +5,11 @@ const { GridFsStorage } = require('multer-gridfs-storage');
 const crypto = require('crypto');
 const path = require('path');
 const multer = require('multer');
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+require('dotenv').config();
+const bodyParser = require('body-parser');
+const Image = require('../model/Image');
+router.use(bodyParser.json());
 
 const storage = new GridFsStorage({
 	url: process.env.MONGODB_URI,
@@ -56,7 +61,11 @@ router.post('/create-story', upload.array('files'), async (req, res) => {
 					maxSize = planToSize[planID];
 					console.log('Max Size:', maxSize);
 				} catch (err) {
-					maxSize = null;
+					if (req.user.admin) {
+						maxSize = Infinity;
+					} else {
+						maxSize = 0;
+					}
 				}
 			});
 			files.forEach((file) => {
@@ -110,6 +119,23 @@ router.post('/create-story', upload.array('files'), async (req, res) => {
 		});
 	}
 });
+
+const returnSubscription = async (customerID) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const subscriptions = await stripe.subscriptions.list({
+				customer: customerID,
+				limit: 1
+			});
+			const subscription = subscriptions.data[0];
+			let response = !subscription ? false : subscription;
+			resolve(response);
+		} catch (err) {
+			console.log(err);
+			reject(err);
+		}
+	});
+};
 
 router.get('/get-stories', async (req, res) => {
 	try {

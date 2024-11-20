@@ -115,13 +115,21 @@ router.post('/get-analytics', async (req, res) => {
 		let users = await User.find();
 		let posts = await Post.find();
 		let analytic = await analytics.getAnalytics();
+
+		const db = mongoose.connection.db;
+		const stats = await db.command({ dbStats: 1 });
+
+		console.log('Storage Size (allocated by MongoDB):', stats.storageSize, 'bytes');
+		console.log('Index Size:', stats.indexSize, 'bytes');
 		res.send({
 			status: true,
 			totalUsers: users.length,
 			totalPosts: posts.length,
 			dailyActiveUsers: analytic.dailyActiveUsers,
 			usersCalendar: analytic.usersCalendar,
-			postsCalendar: analytic.postsCalendar
+			postsCalendar: analytic.postsCalendar,
+			usedStorage: stats.indexSize,
+			totalStorage: stats.storageSize
 		});
 	} catch (err) {
 		res.send({
@@ -219,6 +227,30 @@ router.post('/ignore-report', async (req, res) => {
 			status: true,
 			message: 'Report has switched its visibility setting'
 		});
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
+router.post('/remove-report', async (req, res) => {
+	try {
+		let { reportID } = req.body;
+		let report = await Report.findByIdAndDelete(reportID);
+		if (report) {
+			res.send({
+				status: true,
+				message: 'Report has been removed'
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'No report found!'
+			});
+		}
 	} catch (err) {
 		console.log(err);
 		res.send({

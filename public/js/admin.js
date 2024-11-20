@@ -57,12 +57,12 @@ const LoadAnalytics = () => {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
-			const { totalUsers, totalPosts, dailyActiveUsers, usersCalendar, postsCalendar } = data;
+			const { totalUsers, totalPosts, dailyActiveUsers, usersCalendar, postsCalendar, usedStorage, totalStorage } = data;
 			LoadDailyActiveUsers(dailyActiveUsers, 10, 'days');
 			LoadTotalUsers(totalUsers, usersCalendar);
 			LoadTotalPosts(totalPosts, postsCalendar);
 			LoadPageVisits();
-			LoadDatabasePercent();
+			LoadDatabasePercent(usedStorage, totalStorage);
 		});
 };
 
@@ -398,10 +398,13 @@ const LoadTotalPosts = (totalPosts, postsCalendar) => {
 	myChart.update();
 };
 
-const LoadDatabasePercent = () => {
+const LoadDatabasePercent = (usedStorage, totalStorage) => {
 	let ctx = document.getElementById('databasePercent').getContext('2d');
 	ctx.canvas.parentNode.style.height = '100%';
 	ctx.canvas.parentNode.style.width = '40%';
+	let ratio = usedStorage / totalStorage;
+	document.querySelector('#usedStorage').innerHTML = `${(ratio * 100).toFixed(1)}% Used`;
+	document.querySelector('#unusedStorage').innerHTML = `${((1 - ratio) * 100).toFixed(1)}% Available`;
 	let myChart = new Chart(ctx, {
 		type: 'doughnut',
 		data: {
@@ -409,7 +412,7 @@ const LoadDatabasePercent = () => {
 			datasets: [
 				{
 					label: 'Database Storage',
-					data: [65, 35],
+					data: [ratio, 1 - ratio],
 					backgroundColor: ['rgb(39, 130, 242)', 'rgb(242, 242, 242)'],
 					hoverOffset: 4
 				}
@@ -577,7 +580,7 @@ const viewUserProfileClick = () => {
 	let button = event.target;
 	let member = button.closest('#memberElement');
 	let uid = member.querySelector('#uid').innerHTML;
-	window.open(`/profile?id=${uid}`, '_blank');
+	window.open(`/profile?uid=${uid}`, '_blank');
 };
 const deleteUserClick = () => {
 	let button = event.target;
@@ -756,7 +759,7 @@ const createReportObject = (message, reasons, post, pfp, postID, _id, ignored, r
 	div.id = 'report';
 	div.innerHTML = `
 		<div id="${_id}" style="border: solid 1px #333; padding: 10px; border-radius: 5px; margin-top: 20px;">
-		<div id="post>
+		<div id="post">
         <div class="forumPost" href="/forum?id=${postID}" id=${postID}>
         <div class="inlineForumUser">
             <img class="forumPfp" src="${pfpText}"></img>
@@ -784,14 +787,51 @@ const createReportObject = (message, reasons, post, pfp, postID, _id, ignored, r
         <div class="inlineButtons">
         <button style="height: 50px;" id="deleteBtn" class="btnLink">Delete Post</button>
         <button style="height: 50px;" id="ignoreBtn" class="btnLink">${ignoredText}</button>
+		<button style="height: 50px;" id="removeBtn" class="btnLink">Remove Report</button>
         </div>
 		</div>
 		</div>
 	`;
+	div.querySelector('.forumPost').addEventListener('click', postClick);
+	div.querySelector('.forumPost').addEventListener('mouseover', () => {
+		document.body.style.cursor = 'pointer';
+	});
+	div.querySelector('.forumPost').addEventListener('mouseout', () => {
+		document.body.style.cursor = 'default'; // Reset the cursor when not hovering
+	});
 	div.querySelector('#deleteBtn').addEventListener('click', deleteReport);
 	div.querySelector('#ignoreBtn').addEventListener('click', ignoreReport);
+	div.querySelector('#removeBtn').addEventListener('click', removeReport);
 	document.querySelector('#reportHolder').appendChild(div);
 };
+
+function postClick() {
+	console.log(event.target);
+	if (event.target.className == 'forumPost') {
+		window.open(`forum?id=${event.target.id}`, '_blank');
+	}
+}
+
+function removeReport() {
+	let button = event.target;
+	let report = button.closest('#report');
+	let reportID = report.querySelector('div').id;
+	report.remove();
+	decreaseReportsTitle();
+	let data = new FormData();
+	data.append('reportID', reportID);
+	fetch('api/admin/remove-report', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+		});
+}
 
 const deleteReportObjects = () => {
 	let reports = document.querySelectorAll('#report');

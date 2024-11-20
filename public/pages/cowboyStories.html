@@ -30,8 +30,8 @@
     <div class="cowboyStoryExplore">
         <h1>How has your faith impacted your life as a cowboy?</h1>
         <div class="createStory">
-            <input id="createStoryTitle" placeholder="Enter your title..." class="signupInput" style="display: none;" type="text">
-            <input id="createStoryDesc" placeholder="Enter your story Description..." class="signupInput" style="display: none;"  type="text">
+            <input id="createStoryTitle" placeholder="Add a title for your story..." class="signupInput" style="display: none;" type="text">
+            <input id="createStoryDesc" placeholder="Add a description..." class="signupInput" style="display: none;"  type="text">
             <div style="width: 100%;">
                 <textarea style="width: 100%;" placeholder="Share your story..." name="" id="storyInput"></textarea>
                 <textarea class="postText" id="message" type="text"></textarea>
@@ -46,7 +46,9 @@
                   <img id="imageUploadPreview" src="" alt="">
                 </div>
               </label>
+            <div id="images" style="display: flex; flex-direction: row;"></div>
             <button id="postStoryBtn">Share</button>
+                <button id="removeImageBtn" style="background-color: #f3f3f3; height: 40px; padding-block: 0px; font-family: 'Roboto'; width: unset; border-radius: 10px; display: none;" class="btnLink" id="postButton">Delete Image</button>
         </div>
         <img src="../images/ColoradoCountry2.jpg" alt="">
     </div>
@@ -116,7 +118,7 @@
         tinymce.init({
             selector: '#message',  // combined selectors
             plugins: '',
-            placeholder: 'Enter text',
+            placeholder: 'Share your story...',
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image table mergetags | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
             tinycomments_mode: 'embedded',
             tinycomments_author: 'Author name',

@@ -1,3 +1,4 @@
+let allFiles = [];
 document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#storyInput').addEventListener('click', function () {
 		let page = document.querySelector('.createStory');
@@ -93,6 +94,70 @@ function checkTitleAndMessage(title, message, description) {
 	return failed;
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+	document.getElementById('dropArea').addEventListener('dragover', function (e) {
+		e.preventDefault();
+	});
+
+	document.getElementById('dropArea').addEventListener('drop', uploadImage);
+
+	document.getElementById('addImage').addEventListener('change', uploadImage);
+});
+
+function setAspectRatio(img) {
+	img.onload = function () {
+		let defaultHeight = parseFloat(img.style.height.replace('px', ''));
+		let height = img.naturalHeight;
+		let width = img.naturalWidth;
+		let aspectRatio = (width / height).toFixed(2);
+		img.style.width = aspectRatio * defaultHeight + 'px';
+	};
+}
+
+document.querySelector('#removeImageBtn').addEventListener('click', function () {
+	document.getElementById('imageUploadPreview').setAttribute('src', '');
+	document.querySelector('.submitImageText').style.display = 'flex';
+	document.querySelector('.imageUploadPreviewDiv').style.display = 'none';
+	document.querySelector('#removeImageBtn').style.display = 'none';
+});
+
+function uploadImage() {
+	console.log('Uploading...');
+	const files = Array.from(event.target.files);
+	allFiles = allFiles.concat(files);
+	console.log(allFiles);
+	if (files.length > 0) {
+		files.forEach((file) => {
+			if (file && file.type.startsWith('image/')) {
+				const reader = new FileReader();
+				let div = document.createElement('div');
+				div.innerHTML = `
+					<img id="${file.name}" style="width: 150px; height: 150px; border: 2px solid grey; object-fit: cover;"></img>
+					<button>Delete</button> 
+				`;
+				div.querySelector('button').addEventListener('click', deleteImage);
+				let img = div.querySelector('img');
+				reader.onload = function (e) {
+					img.src = e.target.result;
+					setAspectRatio(img);
+				};
+				reader.readAsDataURL(file);
+				document.querySelector('#images').appendChild(div);
+			} else {
+				alert('Please upload a valid image file.');
+			}
+		});
+	}
+}
+
+function deleteImage() {
+	let name = event.target.parentElement.querySelector('img').id;
+	event.target.parentElement.remove();
+	console.log(name);
+	allFiles = allFiles.filter((item) => item.name !== name);
+	console.log(allFiles);
+}
+
 function postStory() {
 	let title = document.querySelector('#createStoryTitle').value;
 	let description = document.querySelector('#createStoryDesc').value;
@@ -102,7 +167,14 @@ function postStory() {
 	data.append('title', title);
 	data.append('message', message);
 	data.append('description', description);
-	data.append('file', document.querySelector('#addImage').files);
+	console.log('All Files Uploaded:', allFiles);
+	if (allFiles.length > 0) {
+		// Check if there are files selected
+		for (let i = 0; i < allFiles.length; i++) {
+			data.append('files', allFiles[i]); // Append each file to FormData
+		}
+		// Now `data` contains all the files, and you can send it via AJAX or Fetch
+	}
 	fetch('api/cowboy/create-story', {
 		method: 'post',
 		body: data

@@ -42,11 +42,12 @@ router.post('/load', async (req, res) => {
 		const user = await User.findById(uid);
 		let pfp = null;
 		if (user.meta.pfp) pfp = user.meta.pfp.name;
+		let filteredPosts = user.posts.filter((post) => post.type != 'comment');
 		const profile = {
 			username: user.meta.username,
 			bio: user.meta.bio,
 			uid: user.id,
-			posts: user.posts,
+			posts: filteredPosts,
 			isSubscribed: user.subscription.isSubscribed,
 			pfp: pfp,
 			city: user.meta.shipping.city,
@@ -199,7 +200,7 @@ router.post('/update-username', async (req, res) => {
 
 router.post('/return-comments', async (req, res) => {
 	try {
-		let uid = req.user.id;
+		let { uid } = req.body;
 		console.log('UID:', uid);
 		const user = await User.findById(uid);
 		console.log(user.comments);
@@ -234,7 +235,7 @@ router.post('/return-comments', async (req, res) => {
 
 router.post('/return-posts', async (req, res) => {
 	try {
-		let uid = req.user.id;
+		let { uid } = req.body;
 		console.log('UID:', uid);
 		const user = await User.findById(uid);
 		console.log(user.posts);
