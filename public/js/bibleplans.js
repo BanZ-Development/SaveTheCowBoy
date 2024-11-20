@@ -480,7 +480,7 @@ function returnBookNumberToName(bookNum) {
 	return booksOfTheBible[bookNum - 1];
 }
 
-function returnResumeVerse(plans) {
+function returnResumeVerse(plans, dbPlans) {
 	let result = [];
 	plans.forEach((plan) => {
 		result.push({
@@ -489,7 +489,6 @@ function returnResumeVerse(plans) {
 		});
 	});
 	if (result.length > 0) {
-		console.log(result);
 		result.forEach((plan) => {
 			let escapedId = CSS.escape(plan.id);
 			let bp = document.querySelector('.tableContents').querySelector('#' + escapedId);
@@ -498,6 +497,10 @@ function returnResumeVerse(plans) {
 				let bookNum = plan.verse.split(':')[0];
 				let chapterNum = plan.verse.split(':')[1];
 				resumeText.innerHTML = `${returnBookNumberToName(bookNum)} ${chapterNum}`;
+			} else {
+				let yourPlan = dbPlans.filter((p) => p._id == plan.id);
+				let num = parseInt(yourPlan[0].books[0].book);
+				resumeText.innerHTML = `${returnBookNumberToName(num)} 1`;
 			}
 		});
 	}
@@ -516,7 +519,7 @@ function loadMain() {
 			if (data.status) {
 				iteratePlans(data.biblePlans);
 				updateCompletion(data.userPlans);
-				returnResumeVerse(data.userPlans);
+				returnResumeVerse(data.userPlans, data.biblePlans);
 			}
 		});
 }
