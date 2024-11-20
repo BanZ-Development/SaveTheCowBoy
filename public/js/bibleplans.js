@@ -137,9 +137,9 @@ function createTableOfContents(books, scroll) {
 					div.querySelector('#chapters').appendChild(chapterElem);
 				});
 				document.querySelector('#tableOfContents').appendChild(div);
-				setFinishedChapters();
 			});
 			scrollToElement(`book${scroll - 1}`, 'auto');
+			setFinishedChapters();
 		});
 }
 
@@ -494,12 +494,12 @@ function returnResumeVerse(plans) {
 			let escapedId = CSS.escape(plan.id);
 			let bp = document.querySelector('.tableContents').querySelector('#' + escapedId);
 			let resumeText = bp.querySelector('#resumeText');
-			let bookNum = plan.verse.split(':')[0];
-			let chapterNum = plan.verse.split(':')[1];
-			resumeText.innerHTML = `${returnBookNumberToName(bookNum)} ${chapterNum}`;
+			if (plan.verse) {
+				let bookNum = plan.verse.split(':')[0];
+				let chapterNum = plan.verse.split(':')[1];
+				resumeText.innerHTML = `${returnBookNumberToName(bookNum)} ${chapterNum}`;
+			}
 		});
-	} else {
-		console.log(null);
 	}
 }
 

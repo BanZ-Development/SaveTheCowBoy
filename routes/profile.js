@@ -201,15 +201,11 @@ router.post('/update-username', async (req, res) => {
 router.post('/return-comments', async (req, res) => {
 	try {
 		let { uid } = req.body;
-		console.log('UID:', uid);
 		const user = await User.findById(uid);
-		console.log(user.comments);
 		Promise.all(user.comments.map((commentID) => Comment.findById(commentID)))
 			.then((commentList) => {
 				// Filter out null or undefined comments in case `findById` didn't find any.
 				let comments = commentList.filter((comment) => comment);
-				console.log(comments);
-				console.log(comments.length);
 
 				res.send({
 					status: true,
@@ -236,15 +232,11 @@ router.post('/return-comments', async (req, res) => {
 router.post('/return-posts', async (req, res) => {
 	try {
 		let { uid } = req.body;
-		console.log('UID:', uid);
 		const user = await User.findById(uid);
-		console.log(user.posts);
 		Promise.all(user.posts.map((postID) => Post.findById(postID)))
 			.then((postList) => {
 				// Filter out null or undefined comments in case `findById` didn't find any.
 				let posts = postList.filter((post) => post);
-				console.log(posts);
-				console.log(posts.length);
 
 				res.send({
 					status: true,
