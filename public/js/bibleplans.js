@@ -269,12 +269,10 @@ function setFinishedChapters() {
 		.then((res) => res.json())
 		.then((data) => {
 			if (data.status) {
-				console.log(data.chaptersFinished);
 				data.chaptersFinished.forEach((chapter) => {
 					let split = chapter.split(':');
 					let adjustedChapter = `${parseInt(split[0]) - 1}:${split[1]}`;
 					let element = document.getElementById(adjustedChapter);
-					console.log(element);
 					//add icon here lucky
 					element.innerHTML = '[x] ' + element.innerHTML;
 				});
