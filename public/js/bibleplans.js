@@ -274,7 +274,8 @@ function setFinishedChapters() {
 					let adjustedChapter = `${parseInt(split[0]) - 1}:${split[1]}`;
 					let element = document.getElementById(adjustedChapter);
 					//add icon here lucky
-					element.innerHTML = '[x] ' + element.innerHTML;
+					element.innerHTML = '<i class="fa-solid fa-square-check"></i> ' + element.innerHTML;
+					element.style = 'background-color: #3dd598; color: #fff; border-radius: 8px;';
 				});
 			}
 		});
@@ -1145,9 +1146,11 @@ const observer = new MutationObserver((mutationsList, observer) => {
 							const parentElement = bookChapterList.parentElement; // Get the parent of the whole bookChapterList container
 
 							if (chapterList.style.display === 'flex') {
+								//btn.querySelector('i').style.transform = "rotate(0deg)";
 								chapterList.style.display = 'none';
 								parentElement.style.marginBottom = '0vw'; // Apply margin to the parent of the entire container
 							} else {
+								//btn.querySelector('i').style.transform = "rotate(90deg)";
 								chapterList.style.display = 'flex';
 								parentElement.style.marginBottom = '2vw'; // Apply margin to the parent of the entire container
 							}
