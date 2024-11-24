@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('click', function (event) {
 	let shrinkableDiv = document.querySelector('.createStory');
 	let parent = document.querySelector('.cowboyStoryExplore');
+	if (shrinkableDiv.style.height != 'calc(-55px + 70vh)') return;
 	if (!shrinkableDiv.contains(event.target)) {
 		const currentWidth = parseFloat(window.getComputedStyle(shrinkableDiv).getPropertyValue('width'));
 		const parentWidth = parseFloat(window.getComputedStyle(parent).getPropertyValue('width'));
