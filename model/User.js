@@ -48,6 +48,10 @@ const userSchema = new Schema({
 		forgotPassword: {
 			token: String,
 			expirationDate: Date
+		},
+		dateCreated: {
+			type: Date,
+			default: new Date()
 		}
 	},
 	admin: {

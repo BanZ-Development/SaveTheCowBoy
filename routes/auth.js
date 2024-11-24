@@ -60,7 +60,8 @@ router.post('/isLoggedIn', async (req, res) => {
 				username: req.user.meta.username,
 				uid: req.user.id,
 				admin: req.user.admin,
-				subscribed: subscribed
+				subscribed: subscribed,
+				isVerified: req.user.meta.verify.isVerified
 			};
 			if (req.user.meta.pfp) params['pfp'] = req.user.meta.pfp.name;
 			let date = new Date();
@@ -131,6 +132,10 @@ router.post('/signup', async (req, res) => {
 								city: city,
 								state: state,
 								zip: zip
+							},
+							verify: {
+								isVerified: false,
+								code: crypto.randomBytes(10).toString('hex')
 							}
 						},
 						admin: false,
@@ -396,6 +401,52 @@ router.post('/reset-password', async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		res.send({ status: false, error: error.message });
+	}
+});
+
+router.post('/verify-account', async (req, res) => {
+	try {
+		let { uid, code } = req.body;
+		console.log(uid, code);
+		if (!uid || !code) {
+			return res.send({
+				status: false,
+				message: 'You must supply a user ID and verification code!'
+			});
+		}
+		let user = await User.findById(uid);
+		console.log(user);
+		if (!user) {
+			return res.send({
+				status: false,
+				message: 'No account under this ID!'
+			});
+		}
+		if (user.meta.verify.isVerified) {
+			return res.send({
+				status: true,
+				message: 'Already verified'
+			});
+		} else {
+			if (user.meta.verify.code === code) {
+				user.meta.verify.isVerified = true;
+				await user.save();
+				return res.send({
+					status: true,
+					message: 'Account veriifed'
+				});
+			} else {
+				return res.send({
+					status: false,
+					message: 'Incorrect verification code!'
+				});
+			}
+		}
+	} catch (error) {
+		res.send({
+			status: false,
+			message: error.message
+		});
 	}
 });
 

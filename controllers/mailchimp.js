@@ -54,7 +54,7 @@ exports.addUser = async (user) => {
 						zip: user.meta.shipping.zip
 					},
 					PHONE: user.meta.phoneNumber,
-					VA_CODE: user.meta.verify.code
+					VA_CODE: `${process.env.URL}/verify?uid=${user.id}&code=${user.meta.verify.code}`
 				}
 			})
 			.then((m) => {
