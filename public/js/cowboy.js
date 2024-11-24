@@ -199,5 +199,29 @@ function loadStories() {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
+			if (data.status) {
+				data.cowboyStories.forEach((story) => createStoryElement(story));
+			}
 		});
+}
+
+function createStoryElement(story) {
+	let div = document.createElement('div');
+	div.id = story._id;
+	div.className = 'cowboyStory';
+	div.innerHTML = `
+        <div>
+            <h1>${story.title}</h1>
+            <p>${story.description}</p>
+            <button id="readMore" class="btnLink">Read More</button>
+        </div>
+	`;
+	if (story.images.length >= 1) {
+		div.innerHTML = `<img src="${window.location.origin}/image/${story.images[0].name}" alt="">` + div.innerHTML;
+	}
+	div.querySelector('#readMore').addEventListener('click', (event) => {
+		let id = event.target.closest('.cowboyStory').id;
+		window.open(`/forum?id=${id}`, '_blank');
+	});
+	document.querySelector('.featuredStories').appendChild(div);
 }
