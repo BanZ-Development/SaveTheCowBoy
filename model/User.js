@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Image = require('../model/Image');
 
+function generateRandomCode() {
+	return Math.random().toString(36).substring(2, 10).toUpperCase(); // Generates an 8-character alphanumeric code
+}
+
 const userSchema = new Schema({
 	meta: {
 		username: {
@@ -30,7 +34,21 @@ const userSchema = new Schema({
 			type: String,
 			required: true
 		},
-		pfp: Object
+		pfp: Object,
+		verify: {
+			code: {
+				type: String,
+				default: generateRandomCode
+			},
+			isVerified: {
+				type: Boolean,
+				default: false
+			}
+		},
+		forgotPassword: {
+			token: String,
+			expirationDate: Date
+		}
 	},
 	admin: {
 		type: Boolean,
@@ -44,10 +62,6 @@ const userSchema = new Schema({
 		customer: {
 			type: String
 		}
-	},
-	forgotPassword: {
-		token: String,
-		expirationDate: Date
 	},
 	posts: [String],
 	comments: [String],

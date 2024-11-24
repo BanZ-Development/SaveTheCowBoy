@@ -23,6 +23,7 @@ const tierToPriceID = (tier) => {
 
 router.post('/create-checkout-session', async (req, res) => {
 	try {
+		console.log(req.body);
 		let uid;
 		try {
 			uid = req.user.id;
@@ -55,14 +56,12 @@ router.post('/create-checkout-session', async (req, res) => {
 		console.log('User ID: ' + uid);
 		console.log('Session ID: ' + session.id);
 		//save session id to user in db
-		const filter = { _id: uid };
 		const update = {
 			subscription: {
 				sessionID: session.id
 			}
 		};
-
-		User.findOneAndUpdate(filter, update).then(() => {
+		User.findByIdAndUpdate(uid, update).then((user) => {
 			res.send({
 				status: true,
 				url: session.url
@@ -121,27 +120,29 @@ router.post('/stripe-session', async (req, res) => {
 								customer: session.customer
 							}
 						};
+						console.log('Session:', session);
 						if (session && session.status === 'complete') {
-							User.findOneAndUpdate(filter, update)
-								.then((user) => {
+							User.findByIdAndUpdate(uid, update).then((user) => {
+								if (user) {
 									res.send({
 										status: true,
 										message: 'Payment succeeded.'
 									});
-								})
-								.catch((error) => {
-									console.log(error);
+								} else {
 									res.send({
 										status: false,
-										error: error
+										message: 'Payment failed'
 									});
-								});
+								}
+							});
 						} else {
-							res.send({ status: false });
+							res.send({ status: false, message: 'Incomplete session' });
 						}
 					} catch (error) {
+						console.log(error);
 						res.send({
-							status: false
+							status: false,
+							error: error
 						});
 					}
 				}

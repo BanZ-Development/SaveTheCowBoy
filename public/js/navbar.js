@@ -84,7 +84,7 @@ function isNonSubscriberPage() {
 		pageName.toLowerCase() === 'settings' ||
 		pageName.toLowerCase() === 'signup' ||
 		pageName.toLowerCase() === 'login' ||
-		pageName.toLowerCase() === 'forgotPassword'
+		pageName.toLowerCase() === 'forgot-password'
 	);
 }
 

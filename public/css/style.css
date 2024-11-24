@@ -1541,6 +1541,26 @@ button {
     display: none;
 }
 
+.link-button {
+    background: none;            /* Removes the background */
+    border: none;                /* Removes the border */
+    color: #007bff;              /* Makes text look like a link */
+    text-decoration: underline;  /* Adds an underline */
+    font-size: inherit;          /* Matches surrounding text */
+    font-family: inherit;        /* Matches surrounding text */
+    padding: 0;                  /* Removes default padding */
+    cursor: pointer;             /* Makes it clickable like a link */
+  }
+  
+  .link-button:hover {
+    color: #0056b3;              /* Darkens on hover */
+    text-decoration: none;       /* Removes underline on hover */
+  }
+  
+  .link-button:focus {
+    outline: none;               /* Removes focus outline (optional) */
+  }
+
 .biblePlanPages {
     background-color: #fff;
     border: solid 1.5px #ccc;
@@ -2297,6 +2317,7 @@ button {
         height: fit-content;
         margin-inline: auto;
         border-radius: 8px;
+        cursor: pointer;
     }
 
     .biblePlanChapter > i {

@@ -144,7 +144,6 @@ function createTableOfContents(books, scroll) {
 				document.querySelector('#tableOfContents').appendChild(div);
 			});
 			scrollToElement(`book${scroll - 1}`, 'smooth');
-			setFinishedChapters();
 			openSelectedChapter(scroll);
 		});
 }
@@ -302,8 +301,10 @@ function setFinishedChapters() {
 					let adjustedChapter = `${parseInt(split[0]) - 1}:${split[1]}`;
 					let element = document.getElementById(adjustedChapter);
 					//add icon here lucky
-					element.innerHTML = '<i class="fa-solid fa-square-check"></i> ' + element.innerHTML;
-					element.style = 'background-color: #3dd598; color: #fff; border-radius: 8px;';
+					if (!element.innerHTML.includes('<i class="fa-solid fa-square-check"></i>')) {
+						element.innerHTML = '<i class="fa-solid fa-square-check"></i> ' + element.innerHTML;
+						element.style = 'background-color: #3dd598; color: #fff; border-radius: 8px;';
+					}
 				});
 			}
 		});
@@ -328,6 +329,7 @@ function checkForCompletion() {
 		.then((data) => {
 			if (data.status) {
 				setCompletionText(data.completion);
+				setFinishedChapters();
 			}
 		});
 }
@@ -420,8 +422,8 @@ async function createPlanWindow(plan) {
 				</div>
 				<div id="commentUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
 					<label id="quote">Quoting: </label>
-					<textarea placeholder="Speak your mind..."id="commentBox" style="width=95%; height=6em; resize: none;"></textarea>
-					<button id="submitCommentBtn" style="width=95%;">Comment</button>
+					<textarea placeholder="Speak your mind..."id="commentBox" style="width: calc(95% - 10px); resize: none; font-family: 'roboto'; border: solid 1px #ccc; height: 20vh; padding: 10px;"></textarea>
+					<button id="submitCommentBtn" class="biblePlanReadBtn" style="width=95%;">Comment</button>
 				</div>
 				<h3 id="commentPrerequisite" style="position: absolute;bottom: 0; display: none;">Highlight text to create a comment!</h3>
             </div>
