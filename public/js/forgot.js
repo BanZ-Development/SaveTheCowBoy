@@ -57,7 +57,7 @@ function getResetCode() {
 					'#response'
 				).innerHTML = `Your verification code has been sent to the email: <b>${email}</b>. \nIt may take a few minutes for you to receive your code. Do <b>NOT</b> click the <a href="/forgot-password">back</a> button to try again for 5 minutes.`;
 				document.querySelector('#getCode').style.display = 'none';
-				document.querySelector('#verifyCode').style.display = 'block';
+				document.querySelector('#verifyCode').style.display = 'flex';
 				document.querySelector('#email').innerHTML = '';
 			} else {
 				document.querySelector('#response').innerHTML = `There was an error processing your request. Are you sure there is an account associated with the email: ${email}`;
@@ -70,7 +70,7 @@ function getResetCode() {
 function hasCode() {
 	document.querySelector('#sendEmailBtn').style.display = 'none';
 	document.querySelector('#hasCodeBtn').style.display = 'none';
-	document.querySelector('#verifyCode').style.display = 'block';
+	document.querySelector('#verifyCode').style.display = 'flex';
 }
 
 function back() {
