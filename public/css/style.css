@@ -1542,23 +1542,23 @@ button {
 }
 
 .link-button {
-    background: none;            /* Removes the background */
-    border: none;                /* Removes the border */
-    color: #007bff;              /* Makes text look like a link */
-    text-decoration: underline;  /* Adds an underline */
-    font-size: inherit;          /* Matches surrounding text */
-    font-family: inherit;        /* Matches surrounding text */
-    padding: 0;                  /* Removes default padding */
-    cursor: pointer;             /* Makes it clickable like a link */
+    background: none;
+    border: none;
+    color: #007bff;
+    text-decoration: underline;
+    font-size: inherit;
+    font-family: inherit;
+    padding: 0;
+    cursor: pointer;
   }
   
   .link-button:hover {
-    color: #0056b3;              /* Darkens on hover */
-    text-decoration: none;       /* Removes underline on hover */
+    color: #0056b3;
+    text-decoration: none;
   }
   
   .link-button:focus {
-    outline: none;               /* Removes focus outline (optional) */
+    outline: none;
   }
 
 .biblePlanPages {
