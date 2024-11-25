@@ -2327,6 +2327,14 @@ button {
         color: #fff;
     }
 
+    #annotateBox,#commentBox {
+        resize: none;
+        font-family: 'roboto';
+        border-block: solid 1px #ccc;
+        height: 20vh;
+        padding: 10px;
+    }
+
   @media only screen and (max-width: 1610px) {
 
     .settingSidebarBtn {
@@ -2531,7 +2539,6 @@ button {
 
     .topGraph > div > div > h4 {
         font-size: 3.25vw !important;
-        letter-spacing: 1.5px;
     }
 
     #totalUsersNum, #totalPostsNum, #loadedReportsTitle {
@@ -2734,6 +2741,10 @@ button {
   }
 
   @media only screen and (max-width: 856px) {
+
+    .biblePlanChapter {
+        font-size: 2.25vw;
+    }
 
     .inlineBookTitle > h3 {
         font-size: 2.5vw !important;
@@ -3149,7 +3160,7 @@ button {
         margin-inline: auto;
     }
 
-    #annotateBox {
+    #annotateBox, #commentBox {
         width: 100% !important;
     }
 
@@ -3198,7 +3209,6 @@ button {
 
     .topGraph > div > div > h4 {
         font-size: 4vw !important;
-        letter-spacing: 0px;
     }
 
     #totalUsersNum, #totalPostsNum {

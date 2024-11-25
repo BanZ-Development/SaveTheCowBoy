@@ -401,7 +401,7 @@ async function createPlanWindow(plan) {
 				</div></div>
 				<div id="annotationsUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%; background-color: #fff;">
 					<label id="annotateRoute"></label>
-					<textarea placeholder="Write down something important to you..." id="annotateBox" style="width: calc(95% - 10px); resize: none; font-family: 'roboto'; border: solid 1px #ccc; height: 20vh; padding: 10px;"></textarea>
+					<textarea placeholder="Write down something important to you..." id="annotateBox"></textarea>
 					<button class="biblePlanReadBtn" id="submitAnnotationBtn">Annotate</button>
 				</div>
 				<h3 id="annotatePrerequisite">Highlight text to create an annotation!</h3>
@@ -420,7 +420,7 @@ async function createPlanWindow(plan) {
 						></l-ring>
 					</div>
 				</div>
-				<div id="commentUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%">
+				<div id="commentUserInput" style="position: absolute;bottom: 0; flex-direction: column; display: none; width:100%; background-color: #fff;">
 					<label id="quote">Quoting: </label>
 					<textarea placeholder="Speak your mind..."id="commentBox" style="width: calc(95% - 10px); resize: none; font-family: 'roboto'; border: solid 1px #ccc; height: 20vh; padding: 10px;"></textarea>
 					<button id="submitCommentBtn" class="biblePlanReadBtn" style="width=95%;">Comment</button>
