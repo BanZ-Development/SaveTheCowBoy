@@ -184,7 +184,7 @@ function checkForPfpCookie() {
 checkForPfpCookie();
 
 //COMMENT OUT ON TEST (CONSTRUCTION BANNER)
-let available = ['forum', 'settings', 'admin'];
+let available = ['forum', 'settings', 'admin', 'devotions', 'biblePlans', 'cowboyStories', 'profile', ''];
 document.addEventListener('DOMContentLoaded', function () {
 	for (let i = 0; i < document.querySelectorAll('.dropLink').length; i++) {
 		console.log(document.querySelectorAll('.dropLink')[i].getAttribute('href'));
