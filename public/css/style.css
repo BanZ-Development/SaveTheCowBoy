@@ -2056,7 +2056,7 @@ button {
     text-decoration: none;
     color: #333;
     margin-block: 5px;
-    font-size: 1.25vw;
+    font-size: 150%;
   }
 
   #chapters {
