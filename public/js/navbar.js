@@ -184,7 +184,7 @@ function checkForPfpCookie() {
 checkForPfpCookie();
 
 //COMMENT OUT ON TEST (CONSTRUCTION BANNER)
-let available = ['forum', 'settings', 'admin', 'devotions', 'biblePlans', 'cowboyStories', 'profile', ''];
+/*let available = ['forum', 'settings', 'admin', 'devotions', 'biblePlans', 'cowboyStories', 'profile', ''];
 document.addEventListener('DOMContentLoaded', function () {
 	for (let i = 0; i < document.querySelectorAll('.dropLink').length; i++) {
 		console.log(document.querySelectorAll('.dropLink')[i].getAttribute('href'));
@@ -205,9 +205,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-	/*document.querySelector('#profile').setAttribute('href', '');
+	document.querySelector('#profile').setAttribute('href', '');
 	document.querySelector('#profile').addEventListener('click', construction);
-	document.querySelector('#navSub').addEventListener('click', construction);*/
+	document.querySelector('#navSub').addEventListener('click', construction);
 });
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -225,7 +225,7 @@ async function construction(event) {
 	await delay(5000);
 	document.querySelector('.construction').style.display = 'none';
 	document.querySelector('#nav').style = 'margin-top: 0px;';
-}
+}*/
 
 const navbar = document.querySelector('#nav');
 
