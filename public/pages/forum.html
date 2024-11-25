@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum</title>
+    <title>Forum | Long X Ranch Cowboys</title>
     <link rel="icon" href="../images/favicon.ico">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
     <script type="module" src="../js/forum.js"></script>
     <script src="../js/tinymce_7.2.1/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
   </head>
-<body>
+<body style="background-color: #fff;">
   <div id="popupOverlay" class="deleteOverlay">
     <div class="deletePopup">
           <h2 style="margin:auto;">Are you sure you want to delete?</h2>
@@ -28,33 +28,41 @@
   <div class="allForum">
     <div class="forumSection">
       <div id="forumHeader" style="display: flex; flex-direction: row; position: relative;">
-          <a href='/forum' style="display: none;" class="backBtn"><i class="fa-solid fa-arrow-left"></i></a>
-          <h1 class="forumTitle"style="color: #fff;"><a style="text-decoration: none; color: white;"class="forumTitle"href="/forum">Save the Cowboy Forums</a></h1>
+          <a href='javascript:history.back()' style="display: none;" class="backBtn"><i class="fa-solid fa-arrow-left"></i></a>
+          <h1 class="forumTitle"style="color: #fff;"><a id="forumPageTitle" style="text-decoration: none; color: #333;"class="forumTitle"href="/forum">Long X Ranch Cowboys Forums</a></h1>
       </div>
       <div id="sorting">
-        <button class="filterBtn" id="sortClicked" style="background-color: rgb(53, 53, 53);">Newest</button>
+        <button class="filterBtn" id="sortClicked" style="background-color: #f2f2f2;">Newest</button>
         <button class="filterBtn" id="sortUnclicked">Popular</button>
         <button class="filterBtn" id="sortUnclicked">Most Liked</button>
       </div>
       <div>
           <div id="makePost" style="display: none;" class="popupPost"></div>
           <div style="display: none;" id="postInformation" class="postInformation">
-            <button id="closePostBtn" style="height: 50px;" class="btnLink"><i style="color: #f75252;" class="fa-regular fa-circle-xmark"></i> Close</button>
-              <h1 style="color: #333; width: 94%;">Create Post</h1>
-              <input style="width: 99%; margin-block: 20px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="title" placeholder="Enter Title"type="text">
+              <div style="display: flex; flex-direction: row;">
+                <h1 style="color: #333; width: 94%;">Create Post</h1>
+                <button id="closePostMainBtn" class="submitImageText" style="background: none;
+                border: none;
+                padding: none;
+                display: inline-block;
+                cursor: pointer; font-size: 16pt;"><i class="fa-solid fa-circle-xmark"></i></button>
+              </div>
+              
+              <input style="width: 98%; margin-block: 20px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="title" placeholder="Enter Title"type="text">
               <textarea style="height: 500px;" class="postText" id="message" placeholder="Enter text"type="text"></textarea>
               <label id="dropArea" class="submitImage" for="addImage">
-                <input type="file" name="" id="addImage" hidden>
+                <input type="file" name="" id="addImage" hidden multiple>
                 <div class="submitImageText">
-                  <p>Drag and Drop images or videos or</p>
                   <i class="fa-solid fa-cloud-arrow-up"></i>
+                  <p>Upload images</p>
                 </div>
                 <div class="imageUploadPreviewDiv">
                   <img id="imageUploadPreview" src="" alt="">
                 </div>
               </label>
+              <div id="images" style="display: flex; flex-direction: row;"></div>
               <div class="inlineButtons">
-                <button style="background-color: #f3f3f3; height: 40px; padding-block: 0px; font-family: 'Roboto'; border-radius: 10px;" class="btnLink" id="postButton">Post</button>
+                <button style="background-color: #fff; height: 40px; padding-block: 0px; font-family: 'Roboto'; border-radius: 10px; border: solid 2px #f2f2f2;" class="btnLink" id="postButton">Post</button>
                 <button id="removeImageBtn" style="background-color: #f3f3f3; height: 40px; padding-block: 0px; font-family: 'Roboto'; width: unset; border-radius: 10px; display: none;" class="btnLink" id="postButton">Delete Image</button>
               </div>
           </div>
@@ -62,34 +70,23 @@
           <div style="display: none;" id="reportInformation" class="postInformation">
               <h1 id="reportTitle"style="color: #333; width: 94%; margin-inline: auto;">Report</h1>
               <h3>Choose what applies...</h3>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="spam">
-                  Spam
-              </label><br>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="misleading">
-                  Misleading or incorrect
-              </label><br>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="harmful">
-                  Harmful or violent
-              </label><br>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="harassment">
-                  Harassment or Bullying
-              </label><br>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="hate-speech">
-                  Hate Speech
-              </label><br>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="advertisement">
-                  Advertisement
-              </label><br>
-              <label>
-                  <input type="checkbox" id="reportCheckbox" value="other">
-                  Other
-              </label><br>
+              <div id="inputPreview">
+                <input type="checkbox" id="spam" class="reportCheckbox">
+                <label for="spam">Spam</label>
+                <input type="checkbox" id="misleading" class="reportCheckbox">
+                <label for="misleading">Misleading or incorrect</label>
+                <input type="checkbox" id="harmful" class="reportCheckbox">
+                <label for="harmful">Harmful or Violent</label>
+                <input type="checkbox" id="harassment" class="reportCheckbox">
+                <label for="harassment">Harassment or Bullying</label>
+                <input type="checkbox" id="hate-speech" class="reportCheckbox">
+                <label for="hate-speech">Hate Speech</label>
+                <input type="checkbox" id="advertisement" class="reportCheckbox">
+                <label for="advertisement">Advertisement</label>
+                <input type="checkbox" id="other" class="reportCheckbox">
+                <label for="other">Other</label>
+              </div>
+              
               <input style="width: 95%; margin-block: 20px; font-family: 'Roboto';" class="signupInput" id="reportMessage" placeholder="Describe your complaint... (optional)"type="text">
               <button style="background-color: #f3f3f3; height: 40px; padding-block: 0px; font-family: 'Roboto';" class="btnLink" id="submitReportButton">Submit Report</button>
           </div>
@@ -103,7 +100,7 @@
       </div>
       <div class="forumDesc">
         <h1>Forums</h1>
-        <p>Christianity is a subreddit to discuss Christianity and aspects of Christian life. All are welcome to participate.</p>
+        <p>Feel free to discuss any topics related to Christianity or Save the Cowboy! All are welcome here!</p>
         <span style="margin-block: 15px;" class="line"></span>
         <h3 style="margin-block: 10px;">Rules</h3>
         <button class="faqBtn">
@@ -115,7 +112,7 @@
       <button class="faqBtn">
         <p>Questions for admin or leadership <i id="faqIcon" class="fa-solid fa-chevron-down" style="transform: rotateX(0deg);"></i></p>
         <div id="faqAns" style="display: none;">
-            <p>Reach out to Tyler Lowe via email, text, or fb messenger. Tag Sara Thorp, Tyler Lowe, or Mitch Gorman in posts requiring our attention</p>
+            <p>Reach out to Tyler Lowe via email, text, or fb messenger. Tag Tyler Lowe, or Mitch Gorman in posts requiring our attention</p>
         </div>
     </button>
     <button class="faqBtn">
@@ -162,6 +159,10 @@
     
     </div>
     <style>
+
+      .line {
+        background-color: #ccc;
+      }
 
       .tox-edit-area {
         min-height: 30vh !important;

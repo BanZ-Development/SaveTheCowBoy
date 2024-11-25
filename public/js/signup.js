@@ -157,7 +157,7 @@ const validateAddress = (address) => {
 
 const validatePassword = () => {
 	let password = document.querySelector('#password').value;
-	let error = 'Password must be at least 8 characters long, have a number, and a special character';
+	let error = 'Password must be at least 8 characters long, have a number, and have a capital and lowercase character';
 	let special = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 	if (password.length >= 8 && /\d/.test(password) && special.test(password)) {
 		InputValidation('password', 'green');

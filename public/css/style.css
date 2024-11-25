@@ -1,4 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Fonts Used: Montserrat, Inter, Noto Serif, Roboto, Spectral*/
 
 :root {
     --slate-gray: #6d8a96ff;
@@ -12,6 +16,7 @@ html {
     scroll-behavior: smooth;
     font-family: 'Montserrat';
     height: 100%;
+    box-sizing: border-box;
     
 }
 
@@ -24,16 +29,17 @@ body {
 }
 
 nav {
-    background-color: rgba(0, 0, 0, 0.521);
+    background-color: var(--bistre);
     color: #fff;
     height: 100px;
     display: flex;
     flex-direction: row;
     position: fixed;
-    width: 100%;
+    width: 100vw;
     z-index: 1;
     backdrop-filter: blur(3px);
     z-index: 3;
+    transition: ease all 0.3s;
 }
 
 button {
@@ -169,6 +175,27 @@ button {
     color: #fff !important;
 }
 
+.btnChapter {
+    border: none;
+    background-color: #fff;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 18px;
+    transition: ease all 0.3s;
+    height: 30px;
+    text-align: center;
+    width: 10px;
+    border-radius: 5px;
+    color: white;
+    min-width: 40px;
+    line-height: 10px;
+    margin-inline: 5px;
+    margin-block: 5px;
+}
+
 .subscriptionSection {
     height: 1100px;
     background-color: #fff;
@@ -199,16 +226,19 @@ button {
     display: flex;
     flex-direction: column;
     width: 374px;
-    height: 550px;
+    max-height: fit-content !important; 
+    min-height: 497px;
     color: #2B2118;
     font-family: 'Montserrat';
-    background-color: #f2f2f2;
+    background-color: #ffff;
+    border: solid 1px #ccc;
     margin-inline: 40px;
     border-radius: 4px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     position: relative;
     transition: ease all 0.3s;
     flex-shrink: 0;
+    justify-content: space-between;
 }
 
 .subscription:hover {
@@ -217,7 +247,7 @@ button {
     color: #fff;
 }
 
-.subscription:hover > .subBtn {
+.subscription > .subBtn:hover {
     color: #2B2118;
     background-color: #fff;
 }
@@ -259,10 +289,8 @@ button {
     width: 80%;
     margin-inline: auto;
     cursor: pointer;
-    position: absolute;
-    bottom: 20px;
-    left: 0;
-    right: 0;
+    position: relative;
+    margin-bottom: 20px;
 
 }
 
@@ -291,8 +319,7 @@ button {
 }
 
 .subOption > i {
-    height: 40px;
-    line-height: 3;
+    margin-block: auto;
     margin-right: 10px;
 }
 
@@ -433,7 +460,8 @@ button {
     font-family: 'Montserrat';
     font-size: 20px;
     color: #333;
-    background-color: #f3f3f3;
+    background-color: #fff;
+    border: solid 1px #ccc;
     text-indent: 10px;
 }
 
@@ -441,6 +469,8 @@ button {
     color: #333;
     margin-inline: auto;
     width: 70%;
+    margin-bottom: 2px;
+    margin-top: 4px;
 }
 
 .membersTable {
@@ -498,8 +528,8 @@ button {
     height: 25px;
     background-color: #fff0;
     border-radius: 50%;
-    border: solid 1px #fff;
-    color: #fff;
+    border: solid 1px #333;
+    color: #333;
     cursor: pointer;
   }
 
@@ -508,19 +538,21 @@ button {
   }
 
   .filterBtn {
-    color: #fff;
-    background-color: #1e1e1e;
-    border: 2px solid #303030;
+    color: #333;
+    background-color: #fff;
+    border: 2px solid #f2f2f2;
     padding: 10px;
     font-size: 17px;
     border-radius: 10px;
     cursor: pointer;
     width: 120px;
     margin-inline: 5px;
+    font-family: 'Roboto';
   }
 
   .filterBtn:hover {
-    background-color: #353535;
+    background-color: #f2f2f2;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 1);
   }
 
   .searchInput {
@@ -554,6 +586,7 @@ button {
     color: #333;
     font-weight: 500;
     font-size: 20px;
+    margin-bottom: 7px;
 }
 
 .signupImg {
@@ -642,6 +675,7 @@ button {
     flex-direction: row;
     align-items: center;
     height: 100%;
+    cursor: default
 }
 
 .navProfileUser > img {
@@ -657,6 +691,9 @@ button {
 .navProfileUser > p {
     font-size: 20px;
     font-family: 'Roboto';
+}
+.navProfileUser:hover > p, .navProfileUser:hover > i {
+    color: #c9c9c9;
 }
 
 .navProfileDrop {
@@ -710,7 +747,7 @@ button {
     width: 20%;
     height: calc(100% - 30px);
     align-items: center;
-    background-color: #1a1a1a;
+    background-color: #fff;
     position: fixed;
 }
 
@@ -726,7 +763,7 @@ button {
     font-size: 20px;
     border-radius: 5px;
     background-color: #fff0;
-    color: #474747;
+    color: #333;
     transition: all ease 0.3s;
     cursor: pointer;
     text-align: left;
@@ -751,12 +788,11 @@ button {
 .settingMainContent {
     display: flex;
     flex-direction: column;
-    background-color: #1e1e1e;
+    background-color: #f2f2f2;
     width: 80%;
     min-height: 100%;
     max-height: fit-content;
-    color: #fff;
-    padding-inline: 30px;
+    color: #333;
     padding-left: 20%;
     padding-bottom: 120px;
 }
@@ -851,20 +887,22 @@ button {
     text-overflow: ellipsis;
     overflow-x: hidden;
     line-height: 35px;
+    color: #333;
+    pointer-events: none;
   }
 
   .forumTitle > h3 > a {
     font-size: 1.6vw;
-    color: #fff !important;
+    color: #333 !important;
     text-decoration: none;
   }
 
   .forumPost:hover {
-    background-color: #22222269;
+    background-color: #e8e8e869;
   }
 
   .comment:hover {
-    background-color: #22222269;
+    background-color: #e8e8e869;
   }
 
   .commentSection {
@@ -876,6 +914,7 @@ button {
   .forumTitle {
     display: flex;
     flex-direction: row;
+    pointer-events: none;
   }
 
   .forumTitle > p {
@@ -889,6 +928,7 @@ button {
     line-height: 40px;
     margin-inline: 20px;
     margin-right: 0px;
+    pointer-events: fill;
   }
 
   .forumUser:hover {
@@ -917,13 +957,13 @@ button {
     top: 110px;
     margin-inline: auto;
     padding: 20px;
-    width: 80%;
+    width: 60%;
     height: 75vh;
     overflow-y: scroll;
     background-color: #fff;
     display: flex;
     flex-direction: column;
-    z-index: 3;
+    z-index: 2;
     border-radius: 5px;
   }
 
@@ -960,7 +1000,7 @@ button {
   .iconBtn {
     display: block;
     background-color: #fff0;
-    color: #fff;
+    color: #333;
     border: none;
     cursor: pointer;
     font-size: 20px;
@@ -972,12 +1012,15 @@ button {
     display: flex;
     flex-direction: column;
     height: fit-content;
-    background-color: #1e1e1e;
+    background-color: #f2f2f2;
     display: none;
+    margin-top: 15px;
   }
 
   #navSep {
     display: none;
+    background-color: #333;
+    height: 0.9px;
   }
 
   #logoutBtn2 {
@@ -1030,11 +1073,12 @@ button {
   .inlineForumUser {
     display: flex;
     flex-direction: row;
+    pointer-events: none;
   }
 
   .forumPost {
     font-family: 'Roboto';
-    color: #ccc;
+    color: #333;
   }
 
   .construction {
@@ -1114,20 +1158,20 @@ button {
     height: calc(100vh - 180px);
     padding-inline: 20px;
     border-radius: 10px;
-    background-color: #202020;
-    color: #fff;
+    background-color: #fff;
+    color: #333;
     overflow-y: scroll;
-    border: solid 1px #2b2b2b;
+    border: solid 1px #ccc;
  }
 
  .faqBtn {
     font-family: 'Roboto';
-    color: #747474;
+    color: #333;
     text-align: left;
     font-size: 20px;
     border: none;
     cursor: pointer;
-    background-color: #202020;
+    background-color: #fff;
     display: flex;
     flex-direction: column;
     height: fit-content;
@@ -1138,8 +1182,8 @@ button {
 }
 
 .faqBtn:hover {
-    background-color: #252525;
-    color: #bdbdbd !important;
+    background-color: var(--bistre);
+    color: #fff !important;
 }
 
 .faqBtn > p {
@@ -1197,19 +1241,19 @@ button {
 
 #commentBtn {
     margin-left: 0px;
-    height: 50px;
-    width: 140px;
     font-family: 'Roboto';
+    border: solid 1px #ccc;
 }
 
 .forumDesc > h3  {
-    margin-left: 20px;
+    margin-left: 10px;
 }
 
 .inlineGraphs {
     display: flex;
     flex-direction: row;
     height: 50%;
+    justify-content: space-evenly;
 }
 
 .inlineGraphs > div > h1 {
@@ -1220,10 +1264,22 @@ button {
     margin-inline: 10px;
     margin-block: 30px;
     padding: 50px;
-    width: 47%;
+    width: 100%;
     padding: 10px;
-    background-color: #1c1c1c;
+    background-color: #fff;
+    border: solid 1px #fff0;
     border-radius: 20px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.topGraph {
+    padding: 25px;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    border: solid 1px #ccc;
+    border-radius: 6px; height: 120px;
+    margin-inline: 5px;
 }
 
 #filterBtn {
@@ -1239,17 +1295,19 @@ button {
 }
 
 .filterDrop {
-    top: 50px;
-    left: 0;
+    transform: scale(0.8);
+    top: -15px;
+    right: -40px;
     width: 340px;
     display: none;
     flex-direction: column;
     position: absolute;
-    background-color: #1a1a1a;
-    border: solid 1px #333;
+    background-color: #fff;
+    border: solid 1px #ccc;
     padding: 20px;
     border-radius: 15px;
     z-index: 3;
+    cursor: default;
 }
 
 #filterBtn:hover > .filterDrop {
@@ -1260,7 +1318,7 @@ button {
     display: flex;
     flex-direction: row;
     padding-block: 15px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #ccc;
     align-items: center;
 }
 
@@ -1272,9 +1330,9 @@ button {
 .filterDropSearch > input {
     height: 25px;
     border-radius: 8px;
-    background-color: #1a1a1a;
-    border: solid 1px #333;
-    color: #fff;
+    background-color: #fff;
+    border: solid 1px #ccc;
+    color: #333;
     text-indent: 10px;
     font-size: 15px;
     font-family: 'Roboto';
@@ -1314,9 +1372,9 @@ button {
 }
 
 .userInfoTag {
-    color: #aaa;
-    background-color: #1d1d1d;
-    border: solid 1px #333;
+    color: #898989;
+    background-color: #fff;
+    border: solid 1px #ccc;
     padding: 10px;
     border-radius: 8px;
     width: fit-content !important;
@@ -1326,9 +1384,948 @@ button {
 }
 
 .userInfoTag > b {
-    color: #fff;
+    color: #333;
     font-weight: 500;
 }
+
+.updateUserInfoInput {
+    display: none;
+    width: 7vw;
+}
+
+.biblePlansHolder {
+    display: flex;
+    flex-direction: row;
+    margin-left: 30% !important;
+    width: 65% !important;
+}
+
+.biblePlans {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.biblePlan {
+    background-color: #fff;
+    display: flex;
+    flex-direction: row;
+    border-radius: 10px;
+    width: 60vw;
+    height: 42vh;
+    object-fit: cover;
+    object-position: center;
+    justify-content: center;
+    border: solid 1.5px #ccc;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    margin-block: 15px;
+}
+
+.tableContentsPlan {
+    display: flex;
+    flex-direction: row;
+    padding-block: 10px;
+    border-radius: 6px;
+    margin-inline: 7%;
+}
+
+.tableContentsPlan:hover {
+    background-color: #d1d1d1;
+    cursor: pointer;
+}
+
+.tableContentsIcon {
+    display: flex;
+    background-color: #f2f2f2;
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    border-radius: 6px;
+}
+
+.biblePlan > div > h3 {
+    font-size: 1.5vw;
+    color: #333;
+    margin-top: 15px;
+    margin-bottom: 2px;
+}
+
+.biblePlanBtn {
+    position: absolute;
+    text-align: center;
+    display: block;
+    background-color: #fff;
+    border: solid 1px #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    width: 140px;
+    margin-inline: auto;
+    text-decoration: none;
+    color: #333;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    transition: ease all 0.3s;
+}
+
+.biblePlanBtn:hover {
+    background-color: #ccc;
+}
+
+.biblePlanProg {
+    width: 85%;
+    border: solid 1px #ccc;
+    border-radius: 1000px;
+    height: 20px;
+    margin-top: 40px;
+    margin-inline: auto;
+    display: flex;
+}
+
+.biblePlanPopup {
+    display: none;
+    position: absolute;
+    padding: 10px;
+    background-color: #fff;
+    color: #333;
+    border-radius: 5px;
+    font-size: 14px;
+    z-index: 1000;
+    background-color: #333;
+    border: 2px #c4c4c4 solid;
+    user-select: none;
+}
+
+.innerBiblePlanProg {
+    display: inline-block;
+    background-color: var(--bistre);
+    border-radius: 1000px;
+    height: 20px;
+    width: 50%;
+}
+
+.tableContents {
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: solid 1.5px #ccc;
+    padding: 13px;
+    position: fixed;
+    height: 100%;
+    top: 100px;
+    left: 0;
+    width: 25%;
+}
+
+.tableContents > h2 {
+    margin-left: 1.8vw;
+    font-size: 25px;
+}
+
+.tableContents > ul {
+    padding-left: 10px;
+}
+
+.tableContents > ul > li > a {
+    color: #fff;
+    text-decoration: none;
+    padding: 5px;
+    background-color: #555;
+    border-radius: 8px;
+}
+
+#closePostBtn {
+    display: none;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: #007bff;
+    text-decoration: underline;
+    font-size: inherit;
+    font-family: inherit;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .link-button:hover {
+    color: #0056b3;
+    text-decoration: none;
+  }
+  
+  .link-button:focus {
+    outline: none;
+  }
+
+.biblePlanPages {
+    background-color: #fff;
+    border: solid 1.5px #ccc;
+    height: fit-content;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.biblePlanPage {
+    font-size: 20px;
+    font-family: 'Roboto';
+    font-weight: 300;
+    line-height: 35px;
+    color: #555;
+}
+
+.pageSwitch {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    font-size: 30px;
+    color: #767676;
+    font-family: 'Spectral';
+}
+
+.pageSwitch > button {
+    font-size: 25px;
+    height: 50px;
+    background-color: #fff0;
+    border: none;
+    color: #767676;
+    cursor: pointer;
+}
+
+.pageSwitch > p {
+    margin-inline: auto;
+}
+
+.biblePlanSidebar {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    background-color: #fff;
+    width: 25%;
+    height: 100%;
+    border-right: solid 1px #ccc;
+}
+
+.toolbar {
+    margin-top: 110px;
+    width: fit-content;
+    margin-inline: auto;
+    border: solid 1px #ccc;
+    border-radius: 20px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.toolbar > button {
+    color: #333;
+    background-color: #fff0;
+    border: none;
+    width: 45px;
+    padding: 10px;
+    margin-inline: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.toolbar > button:hover {
+    background-color: #2782f2;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.bookChapterList {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin-inline: auto;
+    height: fit-content;
+    overflow-y: hidden;
+    margin-block: 15px;
+}
+
+.inlineBookTitle {
+    display: flex;
+    flex-direction: row;
+}
+
+.bookTitleDropBtn {
+    margin-left: 15px;
+    margin-top: 19px;
+    background-color: var(--bistre);
+    color: #fff;
+    height: 25px;
+    width: 25px;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.bibleSideSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 80px;
+    width: 100%;
+}
+
+.annotation {
+    margin-block: 10px;
+    display: flex;
+    flex-direction: column;
+    border: solid 1.5px #ccc;
+    background-color: #ffff;
+    width: 90%;
+    margin-inline: auto;
+    border-radius: 12px;
+    font-size: 19px;
+}
+
+.inlineAnnotationTitle {
+    display: flex;
+    flex-direction: row;
+    border-bottom: solid 1px #ccc;
+    padding: 10px;
+    height: 50px;
+    font-size: 20px;
+}
+
+.annotationText {
+    padding-inline: 25px;
+    margin-bottom: 0px;
+    font-family: 'Roboto';
+    font-weight: 400;
+}
+
+.annotationTitle {
+    font-family: 'Noto Serif';
+    color: #333;
+    margin-block: auto;
+    font-weight: bold;
+    font-size: 22.5px;
+}
+
+.viewVerseBtn {
+    border: solid 1px #ccc;
+    background-color: #fff;
+    border-radius: 22px;
+    cursor: pointer;
+    height: 40px;
+    width: 120px;
+    font-size: 18px;
+    margin-left: auto;
+    margin-block: auto;
+}
+
+.annotationDrop {
+    margin-block: auto;
+    margin-left: auto;
+    margin-right: 20px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    background-color: #fff;
+    border: solid 1.5px #ccc;
+    border-radius: 12px;
+    cursor: pointer;
+    color: #333;
+}
+
+.annotationDrop:hover > i {
+    transform: rotate(-90deg);
+}
+
+.bibleTranslation {
+    display: flex;
+    flex-direction: row;
+    background-color: #fff;
+    border: solid 1px #ccc;
+    border-radius: 12px;
+    margin-block: 10px;
+    padding: 10px;
+    color: #333;
+    width: 85%;
+    margin-inline: auto;
+}
+
+.bibleTranslation > div > h2 {
+    margin-block: 2px;
+    font-size: 1.3vw;
+}
+
+.bibleTranslation > div > h3 {
+    font-size: 1vw;
+    margin-block: 2px;
+    color: #797979;
+}
+
+#selectTranslationBtn {
+    background-color: #fff;
+    border: solid 1px #ccc;
+    color: #333;
+    height: 20px;
+    width: 20px;
+    border-radius: 5px;
+    margin-left: auto;
+    margin-block: auto;
+}
+
+ /* The container must be positioned relative: */
+ .custom-select {
+    position: relative;
+    font-family: Arial;
+  }
+  
+  .custom-select select {
+    display: none; /*hide original SELECT element: */
+  }
+  
+  .select-selected {
+    background-color: DodgerBlue;
+  }
+  
+  /* Style the arrow inside the select element: */
+  .select-selected:after {
+    position: absolute;
+    content: "";
+    top: 14px;
+    right: 10px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-color: #fff transparent transparent transparent;
+  }
+  
+  /* Point the arrow upwards when the select box is open (active): */
+  .select-selected.select-arrow-active:after {
+    border-color: transparent transparent #fff transparent;
+    top: 7px;
+  }
+  
+  /* style the items (options), including the selected item: */
+  .select-items div,.select-selected {
+    color: #ffffff;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    cursor: pointer;
+  }
+  
+  /* Style items (options): */
+  .select-items {
+    position: absolute;
+    background-color: DodgerBlue;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+  }
+  
+  /* Hide the items when the select box is closed: */
+  .select-hide {
+    display: none;
+  }
+  
+  .select-items div:hover, .same-as-selected {
+    background-color: rgba(0, 0, 0, 0.1);
+  } 
+
+  .cowboyStoryExplore {
+    display: flex;
+    flex-direction: column;
+    padding-top: 150px;
+    margin-inline: auto;
+    position: relative;
+    width: 90%;
+    height: 70vh;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cowboyStoryExplore > h1 {
+    z-index: 2;
+    color: #fff;
+    width: 70%;
+    font-size: 2.4vw;
+    text-align: center;
+  }
+
+  .cowboyStoryExplore > img {
+    position: absolute;
+    object-fit: cover;
+    height: 70vh;
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  .createStory {
+    bottom: 20px;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    background-color: #fff;
+    border-radius: 12px;
+    z-index: 2;
+    padding: 10px;
+    border: solid 1px #ccc;
+    width: 50%;
+    overflow-x: hidden;
+  }
+
+  #storyInput {
+    border: none;
+    resize: none;
+    font-family: 'Roboto';
+    outline: none;
+    font-size: 20px;
+    width: calc(100% - 125px);
+    height: 100%;
+    border-radius: 6px;
+  }
+
+  .createStory > button {
+    background-color: var(--bistre);
+    border: none;
+    padding: 10px;
+    color: #fff;
+    font-family: 'Roboto';
+    border-radius: 10px;
+    font-size: 17px;
+    cursor: pointer;
+    margin-left: auto;
+    height: 43.4px;
+    margin-block: auto;
+  }
+
+  .biographyType {
+    height: 75px;
+    resize: none;
+    outline: none;
+    font-family: 'Roboto';
+    font-size: 18px;
+    padding: 10px;
+    border: solid 1px #ccc;
+    border-radius: 10px;
+  }
+
+  .featuredStories {
+    margin-block: 50px;
+    width: 90%;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cowboyStory {
+    margin-block: 10px;
+    display: flex;
+    flex-direction: row;
+    background-color: #fff;
+    border-radius: 10px;
+  }
+
+  .cowboyStory > img {
+    width: 50%;
+    border-radius: 10px;
+  }
+
+  .cowboyStory > div {
+    padding-left: 50px !important;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    font-family: 'Noto Serif';
+    justify-content: center;
+  }
+
+  .cowboyStory > div > h1 {
+    margin-block: 0px;
+    margin-top: 20px;
+    font-size: 2.5vw;
+  }
+
+  .cowboyStory > div > p {
+    margin-top: 0px;
+    color: #946B4F;
+    font-size: 1.5vw;
+  }
+
+  .cowboyStory > div > .btnLink {
+    height: 50px;
+    font-family: 'Roboto';
+    width: 120px;
+    margin-inline: 0px;
+    background-color: var(--bistre);
+    color: #fff;
+  }
+
+  #updateAdmin {
+    font-family: 'Montserrat';
+    border: solid 1px #ccc;
+    border-radius: 5px;
+  }
+
+  .profile {
+    padding-top: 110px;
+  }
+
+  .profileBiography {
+    display: flex;
+    border-top: solid 1.5px #ccc;
+    border-bottom: solid 1.5px #ccc;
+    padding: 10px;
+    min-height: 10vw;
+    max-height: fit-content;
+    width: 100%;
+    font-size: 1.3vw;
+    font-weight: 400;
+  }
+
+  .buttonRack {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    margin-block: 80px;
+    margin-inline: auto;
+  }
+
+  .buttonRack > button {
+    color: #333;
+    font-size: 1.3vw;
+    background-color: #fff;
+    border: none;
+    padding-inline: 5.2vw;
+    padding-block: 5px;
+    border-bottom: solid 3.5px #dddddd;
+    font-family: 'Roboto';
+    font-weight: 400;
+    cursor: pointer;
+  }
+
+  .highlighted-border {
+    border-bottom: solid 3.5px #2374d1 !important;
+  }
+
+  .chartSizing {
+    width: 80% !important;
+    height: 70% !important;
+    margin-inline: auto;
+  }
+
+  .analyticHeader {
+    margin-left: 20px;
+  }
+
+  .dot {
+    height: 16px;
+    width: 16px;
+    border-radius: 100%;
+    background-color: #0268db;
+  }
+
+  .profileInformation {
+    min-height: 45vh;
+    max-height: fit-content;
+    width: 80%;
+    margin-inline: auto;
+    padding-top: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .profileInformation > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .maxLength {
+    border: solid 1px #f75252;
+  }
+
+  .biblePlanDescriptor {
+    display: block;
+    font-size: 1.25vw;
+    text-align: center;
+  }
+
+  .biblePlanChapter {
+    text-decoration: none;
+    color: #333;
+    margin-block: 5px;
+    font-size: 1.25vw;
+  }
+
+  #chapters {
+    display: none;
+    flex-direction: column;
+  }
+
+  #chapters > a:first-of-type {
+    margin-top: 20px !important;
+  }
+
+  .biblePlanChapter:hover {
+    color: #5285ff;
+  }
+
+  .biblePlanHeader {
+    font-style: italic;
+    font-family: 'Noto Serif';
+    font-weight: 500;
+    text-align: center;
+    font-size: 1.8vw;
+  }
+
+  .biblePlanImage {
+    width: 45%;
+  }
+
+  .biblePlanInformation {
+      width: 55%;
+      position: relative;
+  }
+
+  #forumDate, .forumPfp {
+    pointer-events: none !important;
+  }
+
+  .filterBtns {
+    margin-block: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+  }
+
+  .canvasDiv {
+    margin-left: 30px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 30%;
+    margin-left: 80px;
+  }
+
+  .reportCheckbox {
+        position: absolute;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        width: 1px;
+        margin: -1px;
+        padding: 0; border: 0; 
+    }
+    
+    #inputPreview {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+    }
+    
+    .reportCheckbox + label {
+        position: relative;
+        font-size: 14px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        height: 22px; color: rgb(0, 0, 0); 
+    }
+    
+    .reportCheckbox + label::before {
+        content: " ";
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px;
+        width: 20px;
+        height: 20px;
+        background-color: var(--bistre);
+        border-width: 1px;
+        border-style: solid;
+        border-color: var(--bistre);
+        border-radius: 50%;
+        box-shadow: none; 
+    }
+    
+    .reportCheckbox:checked + label::after {
+        content: " ";
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjZmZmZmZmIiBkPSJNMTczLjg5OCA0MzkuNDA0bC0xNjYuNC0xNjYuNGMtOS45OTctOS45OTctOS45OTctMjYuMjA2IDAtMzYuMjA0bDM2LjIwMy0zNi4yMDRjOS45OTctOS45OTggMjYuMjA3LTkuOTk4IDM2LjIwNCAwTDE5MiAzMTIuNjkgNDMyLjA5NSA3Mi41OTZjOS45OTctOS45OTcgMjYuMjA3LTkuOTk3IDM2LjIwNCAwbDM2LjIwMyAzNi4yMDRjOS45OTcgOS45OTcgOS45OTcgMjYuMjA2IDAgMzYuMjA0bC0yOTQuNCAyOTQuNDAxYy05Ljk5OCA5Ljk5Ny0yNi4yMDcgOS45OTctMzYuMjA0LS4wMDF6Ii8+PC9zdmc+");
+        background-repeat: no-repeat;
+        background-size: 12px 12px;
+        background-position: center center;
+        position: absolute; display: flex;
+        justify-content: center; align-items: center;
+        margin-left: 0px; left: 0px; top: 0px; text-align: center;
+        background-color: transparent;
+        font-size: 10px;
+        height: 22px;
+        width: 22px; 
+    }
+
+    .cowboyStoryRead {
+        display: flex;
+        flex-direction: column;
+        padding-top: 20vh;
+        width: 85vw;
+        margin-inline: auto;
+    }
+
+    .cowboyStoryDescription {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+
+    .cowboyStoryDescription > div {
+        width: 45%;
+    }
+
+    .cowboyStoryDescription > div > h1 {
+        color: #333;
+        font-size: 3.5vw;
+    }
+
+    .cowboyStoryDescription > div > p {
+        color: #946B4F;
+        font-size: 2vw;
+    }
+
+    .cowboyStoryDescription > div > img {
+        width: 100%;
+        border-radius: 10px;
+    }
+
+    .cowboyStoryText {
+        margin-top: 5.5vw;
+        font-size: 1.75vw;
+        line-height: 3vw;
+    }
+
+    .cowboyStoryText > p {
+        margin-top: 0px;
+        margin-bottom: 5vw;
+    }
+
+    #typeSelectorHolder {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        border: solid 1px #ccc;
+        border-radius: 8px;
+        height: 30px;
+        padding-inline: 10px;
+        cursor: pointer;
+        width: 8vw;
+        min-width: 90px;
+    }
+
+    #typeSelectorHolder > p {
+        display: flex;
+        flex-direction: row;
+        margin: 0;
+        margin-block: auto;
+        color: #333;
+        font-family: 'Roboto';
+        text-transform: capitalize;
+    }
+
+    #typeSelectorHolder > p > i {
+        margin-left: auto;
+    }
+
+    #typeSelector {
+        z-index: 1;
+        display: none;
+        position: absolute;
+        flex-direction: column;
+        -moz-appearence: none;
+        font-family: 'Roboto';
+        background-color: #fff;
+        border: solid 1px #ccc;
+        cursor: pointer;
+        border-radius: 8px;
+        height: fit-content;
+        width: calc(8vw + 20px);
+        min-width: 110px;
+        top: 30px;
+        left: 0;
+    }
+
+    #typeSelector > button {
+        width: 100%;
+        height: 30px;
+        border-radius: 0px;
+        background-color: #fff;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #333;
+        font-weight: 300;
+    }
+
+    #typeSelector > button:hover {
+        background-color: #ccc;
+    }
+
+    #typeSelector > button:first-of-type {
+        border-radius: 8px 8px 0px 0px;
+    }
+
+    #typeSelector > button:last-of-type {
+        border-radius: 0px 0px 8px 8px;
+    }
+
+    #annotatePrerequisite, #commentPrerequisite {
+        position: absolute;
+        bottom: 0;
+        display: none;
+        background-color: #fff;
+        margin: 0px;
+        text-align: center;
+        font-size: 1rem;
+        padding-block: 15px;
+        width: 100%;
+        right: 0;
+        left: 0;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .biblePlanReadPage {
+        display: flex;
+        flex-direction: column;
+        height: 90vh;
+        width: 65%;
+        padding-top: 110px;
+        padding-left: 30%;
+    }
+
+    #mobileToolbar {
+        display: none;
+    }
+
+    .biblePlanReadBtn {
+        width: 50%;
+        border: solid 1px #ccc;
+        background-color: #fff;
+        margin-block: 10px;
+        font-size: 18px;
+        padding: 10px;
+        height: fit-content;
+        margin-inline: auto;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .biblePlanChapter > i {
+        padding: 8px;
+        background-color: #3dd598;
+        border-radius: 5px;
+        color: #fff;
+    }
 
   @media only screen and (max-width: 1610px) {
 
@@ -1360,6 +2357,12 @@ button {
   }
 
   @media only screen and (max-width: 1478px) {
+
+    .toolbar > button {
+        font-size: 1rem !important;
+        padding: 8px !important;
+        margin-inline: 0.6vw !important;
+    }
 
     .faqBtn > p {
         font-size: 16.5px;
@@ -1466,6 +2469,75 @@ button {
 
   @media only screen and (max-width: 1060px) {
 
+    .biblePlanSidebar {
+        display: none;
+        width: 30%;
+    }
+
+    .biblePlanReadPage {
+        padding-left: 0px !important;
+        width: 90% !important;
+        margin-inline: auto;
+    }
+
+    #desktopToolbar {
+        display: none;
+    }
+
+    #mobileToolbar {
+        display: flex;
+        position: fixed;
+        background-color: #fff;
+        left: 0;
+        right: 0;
+        bottom: 30px;
+        margin-inline: auto;
+        z-index: 1;
+        margin-top: 0px;
+    }
+
+    #tableOfContents, #annotations, #comments, #translations {
+        margin-top: 110px;
+    }
+
+    .postInformation {
+        width: 90%;
+    }
+
+    .deletePopup {
+        width: 100% !important;
+        margin-top: 10px !important;
+    }
+
+    .canvasDiv {
+        margin-left: auto;
+    }
+
+    .inlineGraphs {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .topGraph {
+        margin-block: 20px;
+        width: 80% !important;
+        height: fit-content;
+    }
+
+    #totalUsersPreview, #totalPostsPreview {
+        margin-block: 0px;
+    }
+
+    .topGraph > div > div > h4 {
+        font-size: 3.25vw !important;
+        letter-spacing: 1.5px;
+    }
+
+    #totalUsersNum, #totalPostsNum, #loadedReportsTitle {
+        font-size: 4vw !important;
+    }
+
     .tableRow {
         overflow-x: scroll;
     }
@@ -1474,6 +2546,10 @@ button {
         position: static !important;
         margin-top: 10px;
         margin-right: 10px;
+    }
+
+    #commentProfile {
+        border-bottom: none !important;
     }
 
     .forumTitle > h3 > a {
@@ -1512,6 +2588,10 @@ button {
         order: 2;
         margin-block: 2px;
     }
+
+    #memberSettingColumn, #memberColumn {
+        width: 95%;
+      }
 
     #pfp {
         order: 1;
@@ -1647,9 +2727,194 @@ button {
         display: block;
         margin-left: auto;
     }
+
+    #accountHeaderHolder {
+        flex-direction: column !important;
+      }
   }
 
   @media only screen and (max-width: 856px) {
+
+    .inlineBookTitle > h3 {
+        font-size: 2.5vw !important;
+    }
+
+    .biblePlanSidebar {
+        width: 100%;
+        height: 85vh;
+    }
+
+    #viewPast {
+        flex-direction: column !important;
+        align-items: start;
+    }
+
+    .biblePlanHeader {
+        font-size: 2.5vw !important;
+    }
+
+    .biblePlanDescriptor {
+        font-size: 2vw !important;
+    }
+
+    .biblePlanBtn {
+        height: 2vw;
+        width: 15vw;
+        font-size: 2vw;
+    }
+
+    .biblePlanProg {
+        height: 2vw;
+    }
+
+    .innerBiblePlanProg {
+        height: 2vw;
+    }
+
+    .tableContents {
+        display: none !important;
+    }
+
+    .biblePlansHolder {
+        margin-left: 0px !important;
+        margin-inline: auto !important;
+        width: 90% !important;
+    }
+
+    .profileBiography {
+        font-size: 2vw !important;
+    }
+
+    .profileInformation {
+        flex-direction: column;
+        width: fit-content;
+        margin-inline: auto;
+    }
+
+    .profileInformation > div {
+        width: 60vw !important;
+    }
+
+    .profileInformation > div > h1 {
+        margin-block: 10px;
+        margin-inline: 0px !important;
+    }
+
+    .profileUsername {
+        font-size: 3.5vw !important;
+    }
+
+    .profileLocation {
+        font-size: 2.5vw !important;
+    }
+
+    .profileInformation > div > img {
+        margin-bottom: 20px;
+        width: 15vw !important;
+        height: 15vw !important;
+    }
+
+    .biographyHeader {
+        display: none;
+    }
+
+    .buttonRack > button {
+        font-size: 2.2vw;
+        padding-inline: 3.2vw;
+    }
+
+    #bioInput {
+        width: 90% !important;
+        font-size: 16px;
+    }
+
+    .settingColumn {
+        margin-inline: 0px;
+        width: 100%;
+    }
+
+    #currentAndEdit {
+        flex-direction: column !important;
+    }
+
+    #readMore {
+        width: 15vw;
+        height: 6vw;
+        font-size: 2.2vw;
+        line-height: 0;
+        margin-top: 0px;
+    }
+
+    .createStory {
+        width: 90%;
+    }
+
+    .cowboyStoryExplore {
+        width: 100%;
+        border-radius: 0px;
+        padding-top: 100px;
+    }
+
+    .cowboyStoryExplore > img {
+        border-radius: 0px;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .cowboyStoryExplore > h1 {
+        font-size: 3.5vw;
+    }
+
+    .cowboyStory {
+        flex-direction: column;
+    }
+
+    .cowboyStory > img {
+        margin-inline: auto;
+        width: 70vw;
+    }
+
+    .cowboyStory > div {
+        padding-left: 0px;
+        margin-inline: auto;
+    }
+
+    .cowboyStory > div > h1 {
+        font-size: 4vw;
+    }
+
+    .cowboyStory > div > p {
+        font-size: 3vw;
+    }
+
+    .fundraiserDiv {
+        margin-top: 100px !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .fundraiserImg {
+        border-radius: 0px !important;
+        width: 100% !important;
+    }
+
+    #fundraiserLine {
+        width: 35vw !important;
+    }
+
+    .fundraiserPara {
+        width: 99% !important;
+    }
+
+    .backBtn {
+        position: absolute !important;
+        left: 6px;
+        top: 2px;
+    }
+
+    #closePostBtn {
+        display: block;
+    }
 
     .postInformation {
         width: 86vw;
@@ -1741,10 +3006,6 @@ button {
     .subOption > p {
         line-height: 1.5;
         font-size: 12px;
-    }
-
-    .subOption > i {
-        line-height: 2.5;
     }
 
     .aboutSection {
@@ -1866,6 +3127,12 @@ button {
   }
 
   @media only screen and (max-width: 856px) {
+
+    #languageDropdown {
+        width: 85% !important;
+        font-size: 2.5vw;
+    }
+
     .forumDate, .forumUser {
         font-size: 16.5px;
     }
@@ -1881,4 +3148,216 @@ button {
     .forumTitle > a {
         margin-inline: auto;
     }
+
+    #annotateBox {
+        width: 100% !important;
+    }
+
+    #tableOfContents > h1 {
+        font-size: 2.5vw !important;
+    }
+
+    #tableOfContents > label {
+        font-size: 3vw !important;
+    }
+
+    .bibleTranslation > div > h2 {
+        font-size: 2.5vw !important;
+    }
+
+    .bibleTranslation > div > h3 {
+        font-size: 2vw !important;
+    }
+  }
+
+  @media only screen and (max-width: 500px) {
+
+    #languageDropdown {
+        font-size: 5vw;
+    }
+
+    .bibleTranslation > div > h2 {
+        font-size: 3.5vw !important;
+    }
+
+    .bibleTranslation > div > h3 {
+        font-size: 3vw !important;
+    }
+
+    #tableOfContents > h1 {
+        font-size: 7vw !important;
+    }
+
+    #tableOfContents > label {
+        font-size: 3vw !important;
+    }
+
+    .inlineBookTitle > h3 {
+        font-size: 4vw !important;
+    }
+
+    .topGraph > div > div > h4 {
+        font-size: 4vw !important;
+        letter-spacing: 0px;
+    }
+
+    #totalUsersNum, #totalPostsNum {
+        font-size: 4.5vw !important;
+    }
+
+    #totalUsersPreview, #totalPostsPreview {
+        font-size: 2.5vw;
+    }
+
+    .forumUser {
+        font-size: 3.5vw;
+    }
+
+    #bpH1 {
+        font-size: 6vw;
+    }
+
+    #bpH2 {
+        font-size: 3.5vw !important;
+    }
+
+    .biblePlanInformation {
+        height: 60vh;
+    }
+
+    .biblePlanHeader {
+        font-size: 5vw !important;
+        color: #1a1a1a !important;
+        font-weight: 500;
+    }
+
+    .biblePlanDescriptor {
+        font-size: 4vw !important;
+        color: #1a1a1a !important;
+    }
+
+    .biblePlanProg {
+        border: solid 1px #1a1a1a;
+    }
+
+    .biblePlan {
+        flex-direction: column;
+        height: 50vh;
+        position: relative;
+        border: solid 1px #fff0;
+        overflow: hidden;
+    }
+
+    .biblePlanImage {
+        width: 100% !important;
+        height: 60vh;
+        position: absolute;
+    }
+
+    .biblePlanImage > img {
+        border-radius: 10px !important;
+        object-fit: cover !important;
+        object-position: center;
+        filter: blur(3px) contrast(1.3) opacity(0.65);
+    }
+
+    .biblePlanInformation {
+        width: 100% !important;
+        padding-left: 0px !important;
+    }
+
+    .biblePlanBtn {
+        height: 3vw;
+        width: 30vw;
+        font-size: 3vw;
+    }
+
+    .buttonRack > button {
+        font-size: 3vw;
+        padding-inline: 1.65vw;
+    }
+
+    .profileBiography {
+        font-size: 3.5vw !important;
+        min-height: 60%;
+        max-height: fit-content;
+    }
+
+    .profileInformation {
+        padding-block: 0px;
+        padding-top: 10vw;
+    }
+
+    .profileInformation > div > img {
+        width: 40vw !important;
+        height: 40vw !important;
+    }
+
+    .profileInformation > div {
+        width: 75vw !important;
+    }
+
+    .profileUsername {
+        font-size: 6.5vw !important;
+    }
+
+    .profileLocation {
+        font-size: 5.5vw !important;
+    }
+
+    .cowboyStoryExplore > h1 {
+        font-size: 4.5vw;
+    }
+
+    .filterBtn {
+        padding: 7px;
+        width: 80px;
+        margin-inline: 0px;
+        margin-block: 5px;
+        font-size: 12px;
+    }
+
+    .forumTitle {
+        font-size: 4.5vw;
+    }
+
+    .filterBtns {
+        justify-content: space-evenly;
+    }
+
+    .tableRowInfo > p {
+        height: fit-content;
+    }
+
+    .tableDropBtn {
+        padding-block: 1px;
+        padding-inline: 4px;
+    }
+
+    .cowboyStoryRead {
+        width: 90vw !important;
+    }
+
+    .cowboyStoryDescription {
+        flex-direction: column-reverse;
+        align-items: center;
+    }
+
+    .cowboyStoryDescription > div {
+        width: 100%;
+    }
+
+    .cowboyStoryDescription > div > h1 {
+        font-size: 5.5vw;
+    }
+
+    .cowboyStoryDescription > div > p {
+        font-size: 4vw;
+    }
+
+    .cowboyStoryText {
+        font-size: 4vw;
+        line-height: 6.5vw;
+    }
+
   }

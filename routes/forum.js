@@ -3,25 +3,60 @@ const Post = require('../model/Post');
 const User = require('../model/User');
 const Report = require('../model/Report');
 const Comment = require('../model/Comment');
+const multer = require('multer');
+const bodyParser = require('body-parser');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const Image = require('../model/Image');
+const crypto = require('crypto');
+const path = require('path');
+const mongoose = require('mongoose');
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+require('dotenv').config();
+router.use(bodyParser.json());
+
+const storage = new GridFsStorage({
+	url: process.env.MONGODB_URI,
+	file: (req, file) => {
+		return new Promise((resolve, reject) => {
+			crypto.randomBytes(16, (err, buf) => {
+				if (err) {
+					console.log(error);
+					return reject(err);
+				}
+				const filename = buf.toString('hex') + path.extname(file.originalname);
+				const fileInfo = {
+					filename: filename,
+					bucketName: 'uploads'
+				};
+				resolve(fileInfo);
+			});
+		}).catch((error) => {
+			console.log(error);
+		});
+	}
+});
+const upload = multer({ storage });
 
 router.post('/loadPosts', async function (req, res) {
-	const { loadedPosts, sortType } = req.body;
+	let { loadedPosts, sortType, type } = req.body;
 	try {
+		if (!type) type = 'post';
 		const totalCount = await Post.countDocuments();
 		let toLoad = totalCount - loadedPosts;
 		let hasMore = toLoad > 10;
 		// Load the next 10 posts, starting after the already loaded ones
 		let posts;
+		let filtered = await Post.find({ type: type });
 		switch (sortType) {
 			case 'Newest':
-				posts = await Post.find({})
+				posts = await Post.find({ type: type })
 					.sort({ postDate: -1 }) // Sort by most recent
 					.skip(loadedPosts)
 					.limit(10);
 				break;
 			case 'Popular':
 				//Sorting by most popular (popular = likes / time since post);
-				posts = await Post.find({});
+				posts = await Post.find({ type: type });
 				posts = posts.sort((firstItem, secondItem) => {
 					const firstItemPopularity = ((firstItem.likesCount + firstItem.commentsCount) * 1e8) / (new Date() - new Date(firstItem.postDate).valueOf());
 					const secondItemPopularity = ((secondItem.likesCount + secondItem.commentsCount) * 1e8) / (new Date() - new Date(secondItem.postDate).valueOf());
@@ -32,16 +67,24 @@ router.post('/loadPosts', async function (req, res) {
 				posts = posts.slice(loadedPosts, loadedPosts + 10);
 				break;
 			case 'Most Liked':
-				posts = await Post.find({})
+				posts = await Post.find({ type: type })
 					.sort({ likesCount: -1 }) // Sort by most recent
 					.skip(loadedPosts)
 					.limit(10);
 				break;
 			default:
-				posts = await Post.find({})
-					.sort({ postDate: -1 }) // Sort by most recent
-					.skip(loadedPosts)
-					.limit(10);
+				if (type == 'post') {
+					posts = await Post.find({ type: type })
+						.sort({ postDate: -1 }) // Sort by most recent
+						.skip(loadedPosts)
+						.limit(10);
+				} else if (type == 'devotion') {
+					posts = await Post.find({ type: type, releaseDate: { $lte: new Date() } })
+						.sort({ postDate: -1 }) // Sort by most recent
+						.skip(loadedPosts)
+						.limit(10);
+				}
+
 				break;
 		}
 
@@ -68,24 +111,28 @@ router.post('/loadPost', async function (req, res) {
 		if (!post) {
 			let comment = await Comment.findById(req.body.id);
 			let author = await User.findById(comment.authorID);
+			let pfp = null;
+			if (author) pfp = author.meta.pfp;
 			if (comment) {
 				return res.send({
 					status: true,
 					message: '1 comment loaded',
 					post: comment,
 					currentUserID: req.user.id,
-					pfp: author.meta.pfp
+					pfp: pfp
 				});
 			}
 		}
 		let author = await User.findById(post.uID);
+		let pfp = null;
+		if (author) pfp = author.meta.pfp;
 		if (post) {
 			return res.send({
 				status: true,
 				message: '1 post loaded',
 				post: post,
 				currentUserID: req.user.id,
-				pfp: author.meta.pfp
+				pfp: pfp
 			});
 		}
 	} catch (error) {
@@ -118,36 +165,112 @@ router.post('/loadComment', async function (req, res) {
 	}
 });
 
-router.post('/post', async function (req, res) {
+const returnSubscription = async (customerID) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const subscriptions = await stripe.subscriptions.list({
+				customer: customerID,
+				limit: 1
+			});
+			const subscription = subscriptions.data[0];
+			let response = !subscription ? false : subscription;
+			resolve(response);
+		} catch (err) {
+			console.log(err);
+			reject(err);
+		}
+	});
+};
+let planToSize = {
+	'5cc9c4dade2a2': 2.5,
+	'5cc9c50d875e5': 5,
+	'5cc9c54839744': 10,
+	'5cc9c565839f9': 20,
+	'5cc9c5b9deeca': 50,
+	'5cc9c5c85507e': Number.MAX_SAFE_INTEGER
+};
+
+function bytesToMB(bytes) {
+	return bytes / (1024 * 1024); // Divide by 1,048,576
+}
+
+router.post('/post', upload.array('files'), async (req, res) => {
 	try {
-		const { title, message } = req.body;
+		let body = { ...req.body };
+		console.log(body);
+		const { title, message } = body;
 		let date = new Date();
 		let params = {
 			title: title,
 			message: message,
 			uID: req.user._id,
 			username: req.user.meta.username,
-			postDate: date
+			postDate: date,
+			images: []
 		};
-		const post = await Post.create(params);
-		let user = await User.findById(req.user.id);
-		user.posts.push(post.id);
-		await user.save();
-		if (post) {
-			res.send({
-				status: true,
-				message: 'Post created',
-				id: post.id,
-				uID: req.user._id,
-				username: req.user.meta.username
+		const files = req.files;
+		let tooLarge = false;
+		if (files && files.length > 0) {
+			let customerID = req.user.subscription.customer;
+			let maxSize;
+			await returnSubscription(customerID).then((subscription) => {
+				try {
+					let planID = subscription.plan.id;
+					maxSize = planToSize[planID];
+					console.log('Max Size:', maxSize);
+				} catch (err) {
+					if (req.user.admin) {
+						maxSize = Infinity;
+					} else {
+						maxSize = 0;
+					}
+				}
 			});
-		} else {
-			res.send({
-				status: false,
-				message: 'Error while creating post'
+			files.forEach((file) => {
+				const { originalname, filename, size, uploadDate, contentType, id } = file;
+				if (!contentType.includes('image')) return;
+				if (!req.user.admin && bytesToMB(size) > maxSize) {
+					tooLarge = true;
+					return res.send({
+						status: false,
+						message: 'Upload failed because file size too large!',
+						maxSize: maxSize,
+						filename: filename,
+						uploadedSize: bytesToMB(size)
+					});
+				} else {
+					const image = new Image({
+						name: filename,
+						contentType: contentType,
+						uploadDate: uploadDate,
+						fileID: id
+					});
+					params['images'].push(image);
+				}
 			});
 		}
+		if (!tooLarge) {
+			const post = await Post.create(params);
+			let user = await User.findById(req.user.id);
+			user.posts.push(post.id);
+			await user.save();
+			if (post) {
+				res.send({
+					status: true,
+					message: 'Post created',
+					id: post.id,
+					uID: req.user._id,
+					username: req.user.meta.username
+				});
+			} else {
+				res.send({
+					status: false,
+					message: 'Error while creating post'
+				});
+			}
+		}
 	} catch (error) {
+		console.log(error);
 		res.send({
 			status: false,
 			message: 'Please make sure all the fields are filled in'
@@ -340,7 +463,8 @@ router.post('/comment', async (req, res) => {
 	try {
 		const { content, postID } = req.body;
 		let post = await Post.findById(postID);
-		let user = req.user;
+		let uID = req.user;
+		let user = await User.findById(uID);
 
 		if (post && user) {
 			try {
@@ -354,6 +478,8 @@ router.post('/comment', async (req, res) => {
 				post.comments.push(newComment.id);
 				post.commentsCount += 1;
 				await post.save();
+				user['comments'].push(newComment.id);
+				await user.save();
 				res.send({
 					status: true,
 					message: 'Comment posted!',
@@ -378,6 +504,56 @@ router.post('/comment', async (req, res) => {
 });
 
 router.post('/report', async (req, res) => {
+	try {
+		const { reasons, message, postID } = req.body;
+		const uid = req.user.id;
+
+		let type;
+		let post = await Post.findById(postID);
+		let comment = await Comment.findById(postID);
+		if (post) type = 'post';
+		if (comment) type = 'comment';
+
+		await Report.create({
+			reasons: reasons,
+			message: message,
+			postID: postID,
+			reporterID: uid,
+			ignored: false,
+			reportType: type
+		})
+			.then(async (report) => {
+				let Obj = null;
+				if (type == 'post') {
+					Obj = Post;
+				} else if (type == 'comment') {
+					Obj = Comment;
+				}
+				let post = await Obj.findById(postID);
+				post.reports.push(report._id);
+				post.save();
+				res.send({
+					status: true,
+					message: 'Report sent'
+				});
+			})
+			.catch((error) => {
+				console.log(error);
+				res.send({
+					status: false,
+					error: error
+				});
+			});
+	} catch (error) {
+		console.log(error);
+		res.send({
+			status: false,
+			error: error
+		});
+	}
+});
+
+router.post('/report-post', async (req, res) => {
 	try {
 		const { reasons, message, postID } = req.body;
 		const uid = req.user.id;
@@ -419,6 +595,7 @@ router.post('/delete-post', async (req, res) => {
 		const { postID } = req.body;
 		let post = await Post.findById(postID);
 		if (req.user.id == post.uID) {
+			deleteImages(post);
 			await deletePostReports(postID);
 			await Post.findByIdAndDelete(postID);
 			res.send({
@@ -492,5 +669,20 @@ router.post('/delete-comment', async (req, res) => {
 		});
 	}
 });
+
+function deleteImages(post) {
+	deleteImage(post.fileID);
+}
+
+function deleteImage(fileId) {
+	mongoose.connection.db.collection('uploads.chunks').deleteMany({ files_id: new mongoose.Types.ObjectId(fileId) }, (err, result) => {
+		if (err) {
+			console.error('Error deleting chunks:', err);
+			return;
+		}
+
+		console.log(`Deleted ${result.deletedCount} chunk(s) for file ID ${fileId}`);
+	});
+}
 
 module.exports = router;

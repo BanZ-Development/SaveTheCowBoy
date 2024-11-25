@@ -33,8 +33,17 @@ const updateDAU = () => {
 			console.log(data);
 			const { dailyActiveUsers } = data;
 			let timeframe = parseInt(document.querySelector('#timeframeSelector').value);
-			let type = document.querySelector('#typeSelector').value;
-			LoadDailyActiveUsers(dailyActiveUsers, timeframe, type);
+			let type = graphTime;
+			if (isNaN(timeframe)) {
+				document.querySelector('#viewTextLbl').innerHTML = 'Enter a number';
+				document.querySelector('#viewTextLbl').style.color = '#f75252';
+				document.querySelector('#timeframeSelector').style.border = 'solid 1px #f75252';
+			} else {
+				LoadDailyActiveUsers(dailyActiveUsers, timeframe, type);
+				document.querySelector('#viewTextLbl').innerHTML = 'View the past';
+				document.querySelector('#viewTextLbl').style.color = '#333';
+				document.querySelector('#timeframeSelector').style.border = 'solid 1px #ccc';
+			}
 		});
 };
 
@@ -48,13 +57,12 @@ const LoadAnalytics = () => {
 		.then((res) => res.json())
 		.then((data) => {
 			console.log(data);
-			const { totalUsers, totalPosts, dailyActiveUsers, usersCalendar, postsCalendar } = data;
+			const { totalUsers, totalPosts, dailyActiveUsers, usersCalendar, postsCalendar, usedStorage, totalStorage } = data;
 			LoadDailyActiveUsers(dailyActiveUsers, 10, 'days');
 			LoadTotalUsers(totalUsers, usersCalendar);
 			LoadTotalPosts(totalPosts, postsCalendar);
-			LoadNewMembers();
 			LoadPageVisits();
-			LoadDatabasePercent();
+			LoadDatabasePercent(usedStorage, totalStorage);
 		});
 };
 
@@ -274,8 +282,13 @@ const LoadTotalUsers = (totalUsers, usersCalendar) => {
 	const { labels, data } = returnCalendarData(usersCalendar);
 	let color = SetPreview(data, 'totalUsers');
 	let ctx = document.getElementById('totalUsers').getContext('2d');
-	ctx.canvas.parentNode.style.height = '70%';
 	ctx.canvas.parentNode.style.width = '100%';
+	if (window.innerWidth <= 1060) {
+		ctx.canvas.parentNode.style.height = '100%';
+	} else {
+		ctx.canvas.parentNode.style.height = '70%';
+	}
+
 	var myChart = new Chart(ctx, {
 		type: 'line',
 		data: {
@@ -286,51 +299,6 @@ const LoadTotalUsers = (totalUsers, usersCalendar) => {
 					data: data, // Data points
 					borderColor: color,
 					backgroundColor: color, // Optional: Adding a background color for better visibility
-					fill: false, // Ensures no area fill below the line
-					tension: 0.5
-				}
-			]
-		},
-		options: {
-			scales: {
-				y: {
-					display: false, // Hide Y axis labels
-					stacked: false
-				},
-				x: {
-					beginAtZero: true,
-					display: false // Hide X axis labels
-				}
-			},
-			plugins: {
-				legend: {
-					display: false
-				}
-			},
-			elements: {
-				point: {
-					radius: 1
-				}
-			}
-		}
-	});
-	myChart.update();
-};
-
-const LoadNewMembers = () => {
-	let ctx = document.getElementById('newMembers').getContext('2d');
-	ctx.canvas.parentNode.style.height = '70%';
-	ctx.canvas.parentNode.style.width = '100%';
-	var myChart = new Chart(ctx, {
-		type: 'line',
-		data: {
-			labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
-			datasets: [
-				{
-					label: 'My First Dataset',
-					data: [80, 70, 90, 50, 60], // Data points
-					borderColor: 'rgb(247, 82, 82)',
-					backgroundColor: 'rgba(247, 82, 82, 0.1)', // Optional: Adding a background color for better visibility
 					fill: false, // Ensures no area fill below the line
 					tension: 0.5
 				}
@@ -430,20 +398,25 @@ const LoadTotalPosts = (totalPosts, postsCalendar) => {
 	myChart.update();
 };
 
-const LoadDatabasePercent = () => {
+const LoadDatabasePercent = (usedStorage, totalStorage) => {
 	let ctx = document.getElementById('databasePercent').getContext('2d');
-	ctx.canvas.parentNode.style.height = '300px';
-	ctx.canvas.parentNode.style.width = '300px';
+	ctx.canvas.parentNode.style.height = '100%';
+	ctx.canvas.parentNode.style.width = '40%';
+	let ratio = usedStorage / totalStorage;
+	document.querySelector('#usedStorage').innerHTML = `${(ratio * 100).toFixed(1)}% Used`;
+	document.querySelector('#unusedStorage').innerHTML = `${((1 - ratio) * 100).toFixed(1)}% Available`;
 	let myChart = new Chart(ctx, {
 		type: 'doughnut',
 		data: {
-			labels: ['Used', 'Not Used'],
+			labels: ['Used', 'Available'],
 			datasets: [
 				{
 					label: 'Database Storage',
-					data: [65, 35],
-					backgroundColor: ['rgb(39, 130, 242)', 'rgb(255, 255, 255)'],
-					hoverOffset: 4
+					data: [ratio, 1 - ratio],
+					backgroundColor: ['rgb(39, 130, 242)', 'rgb(242, 242, 242)'],
+					hoverOffset: 4,
+					borderColor: 'transparent', // Removes the white stroke
+					borderWidth: 0 // Sets the stroke width to 0
 				}
 			]
 		},
@@ -464,17 +437,19 @@ const LoadPageVisits = () => {
 	ctx.canvas.parentNode.style.height = '70%';
 	ctx.canvas.parentNode.style.width = '100%';
 	var myChart = new Chart(ctx, {
-		type: 'line',
+		type: 'bar',
 		data: {
-			labels: [0, 1, 2, 3, 4], // Adjusted to match the number of data points
+			labels: ['Home', 'Forums', 'Devotions', 'Bible Plans', 'Cowboy Stories'], // Adjusted to match the number of data points
 			datasets: [
 				{
-					label: 'My First Dataset',
-					data: [60, 65, 80, 70, 90], // Data points
-					borderColor: 'rgba(61, 213, 152, 0.945)',
-					backgroundColor: 'rgba(61, 213, 152, 0.945)', // Optional: Adding a background color for better visibility
+					label: 'Page Visits',
+					data: [95, 65, 40, 75, 55], // Data points
+					borderColor: 'rgb(39, 130, 242)',
+					backgroundColor: 'rgb(39, 130, 242)', // Optional: Adding a background color for better visibility
 					fill: false, // Ensures no area fill below the line
-					tension: 0.5
+					tension: 0.5,
+					borderRadius: 50,
+					borderSkipped: false
 				}
 			]
 		},
@@ -516,6 +491,8 @@ function checkAdmin() {
 			console.log(data);
 			if (data.status) {
 				sendToRequest();
+			} else {
+				location.replace('/');
 			}
 		});
 }
@@ -551,6 +528,9 @@ const openView = (view) => {
 		case 'devotions':
 			openDevotions();
 			break;
+		case 'bibleplans':
+			openBiblePlans();
+			break;
 		default:
 			openMembers();
 			break;
@@ -582,37 +562,83 @@ function formatPhoneNumber(phoneNumberString) {
 	}
 	return null;
 }
+const editUserClick = () => {
+	let button = event.target;
+	let member = button.closest('#memberElement');
+
+	let paragraphs = member.querySelectorAll('#editableInfo > p');
+	let inputs = member.querySelectorAll('#editableInfo > input');
+	console.log(paragraphs, inputs);
+	paragraphs.forEach((p) => (p.style.display = 'none'));
+	inputs.forEach((i) => {
+		i.style.display = 'flex';
+		i.placeholder = i.previousElementSibling.innerHTML;
+	});
+	member.querySelector('#editBtn').style.display = 'none';
+	member.querySelector('#confirmEditBtn').style.display = '';
+	member.querySelector('#cancelEditBtn').style.display = '';
+};
+const viewUserProfileClick = () => {
+	let button = event.target;
+	let member = button.closest('#memberElement');
+	let uid = member.querySelector('#uid').innerHTML;
+	window.open(`/profile?uid=${uid}`, '_blank');
+};
+const deleteUserClick = () => {
+	let button = event.target;
+	console.log(button);
+	let uid = button.closest('.tableRow').id;
+	let data = new FormData();
+	data.append('uid', uid);
+	fetch('api/admin/update-user', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				button.closest('#memberElement').remove();
+			}
+		});
+};
 
 const createMemberElement = (user) => {
-	let { address, admin, city, customer, email, firstName, lastName, pfp, phoneNumber, state, uid, zip } = user;
+	let { address, admin, city, customer, email, firstName, lastName, pfp, phoneNumber, state, uid, username, zip } = user;
 	let formattedPhoneNumber = formatPhoneNumber(phoneNumber);
 	let div = document.createElement('div');
 	div.id = 'memberElement';
 	div.innerHTML = `
-		<div class="tableRow">
-		<div class="tableRowInfo">
+		<div class="tableRow" id="${uid}">
+		<div class="tableRowInfo" id="editableInfo">
 		<button id="dropInformation" class="tableDropBtn"> <i class="fa-solid fa-chevron-right"></i></button>
-		<p id="firstNameAdmin">${SafeHTML(firstName)}</p>
-		<p id="lastNameAdmin">${SafeHTML(lastName)}</p>
-		<p id="emailAdmin">${SafeHTML(email)}</p>
-		<p id="phoneNumberAdmin">${SafeHTML(formattedPhoneNumber)}</p>
-		<p id="stateAdmin">${SafeHTML(state)}</p>
-        <p id="cityAdmin">${SafeHTML(city)}</p>
-		<p id="addressAdmin">${SafeHTML(address)}</p>
-		<p id="zipAdmin">${SafeHTML(zip)}</p>
-		<p id="adminAdmin">${admin}</p>
+		<p id="firstNameAdmin">${SafeHTML(firstName)}</p><input class="updateUserInfoInput" type="text" id="updateFirstName" placeholder="Update first name..."></input>
+		<p id="lastNameAdmin">${SafeHTML(lastName)}</p><input class="updateUserInfoInput" type="text" id="updateLastName" placeholder="Update last name..."></input>
+		<p id="emailAdmin">${SafeHTML(email)}</p><input class="updateUserInfoInput" type="text" id="updateEmail" placeholder="Update email..."></input>
+		<p id="phoneNumberAdmin">${SafeHTML(formattedPhoneNumber)}</p><input class="updateUserInfoInput" type="text" id="updatePhoneNumber" placeholder="Update phone number..."></input>
+		<p id="stateAdmin">${SafeHTML(state)}</p><input class="updateUserInfoInput" type="text" id="updateState" placeholder="Update state (abbreviated)..."></input>
+        <p id="cityAdmin">${SafeHTML(city)}</p><input class="updateUserInfoInput" type="text" id="updateCity" placeholder="Update city..."></input>
+		<p id="addressAdmin">${SafeHTML(address)}</p><input class="updateUserInfoInput" type="text" id="updateAddress" placeholder="Update address..."></input>
+		<p id="zipAdmin">${SafeHTML(zip)}</p><input class="updateUserInfoInput" type="text" id="updateZip" placeholder="Update zip..."></input>
+		<p id="adminAdmin">${admin}</p><input class="updateUserInfoInput" type="text" id="updateAdmin" placeholder="Update admin..."></input>
 		</div>
 		<div style="display: flex; flex-direction: row;">
 		</div>
 		<div style="flex-direction: row; align-items: start; flex-wrap: wrap;" class="tableRowInfo">
 		<p class="userInfoTag" style="width: 100%;"><b>Full Name:</b> ${SafeHTML(firstName)} ${SafeHTML(lastName)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>Username:</b> ${SafeHTML(username)}</p>
 		<p class="userInfoTag" style="width: 100%;"><b>Email:</b> ${SafeHTML(email)}</p>
 		<p class="userInfoTag" style="width: 100%;"><b>Phone Number:</b> ${SafeHTML(formattedPhoneNumber)}</p>
 		<p class="userInfoTag" style="width: 100%;"><b>Address:</b> ${SafeHTML(address)}, ${SafeHTML(city)}, ${SafeHTML(state)}, ${SafeHTML(zip)}</p>
-		<p class="userInfoTag" style="width: 100%;"><b>UID:</b> ${SafeHTML(uid)}</p>
+		<p class="userInfoTag" style="width: 100%;"><b>UID:</b> <span id="uid">${SafeHTML(uid)}</span></p>
 		</div>
 		<div class="tableRowBtns">
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="editBtn" class="btnLink">Edit</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px; display:none;" id="confirmEditBtn" class="btnLink">Confirm Edit</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px; display:none;" id="cancelEditBtn" class="btnLink">Cancel Edit</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="profileBtn" class="btnLink">View Profile</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteMemberBtn" class="btnLink deleteBtn">Delete</button>
 		</div>
@@ -622,6 +648,11 @@ const createMemberElement = (user) => {
 		</div>
 		<span class="line"></span>
 	`;
+	div.querySelector('#editBtn').addEventListener('click', editUserClick);
+	div.querySelector('#profileBtn').addEventListener('click', viewUserProfileClick);
+	div.querySelector('#deleteMemberBtn').addEventListener('click', deleteUserClick);
+	div.querySelector('#confirmEditBtn').addEventListener('click', updateUser);
+	div.querySelector('#cancelEditBtn').addEventListener('click', cancelEdit);
 	document.querySelector('.membersTable').appendChild(div);
 };
 
@@ -629,6 +660,19 @@ const removeAllMembers = () => {
 	let members = document.querySelectorAll('#memberElement');
 	members.forEach((member) => member.remove());
 };
+
+function clearFilter() {
+	let inputs = document.querySelectorAll('#filterPopup input');
+	console.log(inputs);
+	let changed = false;
+	inputs.forEach((input) => {
+		if (input.value != '') {
+			input.value = '';
+			changed = true;
+		}
+	});
+	if (changed) openMembers();
+}
 
 const returnMembers = async () => {
 	//add form data
@@ -686,6 +730,7 @@ async function openMembers() {
 	let members = await returnMembers();
 	members.forEach((member) => createMemberElement(member));
 	document.querySelector('#applyFilterBtn').addEventListener('click', applyFilterClick);
+	document.querySelector('#clearFilterBtn').addEventListener('click', clearFilter);
 }
 
 const updateURL = (view) => {
@@ -702,7 +747,7 @@ const reasonsToSentence = (string) => {
 	return string.replaceAll(',', ', ');
 };
 
-const createReportObject = (message, reasons, post, pfp, postID, _id, ignored) => {
+const createReportObject = (message, reasons, post, pfp, postID, _id, ignored, reportType) => {
 	let date = new Date(post.postDate);
 	let div = document.createElement('div');
 
@@ -711,13 +756,15 @@ const createReportObject = (message, reasons, post, pfp, postID, _id, ignored) =
 	let title = post.title || post.content;
 	let text = post.message != null ? post.message : '';
 	let ignoredText = !ignored ? 'Ignore' : 'Unignore';
+	let pfpText = '../images/default-pfp.jpeg';
+	if (pfp) pfpText = `/image/${pfp.name}`;
 	div.id = 'report';
 	div.innerHTML = `
 		<div id="${_id}" style="border: solid 1px #333; padding: 10px; border-radius: 5px; margin-top: 20px;">
-		<div id="post>
+		<div id="post">
         <div class="forumPost" href="/forum?id=${postID}" id=${postID}>
         <div class="inlineForumUser">
-            <img class="forumPfp" src="/image/${pfp.name}"></img>
+            <img class="forumPfp" src="${pfpText}"></img>
             <a class="forumUser" href="/profile?uid=${uid}">${SafeHTML(username)}</a>
             <p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
         </div>
@@ -736,19 +783,57 @@ const createReportObject = (message, reasons, post, pfp, postID, _id, ignored) =
         </div>
         </div>
         <span class="line"></span>
+		<p>Media type: ${reportType.capitalize()}</p>
         <p>Report category: ${reasonsToSentence(reasons).capitalize()}</p>
         <p>Report message: ${SafeHTML(message)}</p>
         <div class="inlineButtons">
         <button style="height: 50px;" id="deleteBtn" class="btnLink">Delete Post</button>
         <button style="height: 50px;" id="ignoreBtn" class="btnLink">${ignoredText}</button>
+		<button style="height: 50px;" id="removeBtn" class="btnLink">Remove Report</button>
         </div>
 		</div>
 		</div>
 	`;
+	div.querySelector('.forumPost').addEventListener('click', postClick);
+	div.querySelector('.forumPost').addEventListener('mouseover', () => {
+		document.body.style.cursor = 'pointer';
+	});
+	div.querySelector('.forumPost').addEventListener('mouseout', () => {
+		document.body.style.cursor = 'default'; // Reset the cursor when not hovering
+	});
 	div.querySelector('#deleteBtn').addEventListener('click', deleteReport);
 	div.querySelector('#ignoreBtn').addEventListener('click', ignoreReport);
+	div.querySelector('#removeBtn').addEventListener('click', removeReport);
 	document.querySelector('#reportHolder').appendChild(div);
 };
+
+function postClick() {
+	console.log(event.target);
+	if (event.target.className == 'forumPost') {
+		window.open(`forum?id=${event.target.id}`, '_blank');
+	}
+}
+
+function removeReport() {
+	let button = event.target;
+	let report = button.closest('#report');
+	let reportID = report.querySelector('div').id;
+	report.remove();
+	decreaseReportsTitle();
+	let data = new FormData();
+	data.append('reportID', reportID);
+	fetch('api/admin/remove-report', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+		});
+}
 
 const deleteReportObjects = () => {
 	let reports = document.querySelectorAll('#report');
@@ -758,7 +843,7 @@ const deleteReportObjects = () => {
 };
 
 const initReportObject = (report) => {
-	const { message, reasons, postID, reporterID, _id, ignored } = report;
+	const { message, reasons, postID, reportType, reporterID, _id, ignored } = report;
 	const data = new FormData();
 	data.append('id', postID);
 	fetch('api/forum/loadPost', {
@@ -773,7 +858,7 @@ const initReportObject = (report) => {
 			console.log(data);
 			if (data.status) {
 				const { post, pfp } = data;
-				createReportObject(message, reasons, post, pfp, postID, _id, ignored);
+				createReportObject(message, reasons, post, pfp, postID, _id, ignored, reportType);
 			} else {
 				console.log('error!');
 			}
@@ -812,8 +897,259 @@ async function openDevotions() {
 	document.querySelector('#devotionPopupContents').addEventListener('click', (event) => {
 		event.stopPropagation();
 	});
-	document.querySelector('#popupOverlay').addEventListener('click', hideDevotionsPopup);
+	document.querySelector('#devotionPopupOverlay').addEventListener('click', hideDevotionsPopup);
+	document.querySelector('#closeDevotionMainBtn').addEventListener('click', hideDevotionsPopup);
 	document.querySelector('#scheduleDevotionBtn').addEventListener('click', createDevotion);
+	let today = new Date();
+	let localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+	document.querySelector('#releaseDate').value = localDate;
+	initDevotions();
+}
+
+function createBiblePlanObject(bp) {
+	createPlanObject(bp);
+}
+
+function getBiblePlans() {
+	fetch('api/biblePlans/get-bible-plans', {
+		method: 'get',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				data.biblePlans.forEach((bp) => createBiblePlanObject(bp));
+			}
+		});
+}
+
+function returnBooksAndChaptersCount(plan) {
+	let books = 0;
+	let chapters = 0;
+	plan.books.forEach((book) => {
+		books++;
+		chapters += book.chapters.length;
+	});
+	return {
+		booksCount: books,
+		chaptersCount: chapters
+	};
+}
+
+function createPlanObject(plan) {
+	let { _id, books, description, icon, title } = plan;
+	let planIcon = 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg/640px-Christ_at_the_Cross_-_Cristo_en_la_Cruz.jpg';
+	if (icon.name) planIcon = '/image/' + icon.name;
+	let { booksCount, chaptersCount } = returnBooksAndChaptersCount(plan);
+	let obj = document.createElement('div');
+	obj.className = 'biblePlan';
+	obj.id = _id;
+	obj.style = 'width: 100%; color: black; border: 0px;';
+	obj.innerHTML = `
+                <div class="biblePlanImage">
+                    <img style="width: 100%; height: 100%; border-radius: 10px 0px 0px 10px; object-fit: cover; object-position: top;" src="${planIcon}" alt="">
+                </div>
+                <div class="biblePlanInformation">
+                    <h3 class="biblePlanHeader">${title}</h3>
+                    <p class="biblePlanDescriptor">${description}</p>
+                    <p class="biblePlanDescriptor">${booksCount} books, ${chaptersCount} chapters</p>
+                    <a class="biblePlanBtn" href="/biblePlans?id=${_id}">Open</a>
+                </div>`;
+	document.querySelector('#bpHolder').appendChild(obj);
+}
+
+async function openBiblePlans() {
+	enableView('bibleplans');
+	console.log('bible plans');
+	document.querySelector('#openBiblePlansCreateBtn').addEventListener('click', showBiblePlansPopup);
+	document.querySelector('#bpPopupContents').addEventListener('click', (event) => {
+		event.stopPropagation();
+	});
+	document.querySelector('#bpPopupOverlay').addEventListener('click', hideBiblePlansPopup);
+	document.querySelector('#closePostMainBtn').addEventListener('click', hideBiblePlansPopup);
+	document.querySelector('#createBiblePlanBtn').addEventListener('click', createBiblePlan);
+	initBiblePlans();
+	let children = document.querySelector('#bpHolder').childNodes;
+	console.log(children.length);
+	let length = children.length;
+	if (length > 0) {
+		for (let i = length - 1; i >= 0; i--) {
+			children[i].remove();
+		}
+	}
+
+	getBiblePlans();
+	document.querySelector('#bpHolder').style.display = 'flex';
+}
+
+function showBiblePlansPopup() {
+	const popupOverlay = document.getElementById('bpPopupOverlay');
+	popupOverlay.style.display = 'flex';
+}
+
+function hideBiblePlansPopup() {
+	const popupOverlay = document.getElementById('bpPopupOverlay');
+	popupOverlay.style.display = 'none';
+}
+
+function createBibleList(data) {
+	let books = document.createElement('div');
+	books.id = 'books';
+	books.style = 'height: 100%;';
+	data.forEach((book) => {
+		let obj = document.createElement('div');
+		obj.style = 'margin-block: 0px';
+		obj.id = book.name;
+		obj.innerHTML = `
+		<div id="book" style="display: flex;flex-direction: row; height: 50%">
+		<input type="checkbox" id="bookCheckmark" value="${book.bookid}">
+		<label for="bookCheckmark" ><h5 id="bookName">${book.bookid}. ${book.name}</h5>
+		<button class="filterBtn" id="selectAllToggle" style="display: none; height: 50px; width: 120px; !important">Deselect All</button></label>
+		
+		<div id="chapters" value="${book.chapters}" style="display: none;">
+			<div id="chaptersHolder" style="display: flex; flex-wrap: wrap; flex-direction: row; !important"></div>
+		</div> 
+		</div>`;
+		for (let i = 1; i <= book.chapters; i++) {
+			let newChapter = document.createElement('div');
+			newChapter.innerHTML = `<button class="btnChapter" id="chapter" style="width: 10px; border-radius: 5px; background-color: #3dd598; color:white; min-width: 40px; line-height: 10px; margin-inline: 5px; margin-block: 5px; ">${i}</button>`;
+			newChapter.querySelector('#chapter').addEventListener('click', chapterToggle);
+			obj.querySelector('#book').querySelector('#chapters').querySelector('#chaptersHolder').appendChild(newChapter);
+		}
+		obj.querySelector('#selectAllToggle').addEventListener('click', toggleAllChaptersSelected);
+		books.appendChild(obj);
+	});
+	document.querySelector('#booksHolder').appendChild(books);
+}
+
+function toggleAllChaptersSelected() {
+	let button = event.target;
+	console.log(button);
+	let buttons = button.parentNode.parentNode.querySelector('#chapters').querySelector('#chaptersHolder');
+	console.log(buttons);
+	if (button.innerHTML == 'Select All') {
+		buttons.childNodes.forEach((btn) => {
+			btn.querySelector('#chapter').style.backgroundColor = '#3dd598';
+		});
+		button.innerHTML = 'Deselect All';
+	} else {
+		buttons.childNodes.forEach((btn) => {
+			btn.querySelector('#chapter').style.backgroundColor = '#f75252';
+		});
+		button.innerHTML = 'Select All';
+	}
+}
+
+function chapterToggle() {
+	let button = event.target;
+	if (button.style.backgroundColor == 'rgb(247, 82, 82)') {
+		button.style.backgroundColor = '#3dd598';
+	} else {
+		button.style.backgroundColor = '#f75252';
+	}
+}
+
+function getChapterList(obj, checked) {
+	if (checked) obj.querySelector('#chapters').style.display = 'flex';
+	else obj.querySelector('#chapters').style.display = 'none';
+}
+
+function setupCheckmarks() {
+	document.querySelectorAll('#bookCheckmark').forEach((checkmark) => {
+		checkmark.addEventListener('click', function (e) {
+			let background = e.target.parentNode.parentNode;
+			getChapterList(e.target.parentNode, checkmark.checked);
+			if (checkmark.checked) {
+				console.log('checked');
+				background.style = 'background-color: #1111; border-radius: 10px;';
+				background.querySelector('#selectAllToggle').style = 'display: flex';
+			} else {
+				console.log('unchecked');
+				background.style = 'background-color: #fff; border-radius: 10px;';
+				background.querySelector('#selectAllToggle').style = 'display: none';
+			}
+		});
+	});
+}
+
+async function initBiblePlans() {
+	fetch('https://bolls.life/get-books/ESV/', {
+		method: 'get',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			createBibleList(data);
+			setupCheckmarks();
+		});
+}
+
+function getBibleData() {
+	let holder = document.querySelector('#books');
+	let data = [];
+	holder.childNodes.forEach((book) => {
+		if (book.style.backgroundColor != '' && book.querySelector('#chapters').style.display != 'none') {
+			let name = book.querySelector('#bookName').innerHTML.split('. ');
+			let number = name[0];
+			let title = name[1];
+			let chapters = [];
+			let chaptersHolder = book.querySelector('#chaptersHolder');
+			chaptersHolder.childNodes.forEach((div) => {
+				let chapter = div.querySelector('#chapter');
+				if (chapter.style.backgroundColor == 'rgb(61, 213, 152)') {
+					chapters.push({
+						number: chapter.innerHTML,
+						comments: []
+					});
+				}
+			});
+			if (chapters.length > 0) {
+				data.push({
+					book: number,
+					chapters: chapters
+				});
+			}
+		}
+	});
+	if (data.length == 0) return null;
+	return data;
+}
+
+function resetBiblePlanMenu() {
+	document.querySelector('#booksHolder').remove();
+	document.querySelector('#bpTitle').value = '';
+	document.querySelector('#bpDescription').value = '';
+	document.querySelector('#bpIcon').value = '';
+}
+
+function createBiblePlan() {
+	let data = new FormData();
+	let books = getBibleData();
+	let file = document.querySelector('#bpIcon').files[0];
+	console.log(file);
+	data.append('title', document.querySelector('#bpTitle').value);
+	data.append('description', document.querySelector('#bpDescription').value);
+	data.append('file', file);
+	data.append('books', JSON.stringify(books));
+	fetch('api/admin/create-bible-plan', {
+		method: 'post',
+		body: data
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				hideBiblePlansPopup();
+				resetBiblePlanMenu();
+				openBiblePlans();
+			}
+		});
 }
 
 async function clickReportsButton() {
@@ -821,11 +1157,11 @@ async function clickReportsButton() {
 	let button = event.target;
 	let id = button.id;
 	if (id == 'currentReportsBtn') {
-		document.querySelector('#currentReportsBtn').style.backgroundColor = '#353535';
-		document.querySelector('#ignoredReportsBtn').style.backgroundColor = '#1e1e1e';
+		document.querySelector('#currentReportsBtn').style.backgroundColor = '#f2f2f2';
+		document.querySelector('#ignoredReportsBtn').style.backgroundColor = '#fff';
 	} else if (id == 'ignoredReportsBtn') {
-		document.querySelector('#ignoredReportsBtn').style.backgroundColor = '#353535';
-		document.querySelector('#currentReportsBtn').style.backgroundColor = '#1e1e1e';
+		document.querySelector('#ignoredReportsBtn').style.backgroundColor = '#f2f2f2';
+		document.querySelector('#currentReportsBtn').style.backgroundColor = '#fff';
 	}
 
 	let data = new FormData();
@@ -879,6 +1215,28 @@ function deleteReport() {
 		});
 }
 
+function deleteDevotion() {
+	let button = event.target;
+	let devotion = button.closest('#post');
+	let devotionID = devotion.querySelector('div').id;
+	let data = new FormData();
+	data.append('devotionID', devotionID);
+	fetch('api/admin/delete-devotion', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				devotion.remove();
+			}
+		});
+}
+
 function ignoreReport() {
 	let button = event.target;
 	let report = button.closest('#report');
@@ -905,6 +1263,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#analyticsBtn').addEventListener('click', openAnalytics);
 	document.querySelector('#reportsBtn').addEventListener('click', openReports);
 	document.querySelector('#devotionsBtn').addEventListener('click', openDevotions);
+	document.querySelector('#biblePlanBtn').addEventListener('click', openBiblePlans);
 	document.querySelector('#updateDauBtn').addEventListener('click', updateDAU);
 	document.querySelector('#currentReportsBtn').addEventListener('click', clickReportsButton);
 	document.querySelector('#ignoredReportsBtn').addEventListener('click', clickReportsButton);
@@ -915,23 +1274,23 @@ document.addEventListener('click', function (event) {
 		var button = event.target.closest('#dropInformation');
 		var tableRow = button.closest('.tableRow');
 
-		if (tableRow.style.height === '315px') {
+		if (tableRow.style.height === 'fit-content') {
 			tableRow.style.height = '60px'; // Change to the original height
 			button.querySelector('i').classList.replace('fa-chevron-down', 'fa-chevron-right');
 		} else {
-			tableRow.style.height = '315px'; // Expand to fit content
+			tableRow.style.height = 'fit-content'; // Expand to fit content
 			button.querySelector('i').classList.replace('fa-chevron-right', 'fa-chevron-down');
 		}
 	}
 });
 
 function showDevotionPopup() {
-	const popupOverlay = document.getElementById('popupOverlay');
+	const popupOverlay = document.getElementById('devotionPopupOverlay');
 	popupOverlay.style.display = 'flex';
 }
 
 function hideDevotionsPopup() {
-	const popupOverlay = document.getElementById('popupOverlay');
+	const popupOverlay = document.getElementById('devotionPopupOverlay');
 	popupOverlay.style.display = 'none';
 }
 
@@ -960,6 +1319,50 @@ function createDevotion() {
 		});
 }
 
+function loadDevotion(devotion) {
+	console.log(devotion);
+	let { _id, title, message, username, uID, releaseDate, likesCount, commentsCount, profilePic } = devotion;
+	let date = new Date(releaseDate);
+	let dateString = DateText(date);
+
+	let div = document.createElement('div');
+	div.id = 'post';
+	div.innerHTML = `
+		<span class="line"></span>
+		<div class="forumPost" id=${_id}>
+		
+		
+		<h2 class="forumDate">${DateText(date)}</h2>
+		<h3><a class="forumTitle" id="title">${SafeHTML(title)}</a></h3>
+		
+		<p style="white-space:pre;">${message}</p>
+		<div class="forumBtns">
+			<button id="deleteDevotionBtn" class="iconBtn"><i class="fa-regular fa-trash-can"></i></button>
+		</div>
+		</div>
+	`;
+	div.querySelector('#deleteDevotionBtn').addEventListener('click', deleteDevotion);
+	document.querySelector('#devotionHolder').appendChild(div);
+}
+
+function initDevotions() {
+	fetch('api/admin/get-devotions', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				data.devotions.forEach((devotion) => {
+					loadDevotion(devotion);
+				});
+			}
+		});
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 	const deleteButtons = document.querySelectorAll('.deleteBtn');
 	console.log(deleteButtons); // Check if the buttons are being selected
@@ -976,6 +1379,85 @@ document.addEventListener('DOMContentLoaded', function () {
 			} else {
 				console.log('Elements not found');
 			}
+		});
+	});
+});
+
+function cancelEdit(m) {
+	let member;
+	try {
+		member = event.target.closest('#memberElement');
+	} catch (err) {
+		member = m;
+	}
+	let pElems = member.querySelectorAll('#editableInfo > p');
+	let updateElements = member.querySelectorAll('.updateUserInfoInput');
+	pElems.forEach((elem) => {
+		elem.style.display = 'block';
+	});
+	updateElements.forEach((update) => {
+		update.style.display = 'none';
+	});
+	member.querySelector('#confirmEditBtn').style.display = 'none';
+	member.querySelector('#cancelEditBtn').style.display = 'none';
+	member.querySelector('#editBtn').style.display = 'inline';
+}
+
+function updateUser() {
+	let member = event.target.closest('#memberElement');
+	let updateElements = member.querySelectorAll('.updateUserInfoInput');
+	let body = new FormData();
+	updateElements.forEach((update) => {
+		if (update.value != '') {
+			body.append(update.id, update.value);
+		}
+	});
+	fetch('api/admin/update-user', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(body)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				console.log('success!');
+				//close editing window
+				cancelEdit(member);
+				//update element
+				console.log([...body.entries()]); // Log all entries
+
+				for (const entry of body.entries()) {
+					const [key, value] = entry;
+					updateEditHTML(member, key, value);
+				}
+			}
+		});
+}
+
+function updateEditHTML(member, key, value) {
+	member.querySelector('#' + key).value = value;
+	let admin = key.split('update')[1];
+	admin = admin.charAt(0).toLowerCase() + admin.slice(1) + 'Admin';
+	member.querySelector('#' + admin).innerHTML = value;
+}
+
+let graphTime = 'days';
+
+document.addEventListener('DOMContentLoaded', () => {
+	const btnHolder = document.querySelector('#typeSelector');
+	const timeBtns = document.querySelectorAll('#timeBtn');
+	document.querySelector('#typeSelectorHolder').addEventListener('click', () => {
+		btnHolder.style.display = 'flex';
+		timeBtns.forEach((timeBtn) => {
+			timeBtn.addEventListener('click', () => {
+				event.stopPropagation();
+				btnHolder.style.display = 'none';
+				document.querySelector('#timeText').innerHTML = `${timeBtn.value} <i class="fa-solid fa-chevron-down"></i>`;
+				graphTime = timeBtn.value;
+			});
 		});
 	});
 });

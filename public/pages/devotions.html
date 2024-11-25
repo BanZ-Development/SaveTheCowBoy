@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum</title>
+    <title>Daily Devotions | Long X Ranch Cowboys</title>
     <link rel="icon" href="../images/favicon.ico">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,15 +12,15 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="../js/anime.min.js"></script>
-    <script type="module" src="../js/forum.js"></script>
+    <script type="module" src="../js/devotions.js"></script>
     <script src="https://cdn.tiny.cloud/1/9wldbenj6xv7lerycffzagy882g8y3r928kpmogujfz47kn4/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
-<body>
+<body style="background-color: #fff;">
   
   <div class="allForum">
     <div class="forumSection">
       <div id="forumHeader" style="display: flex; flex-direction: row;">
-          <h1 class="forumTitle"style="color: #fff;"><a style="text-decoration: none; color: white;"class="forumTitle"href="/forum">Save the Cowboy Daily Devotions</a></h1>
+          <h1 class="forumTitle"style="color: #fff;"><a style="text-decoration: none; color: #333;"class="forumTitle"href="/devotions">LXR Cowboys Daily Devotions</a></h1>
       </div>
       <div>
           <div id="makePost" style="display: none;" class="popupPost"></div>
@@ -80,13 +80,15 @@
           </div>
       </div>
       <div id="posts"></div>
+      <span class="line"></span>  
+      <button id="loadMoreBtn" class="btnLink" style="display: none; height: fit-content; width: 50%; margin: auto; margin-top: 10px;">Load More</button>
       <div id="morePosts">
           
       </div>
       </div>
       <div class="forumDesc">
-        <h1>Forums</h1>
-        <p>Christianity is a subreddit to discuss Christianity and aspects of Christian life. All are welcome to participate.</p>
+        <h1>Devotions</h1>
+        <p>Daily devotions is the place to explore the daily bible verses posted by Save the Cowboy.</p>
         <span style="margin-block: 15px;" class="line"></span>
         <h3 style="margin-block: 10px;">Rules</h3>
         <button class="faqBtn">

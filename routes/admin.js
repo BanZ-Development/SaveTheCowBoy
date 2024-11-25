@@ -1,17 +1,43 @@
 const router = require('express').Router();
 const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
 const User = require('../model/User');
 const Post = require('../model/Post');
 const Report = require('../model/Report');
+const BiblePlan = require('../model/BiblePlan');
 const Devotion = require('../model/Devotion');
+const Image = require('../model/Image');
 const hasher = require('../controllers/hasher');
 const validate = require('../controllers/validate');
 const analytics = require('../controllers/analytics');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
+const path = require('path');
 require('dotenv').config();
 require('../controllers/local');
+const storage = new GridFsStorage({
+	url: process.env.MONGODB_URI,
+	file: (req, file) => {
+		return new Promise((resolve, reject) => {
+			crypto.randomBytes(16, (err, buf) => {
+				if (err) {
+					console.log(error);
+					return reject(err);
+				}
+				const filename = buf.toString('hex') + path.extname(file.originalname);
+				const fileInfo = {
+					filename: filename,
+					bucketName: 'uploads'
+				};
+				resolve(fileInfo);
+			});
+		}).catch((error) => {
+			console.log(error);
+		});
+	}
+});
+const upload = multer({ storage });
 
 const DateText = (date) => {
 	const options = { month: 'long' };
@@ -59,6 +85,7 @@ router.post('/get-members', async (req, res) => {
 		users.forEach((user) => {
 			members.push({
 				uid: user.id,
+				username: user.meta.username,
 				firstName: user.meta.firstName,
 				lastName: user.meta.lastName,
 				email: user.meta.email,
@@ -88,13 +115,21 @@ router.post('/get-analytics', async (req, res) => {
 		let users = await User.find();
 		let posts = await Post.find();
 		let analytic = await analytics.getAnalytics();
+
+		const db = mongoose.connection.db;
+		const stats = await db.command({ dbStats: 1 });
+
+		console.log('Storage Size (allocated by MongoDB):', stats.storageSize, 'bytes');
+		console.log('Index Size:', stats.indexSize, 'bytes');
 		res.send({
 			status: true,
 			totalUsers: users.length,
 			totalPosts: posts.length,
 			dailyActiveUsers: analytic.dailyActiveUsers,
 			usersCalendar: analytic.usersCalendar,
-			postsCalendar: analytic.postsCalendar
+			postsCalendar: analytic.postsCalendar,
+			usedStorage: stats.indexSize,
+			totalStorage: stats.storageSize
 		});
 	} catch (err) {
 		res.send({
@@ -123,12 +158,30 @@ router.post('/get-reports', async (req, res) => {
 	}
 });
 
+function deleteImages(post) {
+	post.images.forEach((image) => {
+		deleteImage(image.fileID);
+	});
+}
+
+function deleteImage(fileID) {
+	mongoose.connection.db.collection('uploads.chunks').deleteMany({ files_id: mongoose.Types.ObjectId(fileId) }, (err, result) => {
+		if (err) {
+			console.error('Error deleting chunks:', err);
+			return;
+		}
+
+		console.log(`Deleted ${result.deletedCount} chunk(s) for file ID ${fileId}`);
+	});
+}
+
 router.post('/delete-report', async (req, res) => {
 	try {
 		let { reportID } = req.body;
 		let report = await Report.findByIdAndDelete(reportID);
 		let { postID } = report;
 		let post = await Post.findByIdAndDelete(postID);
+		deleteImages(post);
 		if (report) {
 			if (post) {
 				res.send({
@@ -183,24 +236,54 @@ router.post('/ignore-report', async (req, res) => {
 	}
 });
 
+router.post('/remove-report', async (req, res) => {
+	try {
+		let { reportID } = req.body;
+		let report = await Report.findByIdAndDelete(reportID);
+		if (report) {
+			res.send({
+				status: true,
+				message: 'Report has been removed'
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'No report found!'
+			});
+		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
 router.post('/create-devotion', async (req, res) => {
 	try {
 		console.log(req.body);
 		const { title, message, releaseDate } = req.body;
-		let date = Date.parse(releaseDate);
-		if (date < new Date()) {
+		let date = new Date(new Date(Date.parse(releaseDate)).setHours(24, 59, 59, 999));
+		let today = new Date(new Date().setHours(0, 0, 0, 0));
+		console.log(date);
+		console.log(today);
+		if (date < today) {
 			return res.send({
 				status: false,
 				message: 'Release date cannot be in the past!'
 			});
 		}
-		let devotion = await Devotion.create({
+		let devotion = await Post.create({
 			title: title,
 			message: message,
 			releaseDate: date,
 			uID: req.user.id,
-			username: req.user.meta.username
+			username: req.user.meta.username,
+			type: 'devotion',
+			postDate: new Date()
 		});
+		console.log(devotion);
 		if (devotion) {
 			res.send({
 				status: true,
@@ -212,6 +295,152 @@ router.post('/create-devotion', async (req, res) => {
 		res.send({
 			status: false,
 			error: err.message
+		});
+	}
+});
+
+router.post('/get-devotions', async (req, res) => {
+	try {
+		let devotions = await Post.find({ type: 'devotion' }).sort({ releaseDate: -1 });
+		if (devotions) {
+			res.send({
+				status: true,
+				devotions: devotions,
+				message: `${devotions.length} Devotions loaded`
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'No devotions found!'
+			});
+		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
+router.post('/create-bible-plan', upload.single('file'), async (req, res) => {
+	try {
+		const { title, description, books } = req.body;
+		const file = req.file;
+		console.log(file);
+		if (!file) {
+			return res.send({
+				status: false,
+				message: 'No icon uploaded'
+			});
+		}
+		const { originalname, filename, size, uploadDate, contentType, id } = file;
+		if (!contentType.includes('image')) throw Error('Image not provided.');
+		const image = new Image({
+			name: filename,
+			contentType: contentType,
+			uploadDate: uploadDate,
+			fileID: id
+		});
+		let newBooks = new Function('return [' + books + '];')();
+		let options = {
+			title: title,
+			description: description,
+			icon: image,
+			books: newBooks[0]
+		};
+		let biblePlan = await BiblePlan.create(options);
+		res.send({
+			status: true,
+			biblePlan: biblePlan
+		});
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			error: err.message
+		});
+	}
+});
+
+router.post('/update-user', async (req, res) => {
+	try {
+		const { updateFirstName, updateLastName, updateEmail, updatePhoneNumber, updateState, updateCity, updateAddress, updateZip, updateAdmin } = req.body;
+		let user = await User.findById(req.user.id);
+		if (updateEmail) user.meta.email = updateEmail;
+		if (updateFirstName) user.meta.firstName = updateFirstName;
+		if (updateLastName) user.meta.lastName = updateLastName;
+		if (updatePhoneNumber) user.meta.phoneNumber = updatePhoneNumber;
+		if (updateAddress) user.meta.shipping.address = updateAddress;
+		if (updateCity) user.meta.shipping.city = updateCity;
+		if (updateState) user.meta.shipping.state = updateState;
+		if (updateZip) user.meta.shipping.zip = updateZip;
+		if (updateAdmin) user.admin = updateAdmin;
+		let update = await user.save();
+		if (update) {
+			res.send({
+				status: true,
+				message: 'User found and updated!'
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'User not found and update failed.'
+			});
+		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			err: err.message
+		});
+	}
+});
+
+router.post('/delete-user', async (req, res) => {
+	try {
+		const { uid } = req.body;
+		let user = await User.findByIdAndDelete(uid);
+		if (user) {
+			res.send({
+				status: true,
+				message: 'User found and deleted'
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'Termination failed. User not found!'
+			});
+		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: err.message
+		});
+	}
+});
+
+router.post('/delete-devotion', async (req, res) => {
+	try {
+		const { devotionID } = req.body;
+		let devotion = await Post.findByIdAndDelete(devotionID);
+		if (devotion && devotion.type == 'devotion') {
+			res.send({
+				status: true,
+				message: 'Devotion found and deleted'
+			});
+		} else {
+			res.send({
+				status: false,
+				message: 'Termination failed. Devotion not found!'
+			});
+		}
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: err.message
 		});
 	}
 });

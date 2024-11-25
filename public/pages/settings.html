@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Save The Cowboy | Settings</title>
+    <title>Settings | Long X Ranch Cowboys</title>
     <link rel="icon" href="../images/favicon.ico">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,14 +16,14 @@
     <script type="module" src="../js/navbar.js"></script>
     <script type="module" src="../js/settings.js"></script>
 </head>
-<body style="background-color: #1e1e1e;">
+<body style="background-color: #f2f2f2 !important;">
     <div class="settings">
         <div class="settingSidebar">
-            <button onclick="switchSetting(0)" class="settingSidebarBtn"><i class="fa-solid fa-user"></i> <p>Account Settings</p></button>
-            <button onclick="switchSetting(1)" class="settingSidebarBtn"><i class="fa-solid fa-credit-card"></i> <p>Subscription</p></button>
-            <button onclick="switchSetting(2)" class="settingSidebarBtn"><i class="fa-solid fa-palette"></i> <p>Appearance</p></button>
-            <button onclick="switchSetting(3)" class="settingSidebarBtn"><i class="fa-solid fa-lock"></i> <p>Security</p></button>
-            <button onclick="switchSetting(4)" class="settingSidebarBtn"><i class="fa-solid fa-bell"></i> <p>Notifications</p></button>
+            <button id="account"class="settingSidebarBtn"><i class="fa-solid fa-user"></i> <p>Profile Settings</p></button>
+            <button id="subscription"class="settingSidebarBtn"><i class="fa-solid fa-credit-card"></i> <p>Subscription</p></button>
+            <button id="appearance"class="settingSidebarBtn"><i class="fa-solid fa-palette"></i> <p>Appearance</p></button>
+            <button id="security"class="settingSidebarBtn"><i class="fa-solid fa-lock"></i> <p>Security</p></button>
+            <button id="notifications"class="settingSidebarBtn"><i class="fa-solid fa-bell"></i> <p>Notifications</p></button>
         </div>
         <div class="settingMainContent">
             <div>
@@ -33,132 +33,155 @@
                     <button id="confirmPopupBtn" style="height: 50px; width: 100px; margin-inline: auto; border: solid 2px #eee; font-family: 'Montserrat';" class="btnLink">Confirm</button>
                 </div>
             </div>
-            <div style="display: flex;" id="settingsType" class="settingSection">
+            <div style="display: flex;" id="accountMenu" class="settingSection">
                 <div class="settingColumn">
-                    <h1>Account Settings</h1>
+                    <h1 class="settingHeader">Profile Settings</h1>
                     <span class="line"></span>
-                    <div class="avatar-upload">
-                        <div class="avatar-edit">
-                            <input name="file" type='file' id="imageUpload" accept=".png, .jpg, .jpeg"/>
-                            <label id="fileUploadLabel" for="imageUpload"></label>
+                    <div id="accountHeaderHolder" style="display: flex; flex-direction: row;">
+                        <div class="avatar-upload">
+                            <div class="avatar-edit">
+                                <input name="file" type='file' id="imageUpload" accept=".png, .jpg, .jpeg"/>
+                                <label id="fileUploadLabel" for="imageUpload" title="Image sizes of 128x128px are recommended."></label>
+                            </div>
+                            <div class="avatar-preview">
+                                <img style="border-radius: 50%; object-fit: cover; object-position: center; width: 192px; height: 192px;" id="imagePreview" src='../images/default-pfp.jpeg'>
+                            </div>
                         </div>
-                        <div class="avatar-preview">
-                            <img style="border-radius: 50%; object-fit: cover; object-position: center; width: 192px; height: 192px;" id="imagePreview" src='../images/default-pfp.jpeg'>
+                        <div class="accountNameAndPassword" style="margin-inline: 20px; ">
+                            <h2 style="margin-bottom: 5px;">Your Username</h2>
+                            <div id="currentAndEdit" style="display:flex; flex-direction: row; margin-bottom: 10px;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <input id='usernameInput' placeholder="" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="text">
+                                </div>
+                                <button id="changeUserBtn" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 5px;border: solid 1px #ccc; border-radius: 6px; margin-block: 0px; font-family: 'Montserrat';font-weight: 500;"><i class="fa-solid fa-pencil"></i> Update Username</button>
+                            </div>
+                            <h2 style="margin-bottom: 5px;">Your Biography</h2>
+                            <div id="currentAndEdit" style="display:flex; flex-direction: row; margin-bottom: 10px;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <textarea style="width: 20em;" class="biographyType" name="" id="bioInput"></textarea> 
+                                </div>
+                                <button id="changeBioBtn" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 5px;border: solid 1px #ccc; border-radius: 6px; margin-block: 0px;font-family: 'Montserrat';font-weight: 500;"><i class="fa-solid fa-pencil"></i> Update Biography</button>
+                            </div>
                         </div>
                     </div>
-                    <h2>Username</h2>
-                    <input id='settingUsername' placeholder="Username" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="text" disabled>
-                    <button onclick="changeUsername()" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px; "><i class="fa-solid fa-pencil"></i> Change Username</button>
-                    <h2>password</h2>
-                    <input id="settingPassword" placeholder="Password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
-                    <input id="settingOldPassword" placeholder="Old Password" style="width: 40%; margin-inline: 0px; height: 37px; font-family: 'Roboto';" class="signupInput" type="password" disabled>
-                    <button onclick="changePassword()" class="btnLink" style="color: #8a8a8a; height: 40px; font-size: 18px; width: 200px; padding: 5px; margin-inline: 0px;"><i class="fa-solid fa-pencil"></i> Change Password</button>
+                    <p style="display: none;" id="biographyWarning"></p>
+                    <span class="line"></span>
                 </div>
             </div>
-            <div style="display: none;" id="settingsType" class="settingSection">
-                <div style="width: 87%;" class="settingColumn">
-                    <h1>Subscription Settings</h1>
+            <div style="display: none;" id="subscriptionMenu" class="settingSection">
+                <div class="settingColumn">
+                    <h1 class="settingHeader">Subscription Settings</h1>
                     <span class="line"></span>
                 </div>
                 <div width: 85%; margin-inline: auto; flex-direction: column; margin-top: 50px;" class="subscriptionSlider">
-                    <h2 style="margin-left: 10px;">Change Current Subscription</h2>
+                    <h2 class="settingHeader" style="margin-left: 10px;">Change Current Subscription</h2>
                     <div id="subscriptions" class="subscriptions">
                         <div class="subscription">
                             <h2>Day Worker</h2>
-                            <h1>$9.<p>99</p></h1>
+                            <h1>$9.<p>99</p><p style="color: #9a9a9a">/mo</p></h1>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>Access to Save The Cowboy Website.</p>
+                                <i class="material-icons">task_alt</i> <p>Access to the Long X Ranch Cowboys Community.</p>
                             </div>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>5mb upload size for content on all forums.</p>
-                            </div>
-                            <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>No website Themes to personalize your experience.</p>
+                                <i class="material-icons">task_alt</i> <p>2.5MB max upload size for content on forums.</p>
                             </div>
                         </div>
                         <div class="subscription">
                             <h2>Ranch Cowboy</h2>
-                            <h1>$24.<p>99</p></h1>
+                            <h1>$24.<p>99</p><p style="color: #9a9a9a">/mo</p></h1>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>Access to Save The Cowboy Website</p>
+                                <i class="material-icons">task_alt</i> <p>Access to the Long X Ranch Cowboys Community.</p>
                             </div>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>10mb upload size for content on all forums</p>
+                                <i class="material-icons">task_alt</i> <p>5MB max upload size for content on forums.</p>
                             </div>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>Some website Themes to personalize your experience.</p>
+                                <i class="material-icons">task_alt</i> <p>Some website themes to customize your experience.</p>
                             </div>
                         </div>
                         <div class="subscription">
                             <h2>Jigger Boss</h2>
-                            <h1>$49.<p>99</p></h1>
+                            <h1>$49.<p>99</p><p style="color: #9a9a9a">/mo</p></h1>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>Access to Save The Cowboy Website</p>
+                                <i class="material-icons">task_alt</i> <p>Access to the Long X Ranch Cowboys Community.</p>
                             </div>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>18mb upload size for content on all forums</p>
+                                <i class="material-icons">task_alt</i> <p>10MB max upload size for content on forums.</p>
                             </div>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>All website Themes to personalize your experience.</p>
+                                <i class="material-icons">task_alt</i> <p>All website themes to customize your experience.</p>
                             </div>
                         </div>
                         <div class="subscription">
                             <h2>Top Hand</h2>
-                            <h1>$99.<p>99</p></h1>
+                            <h1>$99.<p>99</p><p style="color: #9a9a9a">/mo</p></h1>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>Access to Save The Cowboy Website</p>
+                                <i class="material-icons">task_alt</i> <p>Access to the Long X Ranch Cowboys Community.</p>
                             </div>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>25mb upload size for content on all forums</p>
+                                <i class="material-icons">task_alt</i> <p>20MB max upload size for content on forums.</p>
                             </div>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>customizable website Themes to personalize your experience.</p>
+                                <i class="material-icons">task_alt</i> <p>Customizable website themes to personalize your experience.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Free merchandise every month.</p>
                             </div>
                         </div>
                         <div class="subscription">
                             <h2>Cow Boss</h2>
-                            <h1>$249.<p>99</p></h1>
+                            <h1>$249.<p>99</p><p style="color: #9a9a9a">/mo</p></h1>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>Access to Save The Cowboy Website</p>
+                                <i class="material-icons">task_alt</i> <p>Access to the Long X Ranch Cowboys Community.</p>
                             </div>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>35mb upload size for content on all forums</p>
+                                <i class="material-icons">task_alt</i> <p>50MB max upload size for content on forums.</p>
                             </div>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>customizable website Themes to personalize your experience.</p>
+                                <i class="material-icons">task_alt</i> <p>Customizable website themes to personalize your experience.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Free merchandise every month.</p>
                             </div>
                         </div>
                         <div class="subscription">
                             <h2>Cattle Baron</h2>
-                            <h1>$499.<p>99</p></h1>
+                            <h1>$499.<p>99</p><p style="color: #9a9a9a">/mo</p></h1>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>Access to Save The Cowboy Website</p>
+                                <i class="material-icons">task_alt</i> <p>Access to the Long X Ranch Cowboys Community.</p>
                             </div>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>70mb upload size for content on all forums</p>
+                                <i class="material-icons">task_alt</i> <p>Unlimited max upload size for content on forums.</p>
                             </div>
                             <div class="subOption">
-                                <i class="material-icons">task_alt</i> <p>customizable website Themes to personalize your experience.</p>
+                                <i class="material-icons">task_alt</i> <p>Customizable website themes to personalize your experience.</p>
+                            </div>
+                            <div class="subOption">
+                                <i class="material-icons">task_alt</i> <p>Free merchandise every month.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div style="display: none;" id="settingsType" class="settingSection">
+            <div style="display: none;" id="appearanceMenu" class="settingSection">
                 <div style="width: 85%; margin-inline: auto;">
-                    <h1>Appearance Settings</h1>
+                    <h1 class="settingHeader">Appearance Settings</h1>
                     <span class="line"></span>
                 </div>
             </div>
-            <div style="display: none;" id="settingsType" class="settingSection">
+            <div style="display: none;" id="securityMenu" class="settingSection">
                 <div style="width: 85%; margin-inline: auto;">
-                    <h1>Security Settings</h1>
+                    <h1 class="settingHeader">Security Settings</h1>
                     <span class="line"></span>
+                    <h2>Change your password</h2>
+                    <div style="display: flex; flex-direction: column;">
+                        <a href="/forgot-password">Click here to reset your password</a>
+                    </div>
                 </div>
             </div>
-            <div style="display: none;" id="settingsType" class="settingSection">
+            <div style="display: none;" id="notificationsMenu" class="settingSection">
                 <div style="width: 85%; margin-inline: auto;">
-                    <h1>Notification Settings</h1>
+                    <h1 class="settingHeader">Notification Settings</h1>
                     <span class="line"></span>
                 </div>
             </div>
@@ -166,6 +189,10 @@
     </div>
 
     <style>
+
+        .line {
+            color: #ccc;
+        }
 
         .subBtn {
             width: fit-content;
@@ -232,7 +259,7 @@
         @media only screen and (max-width: 856px) {
 
             .settingSection {
-                padding-right: 0px;
+                padding-right: 15px;
             }
 
             .subscriptions {
@@ -241,7 +268,7 @@
             }
 
             .subscription {
-                width: 99% !important;
+                width: 90% !important;
                 height: 450px !important;
                 margin-inline: auto !important;
             }
@@ -250,8 +277,8 @@
                 flex-direction: column !important;
             }
 
-            .settingSection > h1 {
-                font-size: min(max(32px), 5.6vw);
+            .settingHeader {
+                font-size: min(max(32px), 4.9vw);
             }
         }
 

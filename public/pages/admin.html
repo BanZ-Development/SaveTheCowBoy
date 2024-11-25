@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard | Long X Ranch Cowboys</title>
     <link rel="icon" href="../images/favicon.ico">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,17 +17,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/tinymce_7.2.1/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
-<body style="overflow-x: auto;">
+<body style="overflow-x: auto; background-color: #f2f2f2;">
     <div class="settings">
         <div class="settingSidebar">
             <button id="membersBtn" class="settingSidebarBtn"><i class="fa-solid fa-users"></i> <p>Members</p></button>
             <button id="analyticsBtn" class="settingSidebarBtn"><i class="fa-solid fa-chart-simple"></i> <p>Analytics</p></button>
             <button id="reportsBtn" class="settingSidebarBtn"><i class="fa-solid fa-flag"></i> <p>Reports</p></button>
             <button id="devotionsBtn" class="settingSidebarBtn"><i class="fa-regular fa-calendar"></i> <p>Daily Devotions</p></button>
+            <button id="biblePlanBtn" class="settingSidebarBtn"><i class="fa-solid fa-book-bible"></i> <p>Bible Plans</p></button>
         </div>
         <div class="settingMainContent">
             <div id="members" class="settingSection">
-                <div class="settingColumn">
+                <div id="memberSettingColumn" class="settingColumn">
                     <div>
                         <div id="optionBackground" style="display: none;" class="popupPost"></div>
                         <div id="deleteButtons" style="display: none; width: 30vw; background-color: #fff;">
@@ -37,7 +38,8 @@
                     </div>
                     <h1>Members</h1>
                     <span class="line"></span>
-                    <div style="margin-block: 20px; display: flex; flex-direction: row; justify-content: end;">
+                    <div class="filterBtns">
+                        <button id="clearFilterBtn" style="width: 140px;" class="filterBtn"><i class="fa-solid fa-user-slash"></i> Clear Filter</button>
                         <div id="filterBtn" class="filterBtn"><p><i class="fa-solid fa-arrow-up-wide-short"></i> Filter</p>
                         <div id="filterPopup" class="filterDrop">
                             <div class="filterDropSearch">
@@ -76,14 +78,13 @@
                                 <h4 style="margin-bottom: 3px;">Admin</h4>
                                 <input type="text" id="adminInput">
                             </div>
-                            <button style="height: 50px; font-family: 'Roboto';" class="btnLink" id="applyFilterBtn">Apply Filter</button>
+                            <button style="height: 50px; font-family: 'Roboto'; border: solid 1px #ccc;" class="btnLink" id="applyFilterBtn">Apply Filter</button>
                         </div>
                         </div>
-                        <button id="editBtn" class="filterBtn"><i class="fa-solid fa-user-pen"></i> Edit</button>
                     </div>
                     <span class="line"></span>
                     <div id="members" class="membersTable">
-                        <div id="tableDescription" style="height: 50px; background-color: #242424; flex-direction: row;" class="tableRow">
+                        <div id="tableDescription" style="height: 50px; background-color: #fff; border: solid 1px #ccc; flex-direction: row;" class="tableRow">
                             <div class="tableRowInfo">
                                 <p style="margin-left: 50px;" id="firstNameAdmin">First Name</p>
                                 <p id="lastNameAdmin">Last Name</p>
@@ -103,105 +104,84 @@
                 <div class="settingColumn" id="memberColumn">
                     <h1>Analytics</h1>
                     <span class="line"></span>
-                    <div style="width: 95%;" class="settingColumn">
-                        <div class="inlineGraphs">
-                            <div class="graphSec">
-                                <h4>Daily Active Users</h4>
-                                <label for="typeSelector">View the past </label>
-                                <input type="number" id="timeframeSelector" placeholder="10 (default)" value="">
-                                <select id="typeSelector">
-                                    <option value="days">Days</option>
-                                    <option value="months">Months</option>
-                                    <option value="years">Years</option>
-                                </select>
-                                <button id="updateDauBtn">Go</button>
-                                <canvas id="dailyActiveUsers" width="600" height="400"></canvas>
-                            </div>
-                            <div class="graphSec" style="width: 45%; padding-inline: 25px;">
+                    <div style="width: 100%;" class="settingColumn">
+                            <div class="graphSec" style="padding-inline: 25px; padding-block: 30px; width: calc(100% - 66px);">
                                 <div class="inlineGraphs">
-                                    <div style="padding: 10px; width: 50%; border-right: solid 4px #1e1e1e; border-bottom: solid 4px #1e1e1e;">
-                                        <div style="height: 80%;" class="inlineGraphs">
+                                    <div class="topGraph">
+                                        <div style="display: flex; flex-direction: row;">
                                             <div style="height: 70%;">
-                                                <h4>Total Users</h4>
-                                                <h1 id="totalUsersNum"></h1>
+                                                <h4 style="margin-block: 0px;">Total Users</h4>
+                                                <h1 style="margin-block: 10px;" id="totalUsersNum"></h1>
                                             </div>
-                                            <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
+                                            <div class="canvasDiv">
                                                 <div>
                                                     <canvas id="totalUsers" width="50%" height="45"></canvas>
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                         <p id="totalUsersPreview"><b style="color: #f75252;">12%</b> vs preview . 28 days</p>
                                     </div>
-                                    <div style="padding: 10px; width: 50%; border-left: solid 4px #1e1e1e; border-bottom: solid 4px #1e1e1e;">
-                                        <div style="height: 80%;" class="inlineGraphs">
+                                    <div class="topGraph">
+                                        <div style="display: flex; flex-direction: row;">
                                             <div style="height: 70%;">
-                                                <h4>Total Posts</h4>
-                                                <h1 id="totalPostsNum"></h1>
+                                                <h4 style="margin-block: 0px;">Total Posts</h4>
+                                                <h1 style="margin-block: 10px;" id="totalPostsNum"></h1>
                                             </div>
-                                            <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
+                                            <div class="canvasDiv">
                                                 <div>
-                                                    <canvas id="totalPosts" width="50%" height="70"></canvas>
+                                                    <canvas id="totalPosts" width="50%" height="45"></canvas>
                                                 </div>
                                             </div>
                                         </div>
                                         <p id="totalPostsPreview"><b style="color: #3dd598;">12%</b> vs preview . 28 days</p>
                                     </div>
-                                </div>
-                                <div class="inlineGraphs">
-                                    <div style="padding: 10px; width: 50%; border-right: solid 4px #1e1e1e; border-top: solid 4px #1e1e1e;">
-                                        <div style="height: 80%;" class="inlineGraphs">
-                                            <div style="height: 70%;">
-                                                <h4>New Members</h4>
-                                                <h1>1,000+</h1>
-                                            </div>
-                                            <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
-                                                <div>
-                                                    <canvas id="newMembers" width="50%" height="70"></canvas>
+                                    <div style="width: 232px; flex-direction: column;" class="topGraph">
+                                        <div style="display: flex; flex-direction: row;">
+                                            <div>
+                                                <h4 style="margin-block: 0px; font-size: 14px; margin-bottom: 10px;">Website Storage</h4>
+                                                <div style="display: flex; flex-direction: row;">
+                                                    <p style="font-size: 14px; margin-block: 5px;" id="usedStorage">65% Used</p>
+                                                    <span class="dot" style="margin-inline: 4px; margin-block: auto;"></span>
+                                                </div>
+                                                <div style="display: flex; flex-direction: row;">
+                                                    <p style="font-size: 14px; margin-block: 5px;" id="unusedStorage">35% Unused</p>
+                                                    <span class="dot" style="margin-inline: 4px; margin-block: auto; background-color: #f2f2f2;"></span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <p><b style="color: #f75252;">12%</b> vs preview . 28 days</p>
-                                    </div>
-                                    <div style="padding: 10px; width: 50%; border-left: solid 4px #1e1e1e; border-top: solid 4px #1e1e1e;">
-                                        <div style="height: 80%;" class="inlineGraphs">
-                                            <div style="height: 70%;">
-                                                <h4>Page Visits</h4>
-                                                <h1>1,000+</h1>
-                                            </div>
-                                            <div style=" margin-left: 30px; display: flex; align-items: center; height: 100%; width: 30%;">
-                                                <div>
-                                                    <canvas id="pageVisits" width="50%" height="70"></canvas>
-                                                </div>
+                                            <div style="margin-left: auto;">
+                                                <canvas id="databasePercent"></canvas>
                                             </div>
                                         </div>
-                                        <p><b style="color: #3dd598;">12%</b> vs preview . 28 days</p>
+                                        <h5 style="font-size: 14px; color: #3dd598; margin-block: 0px; margin-top: auto;">No Upgrades Needed</h5>
                                     </div>
                                 </div>
+                            </div>
+                        <h2 class="analyticHeader">Daily Active Users</h2>
+                        <div style="height: 60%; width: calc(100% - 35px);" class="graphSec">
+                            <div id="viewPast" style="display: flex; flex-direction: row; gap: 10px;">
+                                <label id="viewTextLbl" style="height: fit-content; margin-block: auto;" for="typeSelector">View the past </label>
+                            <input style="height: calc(30px - 1.6px); font-size: 16px; width: 15%;margin-inline: 0px;" class="signupInput" type="number" id="timeframeSelector" placeholder="10 (default)" value="">
+                            <div id="typeSelectorHolder">
+                                <p id="timeText">Days <i class="fa-solid fa-chevron-down"></i></p>
+                                <div id="typeSelector">
+                                    <button id="timeBtn" value="days">Days</button>
+                                    <button id="timeBtn" value="months">Months</button>
+                                    <button id="timeBtn" value="years">Years</button>
+                                </div>
+                            </div>
+                            <button style="line-height: 0; border: solid 1px #ccc; margin-block: auto; height: 30px;" class="btnLink" id="updateDauBtn">Go</button>
+                            </div>
+                            <div class="chartSizing">
+                                <canvas id="dailyActiveUsers" width="600" height="400"></canvas>
                             </div>
                         </div>
-                        <div class="inlineGraphs">
-                            <div class="graphSec">
-                                <h4>Percent of Database Used</h4>
-                                <div style="display: flex; flex-direction: row; padding-block: 20px;">
-                                    <div style=" margin-left: 15px; width: 45%;">
-                                        <div style="display: flex; flex-direction: row;">
-                                            <span style="height: 15px; width: 15px; background-color: #2782f2; display: inline-block; border-radius: 50%; margin-block: auto; margin-right: 10px;"></span>
-                                            <p style="font-size: 20px;">Used (65%)</p>
-                                        </div>
-                                        <div style="display: flex; flex-direction: row;">
-                                            <span style="height: 15px; width: 15px; background-color: #ffffff; display: inline-block; border-radius: 50%; margin-block: auto; margin-right: 10px;"></span>
-                                            <p style="font-size: 20px;">Not Used (35%)</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <canvas id="databasePercent" width="300" height="300"></canvas>
-                                    </div>
+                        <h2 class="analyticHeader">Page Visits</h2>
+                        <div class="graphSec" style="height: 60%; width: calc(100% - 35px);">
+                            <div style="display: flex; flex-direction: row; padding-block: 20px;">
+                                <div class="chartSizing">
+                                    <canvas id="pageVisits" width="600" height="250"></canvas>
                                 </div>
-                                
-                            </div>
-                            <div class="graphSec">
-                                <h4>Extra spot for analytics</h4>
                             </div>
                         </div>
                     </div>
@@ -217,22 +197,29 @@
                         </div>
                     </div>
                     <div style="justify-content: end; margin-bottom: 20px;">
-                        <button class="filterBtn" id="currentReportsBtn" style="background-color: #353535;">Current Reports</button>
-                        <button class="filterBtn" id="ignoredReportsBtn">Ignored Reports</button>
+                        <button class="filterBtn" id="currentReportsBtn" style="background-color: #f2f2f2; border: solid 1px #ccc;">Current Reports</button>
+                        <button class="filterBtn" id="ignoredReportsBtn" style="border: solid 1px #ccc;">Ignored Reports</button>
                     </div>
                     <span class="line"></span>
                     <div id="reportHolder"></div>
                 </div>
             </div>
             <div id="devotions" class="settingSection">
-                <div id="popupOverlay" class="deleteOverlay">
+                <div id="devotionPopupOverlay" class="deleteOverlay">
                     <div id="devotionPopupContents"class="deletePopup" style="color: #333">
-                          <h2>Create Daily Devotion</h2>
+                        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                            <h2>Create Daily Devotion</h2>
+                            <button id="closeDevotionMainBtn" class="submitImageText" style="background: none;
+                  border: none;
+                  padding: none;
+                  display: inline-block;
+                  cursor: pointer; font-size: 16pt;"><i class="fa-solid fa-circle-xmark"></i></button>
+                        </div>
                           <label for="releaseDate">Release Date: </label>  
                           <input type="date" id="releaseDate" name="releaseDate">
-                          <input style="width: 99%; margin-block: 20px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="devotionTitle" placeholder="Enter Title"type="text">
-                          <textarea style="height: 150px;" class="postText" id="message" placeholder="Enter text"type="text"></textarea>
-                          <button style="margin-top: 250px; width: 50%;" id="scheduleDevotionBtn" class="filterBtn">Schedule Devotion</button>
+                          <input style="width: 99%; height: 3%;margin-block: 20px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="devotionTitle" placeholder="Enter Title"type="text">
+                          <textarea style="height: 20%;" class="postText" id="message" placeholder="Enter text"type="text"></textarea>
+                          <button style="margin-top: 200px; width: 60%;" id="scheduleDevotionBtn" class="filterBtn">Schedule Devotion</button>
                     </div>
                 </div>
                 <div class="settingColumn" id="memberColumn">
@@ -243,6 +230,40 @@
                     </div>
                     <span class="line"></span>
                     <div id="devotionHolder"></div>
+                </div>
+            </div>
+            <div id="bibleplans" class="settingSection">
+                <div id="bpPopupOverlay" class="deleteOverlay">
+                    <div id="bpPopupContents"class="deletePopup" style="color: #333; display: block; flex-direction: column; overflow: auto;">
+                        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                            <h2>Create Bible Plan</h2>
+                            <button id="closePostMainBtn" class="submitImageText" style="background: none;
+                  border: none;
+                  padding: none;
+                  display: inline-block;
+                  cursor: pointer; font-size: 16pt;"><i class="fa-solid fa-circle-xmark"></i></button>
+                        </div>
+                          <h3>Setup</h3>
+                          <label style="align-self: flex-start; display: flex; margin-inline: 10px; font-family: 'Roboto'; font-size: 13pt; margin-bottom: 0px;">Title</label>
+                          <input style="width: 99%; height: 3%;margin-block: 5px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="bpTitle" placeholder="Enter title"type="text">
+                          <label style="align-self: flex-start; display: flex; margin-inline: 10px; font-family: 'Roboto'; font-size: 13pt; margin-bottom: 0px;">Description</label>
+                          <input style="width: 99%; height: 3%;margin-block: 5px; font-family: 'Roboto'; background-color: #fff; border: 2px solid #eee; border-radius: 10px; padding-block: 8px;" class="signupInput" id="bpDescription" placeholder="Enter description"type="text">
+                          <label for="bpIcon">Icon: </label>
+                          <input type="file" name="" id="bpIcon" style="margin-block: 10px">
+                          <h3>Content</h3>
+                          <label for="">Select the books and chapters for this plan.</label>
+                          <div id="booksHolder" style="overflow-y:scroll; max-height: 500px;"></div>
+                          <button style="margin-top: 50px; width: 60%;" id="createBiblePlanBtn" class="filterBtn">Create Bible Plan</button>
+                    </div>
+                </div>
+                <div class="settingColumn" id="memberColumn">
+                    <h1>Bible Plans</h1>
+                    <span class="line"></span>
+                    <div style="display: flex;">
+                        <button id="openBiblePlansCreateBtn" class="btnLink" style="width: 100%; height: 100px; margin: auto; margin: 10px; font-size: 15pt;"><i style="margin-inline: 5px;" class="fa-regular fa-square-plus"></i> Create Bible Plan</button>
+                    </div>
+                    <span class="line"></span>  
+                    <div id="bpHolder" style="flex-direction: column;"></div>
                 </div>
             </div>
         </div>
@@ -264,6 +285,10 @@
   
         .tox, .tox-editor-container, .tox-edit-area, .tox-tinymce, .tox-statusbar__text-container {
           overflow: visible !important;
+        }
+
+        .tox-menubar {
+            display: none !important;
         }
   
       .line {margin-block: 3.5px;} 

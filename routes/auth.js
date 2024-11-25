@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const axios = require('axios');
 const analytics = require('../controllers/analytics');
+const mailchimp = require('../controllers/mailchimp');
 require('../controllers/local');
 
 router.post('/login', async (req, res) => {
@@ -34,15 +35,33 @@ router.post('/login', passport.authenticate('local', { failureRedirect: '/login'
 	});
 });
 
+async function isSubscribed(customerID) {
+	try {
+		const subscriptions = await stripe.subscriptions.list({
+			customer: customerID,
+			status: 'all' // Retrieve all subscriptions (active, past_due, etc.)
+		});
+		// Check if any subscription is still active
+		const activeSubscription = subscriptions.data.find((sub) => sub.status === 'active' || sub.status === 'trialing');
+		return activeSubscription;
+	} catch (error) {
+		console.error('Error retrieving subscriptions:', error);
+		return false;
+	}
+}
+
 router.post('/isLoggedIn', async (req, res) => {
 	try {
 		if (req.user) {
+			let subscribed = await isSubscribed(req.user.subscription.customer);
 			let params = {
 				status: true,
 				message: 'User is logged in',
 				username: req.user.meta.username,
 				uid: req.user.id,
-				admin: req.user.admin
+				admin: req.user.admin,
+				subscribed: subscribed,
+				isVerified: req.user.meta.verify.isVerified
 			};
 			if (req.user.meta.pfp) params['pfp'] = req.user.meta.pfp.name;
 			let date = new Date();
@@ -56,7 +75,7 @@ router.post('/isLoggedIn', async (req, res) => {
 				let user = await User.findByIdAndUpdate(req.user.id, update);
 				let a = analytics.addDailyActiveUser(date);
 			} else {
-				console.log('same day');
+				//same day
 			}
 			let b = analytics.addTodayToUsersCalendar(date);
 			let c = analytics.addTodayToPostsCalendar(date);
@@ -99,7 +118,7 @@ router.post('/signup', async (req, res) => {
 						};
 					}
 
-					await User.create({
+					let user = await User.create({
 						meta: {
 							username: username,
 							password: hash,
@@ -113,26 +132,35 @@ router.post('/signup', async (req, res) => {
 								city: city,
 								state: state,
 								zip: zip
+							},
+							verify: {
+								isVerified: false,
+								code: crypto.randomBytes(10).toString('hex')
 							}
 						},
 						admin: false,
 						subscription: subscription
-					})
-						.then((user) => {
-							console.log(user._id);
-							res.send({
-								status: true,
-								message: 'User created',
-								id: user._id,
-								isReturningUser: status
-							});
-						})
-						.catch((error) => {
-							res.send({
-								status: false,
-								error: error
-							});
+					});
+					let created = await mailchimp.addUser(user);
+					let tagged = await mailchimp.addTag(user.meta.email, 'newUser', 'active');
+					console.log('User successfully added:', created);
+					console.log('Tag successfully added:', tagged);
+					if (created && tagged) {
+						res.send({
+							status: true,
+							message: 'User account created and activation email is outgoing.',
+							id: user.id,
+							isReturningUser: status
 						});
+					} else {
+						console.log('User failed to add:', created.errors);
+						console.log('Tag failed to add:', tagged.errors);
+						res.send({
+							status: false,
+							message: 'There was an error while processing your user activation code request.',
+							errors: [created.errors, tagged.errors]
+						});
+					}
 				} else {
 					res.send({
 						status: false,
@@ -173,10 +201,11 @@ router.get('/logout', function (req, res) {
 });
 
 router.post('/check-unique-username', async (req, res) => {
-	const { username } = req.body;
-	let status = true;
-	let message = 'User has a unique username.';
 	try {
+		const { username } = req.body;
+		let status = true;
+		let message = 'User has a unique username.';
+
 		const query = User.where({
 			'meta.username': username
 		});
@@ -185,12 +214,17 @@ router.post('/check-unique-username', async (req, res) => {
 			status = false;
 			message = 'Please choose a unique username!';
 		}
-	} catch (e) {}
 
-	res.send({
-		status: status,
-		message: message
-	});
+		res.send({
+			status: status,
+			message: message
+		});
+	} catch (e) {
+		res.send({
+			status: false,
+			err: e.message
+		});
+	}
 });
 
 router.post('/check-unique-email', async (req, res) => {
@@ -227,17 +261,17 @@ router.post('/check-unique-email', async (req, res) => {
 	}
 });
 
-router.post('/forgot-password', async (req, res) => {
-	const { email } = req.body;
-	const token = crypto.randomBytes(20).toString('hex');
-	const update = {
-		forgotPassword: {
-			token: token,
-			expirationDate: Date.now() + 3600000
-		}
-	};
-
+router.post('/get-reset-code', async (req, res) => {
 	try {
+		const { email } = req.body;
+		const token = crypto.randomBytes(4).toString('hex');
+		const expirationDate = Date.now() + 3600000;
+		const update = {
+			['meta.forgotPassword']: {
+				token: token,
+				expirationDate: expirationDate
+			}
+		};
 		const query = User.where({
 			'meta.email': email
 		});
@@ -245,20 +279,28 @@ router.post('/forgot-password', async (req, res) => {
 		if (user) {
 			user.updateOne(update).then(async () => {
 				//send email
-				const data = {
-					from: `Jack Gimre <mailgun@sandbox9b624a1c063b4ec2ad41113c8587b4c3.mailgun.org>`,
-					to: [email],
-					subject: 'Reset Password',
-					text: `Your code is: ${token}`
-				};
-
-				mg.messages().send(data, function (error, body) {
-					if (error) {
-						console.log('Error:', error);
+				try {
+					console.log(token, expirationDate);
+					let merged = await mailchimp.updateMerge(user.meta.email, token);
+					let untagged = await mailchimp.addTag(user.meta.email, 'forgotPassword', 'inactive');
+					let tagged = await mailchimp.addTag(user.meta.email, 'forgotPassword', 'active');
+					console.log('Merge successfully updated:', merged.merge_fields);
+					console.log('Tag successfully added:', tagged);
+					if (merged.errors == null && tagged.errors == null && untagged) {
+						res.send({
+							status: true,
+							message: 'Password verification code updated internally and email is outgoing.'
+						});
 					} else {
-						console.log('Email sent:', body);
+						res.send({
+							status: false,
+							message: 'There was an error while processing your reset password request.',
+							errors: [merged.errors, tagged.errors]
+						});
 					}
-				});
+				} catch (error) {
+					console.error('Failed to add tag:', error);
+				}
 			});
 		} else {
 			res.send({
@@ -269,6 +311,142 @@ router.post('/forgot-password', async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		res.send({ status: false });
+	}
+});
+
+router.post('/verify-reset-code', async (req, res) => {
+	try {
+		const { email, code } = req.body;
+		const query = User.where({
+			'meta.email': email
+		});
+		let user = await query.findOne();
+		if (user) {
+			if (user.meta.forgotPassword) {
+				let { expirationDate, token } = user.meta.forgotPassword;
+				if (Date.now() < expirationDate.getTime()) {
+					console.log(code);
+					console.log(token);
+					if (code === token) {
+						res.send({
+							status: true,
+							message: 'Password reset code verified.'
+						});
+					} else {
+						res.send({
+							status: false,
+							message: 'Incorrect code.'
+						});
+					}
+				} else {
+					res.send({
+						status: false,
+						message: 'This code is expired. Try again.'
+					});
+				}
+			} else {
+				res.send({
+					status: false,
+					message: 'Incorrect email'
+				});
+			}
+		} else {
+			res.send({
+				status: false,
+				message: 'There is no account associated with this email.'
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.send({ status: false });
+	}
+});
+
+router.post('/reset-password', async (req, res) => {
+	try {
+		const { email, code, password } = req.body;
+		const query = User.where({
+			'meta.email': email
+		});
+		let user = await query.findOne();
+		let { expirationDate, token } = user.meta.forgotPassword;
+		async function Passed() {
+			const { hash, salt } = await hasher.returnHashAndSalt(password);
+			user.meta.password = hash;
+			user.meta.salt = salt;
+			let save = await user.save();
+			if (save) {
+				res.send({
+					status: true,
+					message: 'Password has been reset'
+				});
+			} else {
+				res.send({
+					status: false,
+					message: 'Error while resetting'
+				});
+			}
+		}
+		async function Failed(result) {
+			res.send({
+				status: false,
+				message: 'Input validation failed',
+				errors: result
+			});
+		}
+		if (Date.now() < expirationDate.getTime() && code === token) {
+			req.body.username = user.meta.username;
+			await validate.Authenticate(validate.register(req, res), Passed, Failed);
+		}
+	} catch (error) {
+		console.log(error);
+		res.send({ status: false, error: error.message });
+	}
+});
+
+router.post('/verify-account', async (req, res) => {
+	try {
+		let { uid, code } = req.body;
+		console.log(uid, code);
+		if (!uid || !code) {
+			return res.send({
+				status: false,
+				message: 'You must supply a user ID and verification code!'
+			});
+		}
+		let user = await User.findById(uid);
+		console.log(user);
+		if (!user) {
+			return res.send({
+				status: false,
+				message: 'No account under this ID!'
+			});
+		}
+		if (user.meta.verify.isVerified) {
+			return res.send({
+				status: true,
+				message: 'Already verified'
+			});
+		} else {
+			if (user.meta.verify.code === code) {
+				user.meta.verify.isVerified = true;
+				await user.save();
+				return res.send({
+					status: true,
+					message: 'Account veriifed'
+				});
+			} else {
+				return res.send({
+					status: false,
+					message: 'Incorrect verification code!'
+				});
+			}
+		}
+	} catch (error) {
+		res.send({
+			status: false,
+			message: error.message
+		});
 	}
 });
 

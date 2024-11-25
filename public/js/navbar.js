@@ -28,17 +28,17 @@ function load() {
 			<span id="navSep" class="line"></span>
             <a href="/" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-house"></i> Home</a>
 			<a id="logoutBtn2" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-            <div class="navLinkDrop">
+            <div class="navLinkDrop" style="display:none; cursor: default; line-height: 60px;">
                 <p>Community</p>
                 <i class="material-icons">keyboard_arrow_down</i>
             <div class="navDrop">
                 <a style="border-radius: 4px 4px 0px 0px;" href="forum" class="dropLink"><i class="fa-regular fa-comments" disabled></i> Forum</a>
-                <a href="daily-devotions" class="dropLink"><i class="fa-regular fa-calendar"></i> Daily Devotions</a>
-                <a href="bible-plans" class="dropLink"><i class="fa-solid fa-book-bible"></i> Bible Plans</a>
-                <a style="border-radius: 0px 0px 4px 4px" href="cowboy-stories" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
+                <a href="devotions" class="dropLink"><i class="fa-regular fa-calendar"></i> Daily Devotions</a>
+                <a href="biblePlans" class="dropLink"><i class="fa-solid fa-book-bible"></i> Bible Plans</a>
+                <a style="border-radius: 0px 0px 4px 4px" href="cowboyStories" class="dropLink"><i class="fa-solid fa-hat-cowboy-side"></i> Cowboy Stories</a>
             </div>
         </div>
-            <a id="signupNav" href="signup" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i></a>
+            <a id="signupNav" href="login" class="nav-link"><i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i></a>
             <div href="" style="display: none;"  id="navProfile" class="navProfile">
             <div class="navProfileUser">    
                 <p style="margin-inline: 10px;" id="username"></p>
@@ -48,7 +48,7 @@ function load() {
             <div class="navProfileDrop">
                 <a id="profile" class="navProfileDropLink"><i class="fa-solid fa-user"></i> Profile</a>
                 <a href="settings" class="navProfileDropLink"><i class="fa-solid fa-gear"></i> Settings</a>
-                <a id="navSub" class="navProfileDropLink"><i class="fa-solid fa-credit-card"></i> Subscription</a>
+                <a id="navSub" style="display: none;" class="navProfileDropLink"><i class="fa-solid fa-credit-card"></i> Subscription</a>
                 <a id="logoutBtn1" href="logout" class="navProfileDropLink"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
             </div>
         </div>
@@ -56,8 +56,36 @@ function load() {
         
         <button class="navIcon" id="burgerMenu"><i class="fa-solid fa-bars"></i></button>
     </nav>
+	<div id="spinner" style="background-color: white; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; z-index: 100;">
+        <l-ring
+        size="40"
+        stroke="5"
+        bg-opacity="0"
+        speed="2"
+        color="black" 
+        ></l-ring>
+    </div>
     `;
 	document.body.innerHTML = nav.innerHTML + document.body.innerHTML;
+	let spinner = document.createElement('script');
+	spinner.type = 'module';
+	spinner.src = 'https://cdn.jsdelivr.net/npm/ldrs/dist/auto/ring.js';
+	console.log(spinner);
+	document.head.appendChild(spinner);
+}
+
+function isNonSubscriberPage() {
+	const url = window.location.href; // Get the current URL
+	const pageName = url.substring(url.lastIndexOf('/') + 1); // Extract the page name
+
+	return (
+		pageName === '' ||
+		pageName.toLowerCase() === 'index' ||
+		pageName.toLowerCase() === 'settings' ||
+		pageName.toLowerCase() === 'signup' ||
+		pageName.toLowerCase() === 'login' ||
+		pageName.toLowerCase() === 'forgot-password'
+	);
 }
 
 function checkLogin() {
@@ -70,28 +98,37 @@ function checkLogin() {
 		.then((res) => res.json())
 		.then(async (data) => {
 			if (data.status) {
-				document.querySelector('#username').innerHTML = SafeHTML(data.username);
-				document.querySelector('.navDrop').style = 'right: -35px;';
-				document.querySelector('#signupNav').style = 'display: none; !important';
-				document.querySelector('#navProfile').style = 'display: flex;';
-				document.querySelector('#logoutBtn1').style = 'display: flex; !important';
-				document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
-				if (data.pfp) {
-					document.querySelector('#pfp').src = `/image/${data.pfp}`;
-				}
-				if (data.admin) {
-					let adminLink = document.createElement('a');
-					adminLink.className = 'navProfileDropLink';
-					adminLink.innerHTML = '<i class="fa-solid fa-chart-line"></i> Admin Dashboard';
-					adminLink.href = 'admin';
-					document.querySelector('#navSub').insertAdjacentElement('afterend', adminLink);
+				if ((data.subscribed || data.admin) && data.isVerified) {
+					// || data.admin
+					document.querySelector('#username').innerHTML = SafeHTML(data.username);
+					document.querySelector('.navDrop').style = 'right: -35px;';
+					document.querySelector('#signupNav').style = 'display: none; !important';
+					document.querySelector('#navProfile').style = 'display: flex;';
+					document.querySelector('#logoutBtn1').style = 'display: flex; !important';
+					document.querySelector('.navLinkDrop').style.display = 'flex';
+					document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
+					if (data.pfp) {
+						document.querySelector('#pfp').src = `/image/${data.pfp}`;
+					}
+					if (data.admin) {
+						let adminLink = document.createElement('a');
+						adminLink.className = 'navProfileDropLink';
+						adminLink.innerHTML = '<i class="fa-solid fa-chart-line"></i> Admin Dashboard';
+						adminLink.href = 'admin';
+						document.querySelector('#navSub').insertAdjacentElement('afterend', adminLink);
+					}
+				} else if (!isNonSubscriberPage()) {
+					if (!data.isVerified) alert('Your account is not verified. Check your email to verify!');
+					location.replace('/login');
 				}
 			} else {
-				document.querySelector('#signupNav').innerHTML = '<i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Signup';
+				document.querySelector('#signupNav').innerHTML = '<i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Login';
 				document.querySelector('.navDrop').style = 'right: -35px';
 				document.querySelector('.navProfile').style = 'display: none !important;';
+				document.querySelector('.navLinkDrop').style.display = 'none';
 				document.querySelector('#logoutBtn2').style = 'display: none !important;';
 				document.querySelector('#navSep').style = 'display: none !important;';
+				if (!isNonSubscriberPage()) location.replace('/login');
 			}
 		})
 		.catch((err) => {
@@ -168,9 +205,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-	document.querySelector('#profile').setAttribute('href', '');
+	/*document.querySelector('#profile').setAttribute('href', '');
 	document.querySelector('#profile').addEventListener('click', construction);
-	document.querySelector('#navSub').addEventListener('click', construction);
+	document.querySelector('#navSub').addEventListener('click', construction);*/
 });
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -189,3 +226,15 @@ async function construction(event) {
 	document.querySelector('.construction').style.display = 'none';
 	document.querySelector('#nav').style = 'margin-top: 0px;';
 }
+
+const navbar = document.querySelector('#nav');
+
+window.addEventListener('scroll', () => {
+	const scrollPosition = window.scrollY;
+
+	if (scrollPosition > 0) {
+		navbar.style.backgroundColor = '#00000085';
+	} else {
+		navbar.style.backgroundColor = 'var(--bistre)';
+	}
+});

@@ -1,3 +1,5 @@
+let allFiles = [];
+
 const SafeHTML = (html) => {
 	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 };
@@ -23,6 +25,22 @@ const returnSortType = () => {
 	else return sortType;
 };
 
+function startSpin() {
+	document.addEventListener('DOMContentLoaded', () => {
+		document.querySelector('#spinner').style.display = 'flex';
+		try {
+			document.querySelector('.allForum').style.display = 'none';
+		} catch (err) {
+			console.log(err);
+		}
+	});
+}
+
+function endSpin() {
+	document.querySelector('.allForum').style.display = 'flex';
+	document.querySelector('#spinner').style.display = 'none';
+}
+
 async function loadPosts() {
 	const id = returnID();
 	let loadedPosts = 0;
@@ -32,6 +50,7 @@ async function loadPosts() {
 	const data = new FormData();
 	data.append('loadedPosts', loadedPosts);
 	data.append('sortType', sortType);
+	startSpin();
 	if (!id) {
 		fetch('api/forum/loadPosts', {
 			method: 'post',
@@ -45,18 +64,18 @@ async function loadPosts() {
 				loadCreatePostButton();
 				if (data.status) {
 					console.log(data);
+					let loadMoreBtn = document.querySelector('#loadMoreBtn');
 					if (data.hasMore) {
-						let loadMoreBtn = document.querySelector('#loadMoreBtn');
 						loadMoreBtn.style.display = 'flex';
 						loadMoreBtn.addEventListener('click', loadPosts);
 					} else {
-						let loadMoreBtn = document.querySelector('#loadMoreBtn');
 						loadMoreBtn.style.display = 'none';
 						loadMoreBtn.addEventListener('click', loadPosts);
 					}
 					data.posts.forEach((post) => {
 						createPostElement(post, data.currentUserID, data.pfp);
 					});
+					endSpin();
 				} else {
 					console.log(data);
 				}
@@ -76,11 +95,13 @@ async function loadPosts() {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				console.log(data);
 				if (data.status) {
 					loadSinglePost(data.post, data.currentUserID, data.pfp);
+					endSpin();
 				} else {
-					console.log('error!');
+					endSpin();
+					alert(data.message);
+					window.location.replace('/forum');
 				}
 			})
 			.catch((err) => {
@@ -167,14 +188,14 @@ function returnPfp(uID, parent) {
 }
 
 function createPostElement(post, currentUserID, pfp) {
-	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount } = post;
+	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount, images } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
 	div.innerHTML = `<div id="post">
 		<span class="line"></span>
-		<div class="forumPost" href="/forum?id=${_id}" id=${_id}>
+		<div class="forumPost" id=${_id}>
 		<div class="inlineForumUser">
-			<img class="forumPfp" src="/image/${pfp}"></img>
+			<img class="forumPfp" src="../images/default-pfp.jpeg"></img>
 			<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
 			<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
 		</div>
@@ -183,7 +204,8 @@ function createPostElement(post, currentUserID, pfp) {
 		</div>
 		
 		
-		<p style="white-space:pre;">${message}</p>
+		<p style="white-space:pre;pointer-events:none;">${message}</p>
+		<div id="images" style="display: flex; flex-direction: row; justify-content: flex-start;pointer-events:none;"></div>
 		<div class="forumBtns">
 			<p id="likeCounter">${likesCount}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
@@ -207,18 +229,52 @@ function createPostElement(post, currentUserID, pfp) {
 		button.addEventListener('click', deletePostConfirm);
 		div.querySelector('.forumBtns').appendChild(button);
 	}
+	if (images.length > 0) {
+		images.forEach((img) => {
+			div.querySelector('#images').appendChild(returnIconDiv(img, 100));
+		});
+	}
 	div.querySelector('#commentIcon').addEventListener('click', openPostComments);
 	div.querySelector('#likeBtn').addEventListener('click', likePost);
 	div.querySelector('#reportBtn').addEventListener('click', forumReport);
+	div.addEventListener('click', postClick);
+	div.addEventListener('mouseover', () => {
+		document.body.style.cursor = 'pointer';
+	});
+
+	div.addEventListener('mouseout', () => {
+		document.body.style.cursor = 'default'; // Reset the cursor when not hovering
+	});
 	document.querySelector('#posts').appendChild(div);
 }
 
+function setBackButton(type) {
+	switch (type) {
+		case 'post':
+			document.querySelector('.backBtn').href = '/forum';
+			document.querySelector('#forumPageTitle').innerHTML = 'Forums';
+			document.title = 'Forum | Long X Ranch Cowboys';
+			break;
+		case 'devotion':
+			document.querySelector('.backBtn').href = '/devotions';
+			document.querySelector('#forumPageTitle').innerHTML = 'Daily Devotions';
+			document.title = 'Daily Devotions | Long X Ranch Cowboys';
+			break;
+		case 'story':
+			document.querySelector('.backBtn').href = '/cowboyStories';
+			document.querySelector('#forumPageTitle').innerHTML = 'Cowboy Stories';
+			document.title = 'Cowboy Stories | Long X Ranch Cowboys';
+			break;
+	}
+}
+
 function loadSinglePost(post, currentUserID, pfp) {
-	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount } = post;
+	const { _id, title, message, username, postDate, uID, likes, likesCount, comments, commentsCount, images, type } = post;
 	let div = document.createElement('div');
 	let date = new Date(postDate);
 	let profilePic = '../images/default-pfp.jpeg';
 	if (pfp) profilePic = `/image/${pfp.name}`;
+	setBackButton(type);
 	document.querySelector('.backBtn').style.display = 'flex';
 	document.querySelector('#sorting').style.display = 'none';
 
@@ -236,7 +292,8 @@ function loadSinglePost(post, currentUserID, pfp) {
 		</div>
 		
 		
-		<p style="white-space:pre;">${message}</p>
+		<p style="white-space:pre;pointer-events:none;">${message}</p>
+		<div id="images" style="display: flex; flex-direction: row; justify-content: flex-start;pointer-events:none;"></div>
 		<div class="forumBtns">
 			<p id="likeCounter">${likesCount}</p>
 			<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
@@ -266,6 +323,12 @@ function loadSinglePost(post, currentUserID, pfp) {
 		button.innerHTML = '<i class="fa-regular fa-trash-can"></i>';
 		button.addEventListener('click', deletePostConfirm);
 		div.querySelector('.forumBtns').appendChild(button);
+	}
+	if (images.length > 0) {
+		console.log(images);
+		images.forEach((img) => {
+			div.querySelector('#images').appendChild(returnIconDiv(img, 200));
+		});
 	}
 	div.querySelector('#reportBtn').addEventListener('click', forumReport);
 	div.querySelector('#commentIcon').addEventListener('click', goToCommentSection);
@@ -339,20 +402,39 @@ function deleteCommentConfirm() {
 		});
 }
 
+function returnIconDiv(file, height) {
+	const reader = new FileReader();
+	let div = document.createElement('div');
+	div.innerHTML = `
+			<a style="margin:5px;" href="/image/${file.name}" target="_blank" rel="noopener noreferrer"><img style="width: ${height}px; height: ${height}px; border: 2px solid white; object-fit: cover;" src="/image/${file.name}"></img></a>
+		`;
+	let img = div.querySelector('img');
+	reader.onload = function (e) {
+		img.src = e.target.result;
+		setAspectRatio(img);
+	};
+	return div;
+}
+
 function createPost() {
 	let title = document.querySelector('#title').value;
 	let message = tinymce.get('message').getContent();
-
 	const data = new FormData();
 	data.append('title', title);
 	data.append('message', message);
+	const fileInput = document.querySelector('#addImage');
+	console.log('All Files Uploaded:', allFiles);
+	if (allFiles.length > 0) {
+		// Check if there are files selected
+		for (let i = 0; i < allFiles.length; i++) {
+			data.append('files', allFiles[i]); // Append each file to FormData
+		}
+		// Now `data` contains all the files, and you can send it via AJAX or Fetch
+	}
 
 	fetch('api/forum/post', {
 		method: 'post',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: new URLSearchParams(data)
+		body: data
 	})
 		.then((res) => res.json())
 		.then((data) => {
@@ -361,10 +443,15 @@ function createPost() {
 				console.log('success');
 				window.location.replace(`/forum?id=${data.id}`);
 			} else {
-				if (data.message == 'Please make sure all the fields are filled in') {
-					//red border around
+				switch (data.message) {
+					case 'Please make sure all the fields are filled in':
+						//red border around
+						break;
+					case 'Upload failed because file size too large!':
+						let { maxSize, filename, uploadedSize } = data;
+						alert(`Upload failed because ${filename} was bigger than ${maxSize}MB [${uploadedSize.toFixed(1)}MB]\n\nUpgrade your plan for a larger upload size!`);
+						break;
 				}
-				console.log('error!');
 			}
 		})
 		.catch((err) => {
@@ -479,9 +566,9 @@ function loadComment(comment, currentUserID) {
 				<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
 				</div>
 				
-				<p style="white-space:pre; font-family: 'roboto'; font-size: 19px;">${SafeHTML(content)}</p>
+				<p style="font-family: 'roboto'; font-size: 19px; color: #333;">${SafeHTML(content)}</p>
 				<div class="forumBtns">
-					<p id="likeCounter">${likesCount}</p>
+					<p style="color: #333;" id="likeCounter">${likesCount}</p>
 					<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
 					<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 					<button id="replyBtn" class="iconBtn">Reply</button>
@@ -578,9 +665,9 @@ function openReplies() {
 						<a class="forumUser" href="/profile?uid=${authorID}">${SafeHTML(author)}</a>
 						<p id="forumDate" class="forumUser"><i class="fa-solid fa-circle"></i> ${DateText(date)}</p>
 						</div>
-						<p style="white-space:pre; font-family: 'roboto'; font-size: 19px;">${SafeHTML(content)}</p>
+						<p style="white-space:pre;font-family: 'roboto';font-size: 19px;color: #333;pointer-events: none;">${SafeHTML(content)}</p>
 						<div class="forumBtns">
-							<p id="likeCounter">${likesCount}</p>
+							<p style="color: #333;" id="likeCounter">${likesCount}</p>
 							<button id="likeBtn" class="iconBtn"><i class="fa-regular fa-heart"></i></button>
 							<button id="reportBtn" class="iconBtn"><i class="fa-regular fa-flag"></i></button>
 							<button id="replyBtn" class="iconBtn">Reply</button>
@@ -680,12 +767,12 @@ function replySubmit() {
 
 function submitReport() {
 	let reasons = [];
-	const reportCheckboxes = document.querySelectorAll('#reportCheckbox');
+	const reportCheckboxes = document.querySelectorAll('.reportCheckbox');
 	const message = document.querySelector('#reportMessage').value;
 	const postID = document.querySelector('#reportTitle').querySelector('a').href.split('=')[1];
 	console.log(postID);
 	reportCheckboxes.forEach((checkbox) => {
-		if (checkbox.checked) reasons.push(checkbox.value);
+		if (checkbox.checked) reasons.push(checkbox.id);
 	});
 	const data = new FormData();
 	data.append('reasons', reasons);
@@ -715,7 +802,7 @@ function loadCreatePostButton() {
 		btn.remove();
 	});
 	let button = document.createElement('button');
-	button.style.cssText = 'margin-left: auto; padding-block: 0px; height: 40px;';
+	button.style.cssText = 'margin-left: auto; padding-block: 0px; height: 40px; background-color: var(--bistre); color: #fff;';
 	button.id = 'showPopup';
 	button.className = 'btnLink';
 	button.innerHTML = '<i style="margin-inline: 5px;" class="fa-regular fa-square-plus"></i> Create Post';
@@ -723,7 +810,7 @@ function loadCreatePostButton() {
 	document.querySelector('#postButton').addEventListener('click', createPost);
 	document.querySelector('#showPopup').addEventListener('click', popupPost);
 	document.querySelector('#makePost').addEventListener('click', closePost);
-	document.querySelector('#closePostBtn').addEventListener('click', closePost);
+	document.querySelector('#closePostMainBtn').addEventListener('click', closePost);
 }
 
 function popupPost() {
@@ -787,31 +874,65 @@ function MCEtoMessage(mce) {
 
 // this like uploads image or whatever, idgaf
 
-let inputFile = document.getElementById('addImage');
 let imagePreview = document.getElementById('imageUploadPreview');
 
 document.getElementById('addImage').addEventListener('change', uploadImage);
+
+function setAspectRatio(img) {
+	img.onload = function () {
+		let defaultHeight = parseFloat(img.style.height.replace('px', ''));
+		let height = img.naturalHeight;
+		let width = img.naturalWidth;
+		let aspectRatio = (width / height).toFixed(2);
+		img.style.width = aspectRatio * defaultHeight + 'px';
+	};
+}
+
+function deleteImage() {
+	let name = event.target.parentElement.querySelector('img').id;
+	event.target.parentElement.remove();
+	console.log(name);
+	allFiles = allFiles.filter((item) => item.name !== name);
+	console.log(allFiles);
+}
+
+function uploadImage() {
+	console.log('Uploading...');
+	const files = Array.from(event.target.files);
+	allFiles = allFiles.concat(files);
+	console.log(allFiles);
+	if (files.length > 0) {
+		files.forEach((file) => {
+			if (file && file.type.startsWith('image/')) {
+				const reader = new FileReader();
+				let div = document.createElement('div');
+				div.innerHTML = `
+					<img id="${file.name}" style="width: 150px; height: 150px; border: 2px solid grey; object-fit: cover;"></img>
+					<button>Delete</button> 
+				`;
+				div.querySelector('button').addEventListener('click', deleteImage);
+				let img = div.querySelector('img');
+				reader.onload = function (e) {
+					img.src = e.target.result;
+					setAspectRatio(img);
+				};
+				reader.readAsDataURL(file);
+				document.querySelector('#images').appendChild(div);
+			} else {
+				alert('Please upload a valid image file.');
+			}
+		});
+	}
+}
 
 document.getElementById('dropArea').addEventListener('dragover', function (e) {
 	e.preventDefault();
 });
 
-document.getElementById('dropArea').addEventListener('drop', function (e) {
-	e.preventDefault();
-	inputFile.files = e.dataTransfer.files;
-	uploadImage();
-});
-
-function uploadImage() {
-	let imgLink = URL.createObjectURL(inputFile.files[0]);
-	imagePreview.setAttribute('src', imgLink);
-	document.querySelector('.submitImageText').style.display = 'none';
-	document.querySelector('.imageUploadPreviewDiv').style.display = 'block';
-	document.querySelector('#removeImageBtn').style.display = 'inline-block';
-}
+document.getElementById('dropArea').addEventListener('drop', uploadImage);
 
 document.querySelector('#removeImageBtn').addEventListener('click', function () {
-	imagePreview.setAttribute('src', '');
+	document.getElementById('imageUploadPreview').setAttribute('src', '');
 	document.querySelector('.submitImageText').style.display = 'flex';
 	document.querySelector('.imageUploadPreviewDiv').style.display = 'none';
 	document.querySelector('#removeImageBtn').style.display = 'none';
@@ -861,10 +982,10 @@ async function sorterClick() {
 	let button = event.target;
 	let sorters = document.querySelectorAll('.filterBtn');
 	sorters.forEach((btn) => {
-		btn.style.backgroundColor = '#1e1e1e';
+		btn.style.backgroundColor = '#fff';
 		btn.id = 'sortUnclicked';
 	});
-	button.style.backgroundColor = '#353535';
+	button.style.backgroundColor = '#f2f2f2';
 	button.id = 'sortClicked';
 	clearPosts();
 	loadPosts();
@@ -877,4 +998,15 @@ document.querySelectorAll('.filterBtn').forEach((btn) => {
 function showDeletePopup() {
 	const popupOverlay = document.getElementById('popupOverlay');
 	popupOverlay.style.display = 'flex';
+}
+
+function postClick() {
+	console.log(event.target);
+	if (event.target.className == 'forumPost') {
+		location.href = window.location.href + `?id=${event.target.id}`;
+	}
+}
+
+function postHover() {
+	event.target.style.cursor = 'pointer';
 }

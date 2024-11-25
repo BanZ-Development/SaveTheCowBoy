@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="../images/favicon.ico">
+        <link rel="stylesheet" href="../css/style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <title>Cowboy Stories | Long X Ranch Cowboys</title>
+        <meta name="title" content="Long X Ranch Cowboys" />
+        <meta name="description" content="Save the Cowboy, a 501(c)(3) non-profit, Christian, working-ranch introduces our subscription and community service, Long X Ranch Cowboys. Connect with other ranchers, learn and spread the gospel, and help support our local ranchers." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://longxranchcowboys.com/"/>
+        <meta property="og:title" content="Long X Ranch Cowboys" />
+        <meta property="og:description" content="Save the Cowboy, a 501(c)(3) non-profit, Christian, working-ranch introduces our subscription and community service, Long X Ranch Cowboys. Connect with other ranchers, learn and spread the gospel, and help support our local ranchers." />
+        <meta property="og:image" content="https://longxranchcowboys.com/images/websiteMetaImg.jpg" />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://longxranchcowboys.com/"/>
+        <meta property="twitter:title" content="Long X Ranch Cowboys" />
+        <meta property="twitter:description" content="Save the Cowboy, a 501(c)(3) non-profit, Christian, working-ranch introduces our subscription and community service, Long X Ranch Cowboys. Connect with other ranchers, learn and spread the gospel, and help support our local ranchers." />
+        <meta property="twitter:image" content="https://longxranchcowboys.com/images/websiteMetaImg.jpg" />
+        <script type="module" src="../js/cowboy.js"></script>
+        <script src="../js/tinymce_7.2.1/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+    </head>
+<body style="background-color: #fff;">
+    <div class="cowboyStoryExplore">
+        <h1>How has your faith impacted your life as a cowboy?</h1>
+        <div class="createStory">
+            <input id="createStoryTitle" placeholder="Add a title for your story..." class="signupInput" style="display: none;" type="text">
+            <input id="createStoryDesc" placeholder="Add a description..." class="signupInput" style="display: none;"  type="text">
+            <div style="width: 100%;">
+                <textarea style="width: 100%;" placeholder="Share your story..." name="" id="storyInput"></textarea>
+                <textarea class="postText" id="message" type="text"></textarea>
+            </div>
+            <label style="display: none;" id="dropArea" class="submitImage" for="addImage">
+                <input type="file" name="" id="addImage" hidden="" multiple="">
+                <div class="submitImageText">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                  <p>Upload images</p>
+                </div>
+                <div class="imageUploadPreviewDiv">
+                  <img id="imageUploadPreview" src="" alt="">
+                </div>
+              </label>
+            <div id="images" style="display: flex; flex-direction: row;"></div>
+            <button id="postStoryBtn">Share</button>
+                <button id="removeImageBtn" style="background-color: #f3f3f3; height: 40px; padding-block: 0px; font-family: 'Roboto'; width: unset; border-radius: 10px; display: none;" class="btnLink" id="postButton">Delete Image</button>
+        </div>
+        <img src="../images/ColoradoCountry2.jpg" alt="">
+    </div>
+    <div class="featuredStories">
+        <h1 style="font-family: 'Noto Serif'; color: #333;">Recent Stories</h1>
+    </div>
+    <style>
+        .signupInput {
+            margin-block: 10px;
+        }
+
+        .line {
+        background-color: #ccc;
+        }
+
+        .tox-edit-area {
+        min-height: 30vh !important;
+        }
+
+        .tox, .tox-editor-container, .tox-edit-area, .tox-tinymce, .tox-statusbar__text-container {
+        overflow: visible !important;
+        }
+
+        .line {margin-block: 3.5px;} 
+        .tox-statusbar__branding, .tox-statusbar__resize-handle, .tox-promotion {display: none !important;}
+        #postButton {
+        width: 100px;
+        margin: 10px 0px 10px 0px !important;
+        }
+        .signupInput:focus-visible {
+        border: solid 2px #0268db !important;
+        }
+
+        img {
+        border-radius: 7px;
+        }
+
+        .mceEditor > table {
+        height: 600px !important;
+        }
+
+        #message {
+        flex: 1; /* Allow textarea to take up remaining space */
+        min-height: 500px; /* Ensure minimum height is respected */
+        height: 500px;
+        }
+
+        .tox {
+            display: none;
+        }
+
+        .submitImage {
+            width: 93%;
+            margin-inline: auto;
+        }
+
+    </style>
+    <script>
+        tinymce.init({
+            selector: '#message',  // combined selectors
+            plugins: '',
+            placeholder: 'Share your story...',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image table mergetags | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            paste_data_images: false,
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ],
+            height: 500,
+            min_height: 500,
+            resize: false
+        });
+        </script>
+</body>
+<script type="module" src="../js/navbar.js"></script>
+<script src="../js/anime.min.js"></script>
+</html>
