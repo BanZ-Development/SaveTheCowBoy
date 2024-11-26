@@ -1440,6 +1440,7 @@ function updateUser() {
 }
 
 function updateEditHTML(member, key, value) {
+	if (key == 'uid') return;
 	member.querySelector('#' + key).value = value;
 	let admin = key.split('update')[1];
 	admin = admin.charAt(0).toLowerCase() + admin.slice(1) + 'Admin';
