@@ -951,7 +951,7 @@ function openFaq(event) {
 	if (window.getComputedStyle(answer).display === 'block') {
 		answer.style.display = 'none';
 		button.style.height = '50px';
-		button.style.color = '#747474';
+		button.style.color = '#333';
 		anime({
 			targets: icon,
 			rotateX: 0,
@@ -962,7 +962,7 @@ function openFaq(event) {
 		answer.style.display = 'block';
 		answerParagraph.style.display = 'block'; // Ensure p is display block
 		button.style.height = 'fit-content'; // Set height to fit-content
-		button.style.color = '#bdbdbd';
+		button.style.color = '#333';
 		anime({
 			targets: icon,
 			rotateX: 180,
