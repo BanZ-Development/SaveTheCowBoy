@@ -172,7 +172,7 @@ function createPostElement(post, currentUserID, pfp) {
 	let date = new Date(postDate);
 	div.innerHTML = `<div id="post">
 		<span class="line"></span>
-		<div class="forumPost" href="/forum?id=${_id}" id=${_id}>
+		<div style="cursor: pointer;" class="forumPost" href="/forum?id=${_id}" id=${_id}>
 		<div class="inlineForumUser">
 			<img class="forumPfp" src="../images/default-pfp.jpeg"></img>
 			<a class="forumUser" href="/profile?uid=${uID}">${SafeHTML(username)}</a>
@@ -223,6 +223,8 @@ function createProfile(profile) {
 	console.log(profile);
 	document.title = `${profile.username} | Long X Ranch Cowboys`;
 	let div = document.createElement('div');
+	let bio = '';
+	if (profile.bio != undefined) bio = profile.bio;
 	div.innerHTML = `<div class="profile" id="profile">
 		<div class="profileInformation"> 
 			<div style="display: flex; flex-direction: column; color: #333; margin-bottom: 20px; width: 40%;">
@@ -232,7 +234,7 @@ function createProfile(profile) {
 			</div>
 			<div style="width: 40%;">
 				<h1 class="biographyHeader" style="margin-top: 0px; color: #333;">Biography</h1>
-				<p class="profileBiography">${profile.bio}</p>
+				<p class="profileBiography">${bio}</p>
 			</div>
 		</div>
 		<div class="buttonRack">

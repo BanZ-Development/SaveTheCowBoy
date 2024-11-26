@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		let links = ['https://pushpay.com/g/savethecowboy?src=hpp'];
 		let titles = ['Long X Ranch Cowboys'];
 		let desc = [
-			'Save the Cowboy, a 501(c)(3) non-profit, Christian, working-ranch introduces our subscription and community service, <b>Long X Ranch Cowboys</b>. Connect with other ranchers, learn and spread the gospel, and help support our local ranchers.'];
+			'Save the Cowboy, a 501(c)(3) non-profit, Christian, working-ranch introduces our subscription and community service, <b>Long X Ranch Cowboys</b>. Connect with other ranchers, learn and spread the gospel, and help support our local ranchers.'
+		];
 		let repo = ['signup']; // donate link
 
 		let slide = document.querySelectorAll('.slide');
@@ -62,21 +63,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Subscription Slider
 
-
-
 function slideRight() {
 	let container = document.querySelector('.subscriptions');
 	container.scrollLeft += 1400;
 	let maxScrollLeft = container.scrollWidth - container.clientWidth;
 	if (container.scrollLeft >= maxScrollLeft) {
-        container.scrollLeft = 0;
-    }
+		container.scrollLeft = 0;
+	}
 }
 
 function slideLeft() {
 	let container = document.querySelector('.subscriptions');
 	container.scrollLeft -= 1400;
 	if (container.scrollLeft <= 0) {
-        container.scrollLeft = container.scrollWidth - container.clientWidth;
-    }
+		container.scrollLeft = container.scrollWidth - container.clientWidth;
+	}
 }
+
+document.querySelector('#slideLeft').addEventListener('click', slideLeft);
+document.querySelector('#slideRight').addEventListener('click', slideRight);

@@ -61,7 +61,7 @@ const LoadAnalytics = () => {
 			LoadDailyActiveUsers(dailyActiveUsers, 10, 'days');
 			LoadTotalUsers(totalUsers, usersCalendar);
 			LoadTotalPosts(totalPosts, postsCalendar);
-			LoadPageVisits();
+			//LoadPageVisits();
 			LoadDatabasePercent(usedStorage, totalStorage);
 		});
 };
