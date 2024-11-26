@@ -590,7 +590,7 @@ const deleteUserClick = () => {
 	let uid = button.closest('.tableRow').id;
 	let data = new FormData();
 	data.append('uid', uid);
-	fetch('api/admin/update-user', {
+	fetch('api/admin/delete-user', {
 		method: 'post',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
@@ -1405,8 +1405,10 @@ function cancelEdit(m) {
 
 function updateUser() {
 	let member = event.target.closest('#memberElement');
+	let uid = member.querySelector('.tableRow').id;
 	let updateElements = member.querySelectorAll('.updateUserInfoInput');
 	let body = new FormData();
+	body.append('uid', uid);
 	updateElements.forEach((update) => {
 		if (update.value != '') {
 			body.append(update.id, update.value);

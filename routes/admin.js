@@ -365,8 +365,9 @@ router.post('/create-bible-plan', upload.single('file'), async (req, res) => {
 
 router.post('/update-user', async (req, res) => {
 	try {
+		const uid = req.body.uid;
 		const { updateFirstName, updateLastName, updateEmail, updatePhoneNumber, updateState, updateCity, updateAddress, updateZip, updateAdmin } = req.body;
-		let user = await User.findById(req.user.id);
+		let user = await User.findById(uid);
 		if (updateEmail) user.meta.email = updateEmail;
 		if (updateFirstName) user.meta.firstName = updateFirstName;
 		if (updateLastName) user.meta.lastName = updateLastName;
