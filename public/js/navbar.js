@@ -183,9 +183,12 @@ function checkForPfpCookie() {
 }
 checkForPfpCookie();
 
-/* COMMENT OUT ON TEST (CONSTRUCTION BANNER)
+//COMMENT OUT ON TEST (CONSTRUCTION BANNER)
+/*let available = ['forum', 'settings', 'admin', 'devotions', 'biblePlans', 'cowboyStories', 'profile', ''];
 document.addEventListener('DOMContentLoaded', function () {
 	for (let i = 0; i < document.querySelectorAll('.dropLink').length; i++) {
+		console.log(document.querySelectorAll('.dropLink')[i].getAttribute('href'));
+		if (available.includes(document.querySelectorAll('.dropLink')[i].getAttribute('href'))) continue;
 		document.querySelectorAll('.dropLink')[i].addEventListener('click', (event) => {
 			event.preventDefault();
 			document.querySelector('.construction').style = 'display: block !important;';
@@ -199,15 +202,16 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 		});
 	}
-});*/
-
-document.addEventListener('DOMContentLoaded', function () {
-	/*document.querySelector('#profile').setAttribute('href', '');
-	document.querySelector('#profile').addEventListener('click', construction);
-	document.querySelector('#navSub').addEventListener('click', construction);*/
 });
 
-function construction(event) {
+document.addEventListener('DOMContentLoaded', function () {
+	document.querySelector('#profile').setAttribute('href', '');
+	document.querySelector('#profile').addEventListener('click', construction);
+	document.querySelector('#navSub').addEventListener('click', construction);
+});
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+async function construction(event) {
 	event.preventDefault();
 	document.querySelector('.construction').style = 'display: block !important;';
 	document.querySelector('#nav').style = 'margin-top: 51px;';
@@ -218,7 +222,10 @@ function construction(event) {
 		opacity: [0, 1],
 		duration: 200
 	});
-}
+	await delay(5000);
+	document.querySelector('.construction').style.display = 'none';
+	document.querySelector('#nav').style = 'margin-top: 0px;';
+}*/
 
 const navbar = document.querySelector('#nav');
 
