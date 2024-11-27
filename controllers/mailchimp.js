@@ -65,6 +65,7 @@ exports.addUser = async (user) => {
 			})
 			.catch((err) => {
 				console.warn('Failed to add subscriber', user.meta.email, err);
+				return err;
 			});
 	} catch (err) {
 		return err;

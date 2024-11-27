@@ -101,7 +101,7 @@ router.post('/signup', async (req, res) => {
 		async function Passed() {
 			try {
 				const { username, password, email, firstName, lastName, phoneNumber, address, city, state, zip } = req.body;
-				if (isUniqueUsernameAndEmail(username, email)) {
+				if (await isUniqueUsernameAndEmail(username, email)) {
 					const { hash, salt } = await hasher.returnHashAndSalt(password);
 					let subscription = null;
 
@@ -145,7 +145,7 @@ router.post('/signup', async (req, res) => {
 					let tagged = await mailchimp.addTag(user.meta.email, 'newUser', 'active');
 					console.log('User successfully added:', created);
 					console.log('Tag successfully added:', tagged);
-					if (created && tagged) {
+					if (created != undefined && tagged != undefined) {
 						res.send({
 							status: true,
 							message: 'User account created and activation email is outgoing.',

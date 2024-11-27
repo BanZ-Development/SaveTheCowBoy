@@ -98,7 +98,7 @@ function checkLogin() {
 		.then((res) => res.json())
 		.then(async (data) => {
 			if (data.status) {
-				if ((data.subscribed || data.admin) && data.isVerified) {
+				if (data.subscribed || data.admin) {
 					// || data.admin
 					document.querySelector('#username').innerHTML = SafeHTML(data.username);
 					document.querySelector('.navDrop').style = 'right: -35px;';
@@ -117,8 +117,11 @@ function checkLogin() {
 						adminLink.href = 'admin';
 						document.querySelector('#navSub').insertAdjacentElement('afterend', adminLink);
 					}
+					if (!data.isVerified && !isNonSubscriberPage()) {
+						alert('You cannot access subscriber content until you verify your account. Check your email to verify!');
+						location.replace('/');
+					}
 				} else if (!isNonSubscriberPage()) {
-					if (!data.isVerified) alert('Your account is not verified. Check your email to verify!');
 					location.replace('/login');
 				}
 			} else {
