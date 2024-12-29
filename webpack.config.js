@@ -30,4 +30,10 @@ module.exports = {
     minimize: true,
     minimizer: [new TerserPlugin()], // Custom minifier (optional as 'production' mode does it by default)
   },
+  cache: {
+    type: 'filesystem', // Default; ensures fresh builds
+    buildDependencies: {
+      config: [__filename], // Rebuild if config changes
+    },
+  },
 };

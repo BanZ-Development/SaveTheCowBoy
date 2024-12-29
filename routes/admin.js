@@ -429,11 +429,15 @@ async function cancelActiveAndTrialingSubscriptions(customerId) {
 		customer: customerId,
 		status: 'all', // Fetch all statuses, we'll filter manually
 	  });
-  
 	  for (const subscription of subscriptions.data) {
+		console.log(subscription);
 		if (['active', 'trialing'].includes(subscription.status)) {
-		  await stripe.subscriptions.del(subscription.id);
-		  console.log(`Cancelled subscription: ${subscription.id}`);
+			try {
+				const deletedSubscription = await stripe.subscriptions.del(subscriptionId);
+				console.log(`Cancelled subscription: ${deletedSubscription.id}`);
+			  } catch (error) {
+				console.error('Error cancelling subscription:', error.message);
+			  }
 		}
 	  }
   
@@ -445,7 +449,7 @@ async function cancelActiveAndTrialingSubscriptions(customerId) {
 	}
 }
 
-router.post('cancel-subscription', async (req, res) => {
+router.post('/cancel-subscription', async (req, res) => {
 	try {
 		const { uid } = req.body;
 		
@@ -457,7 +461,6 @@ router.post('cancel-subscription', async (req, res) => {
 			})
 		}
 		const customerID = user.subscription.customer;
-		console.log(customer);
 		if(await cancelActiveAndTrialingSubscriptions(customerID)) {
 			return res.send({
 				status: true,
@@ -476,7 +479,7 @@ router.post('cancel-subscription', async (req, res) => {
 			message: err.message
 		});
 	}
-})
+});
 
 router.post('/delete-devotion', async (req, res) => {
 	try {
