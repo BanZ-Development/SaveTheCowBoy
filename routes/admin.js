@@ -1,3 +1,4 @@
+require('dotenv').config();
 const router = require('express').Router();
 const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
@@ -14,7 +15,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const path = require('path');
-require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 require('../controllers/local');
 const storage = new GridFsStorage({
 	url: process.env.MONGODB_URI,
@@ -420,6 +421,62 @@ router.post('/delete-user', async (req, res) => {
 		});
 	}
 });
+
+async function cancelActiveAndTrialingSubscriptions(customerId) {
+	try {
+	  // List all active and trialing subscriptions for the customer
+	  const subscriptions = await stripe.subscriptions.list({
+		customer: customerId,
+		status: 'all', // Fetch all statuses, we'll filter manually
+	  });
+  
+	  for (const subscription of subscriptions.data) {
+		if (['active', 'trialing'].includes(subscription.status)) {
+		  await stripe.subscriptions.del(subscription.id);
+		  console.log(`Cancelled subscription: ${subscription.id}`);
+		}
+	  }
+  
+	  console.log(`All active and trialing subscriptions for customer ${customerId} have been cancelled.`);
+	  return true;
+	} catch (error) {
+	  console.error('Error cancelling subscriptions:', error.message);
+	  return false;
+	}
+}
+
+router.post('cancel-subscription', async (req, res) => {
+	try {
+		const { uid } = req.body;
+		
+		let user = await User.findById(uid);
+		if(!user) {
+			return res.send({
+				status: false,
+				message: 'No user found under user ID'
+			})
+		}
+		const customerID = user.subscription.customer;
+		console.log(customer);
+		if(await cancelActiveAndTrialingSubscriptions(customerID)) {
+			return res.send({
+				status: true,
+				message: "Customer's subscription was canceled."
+			});
+		} else {
+			return res.send({
+				status: false,
+				message: 'Something went wrong! Could not cancel subscription.'
+			})
+		}
+	} catch(err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: err.message
+		});
+	}
+})
 
 router.post('/delete-devotion', async (req, res) => {
 	try {

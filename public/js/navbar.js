@@ -128,7 +128,10 @@ function checkLogin() {
 				document.querySelector('.navLinkDrop').style.display = 'none';
 				document.querySelector('#logoutBtn2').style = 'display: none !important;';
 				document.querySelector('#navSep').style = 'display: none !important;';
-				if (!isNonSubscriberPage()) location.replace('/login');
+				if (!isNonSubscriberPage()) {
+					alert('This content requires a Long X Ranch Cowboys subscription!');
+					location.replace('/login');
+				}
 			}
 		})
 		.catch((err) => {
