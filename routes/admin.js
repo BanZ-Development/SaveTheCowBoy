@@ -402,6 +402,9 @@ router.post('/delete-user', async (req, res) => {
 	try {
 		const { uid } = req.body;
 		let user = await User.findByIdAndDelete(uid);
+		cancelCustomersSubscriptions(user.subscription.customer)
+			.then((res)=>console.log('Subscriptions canceled:',res))
+			.catch((err)=>console.error('Error:',err));
 		if (user) {
 			res.send({
 				status: true,
@@ -422,30 +425,26 @@ router.post('/delete-user', async (req, res) => {
 	}
 });
 
-async function cancelActiveAndTrialingSubscriptions(customerId) {
+async function cancelCustomersSubscriptions(customerID) {
 	try {
-	  // List all active and trialing subscriptions for the customer
-	  const subscriptions = await stripe.subscriptions.list({
-		customer: customerId,
-		status: 'all', // Fetch all statuses, we'll filter manually
-	  });
-	  for (const subscription of subscriptions.data) {
-		console.log(subscription);
-		if (['active', 'trialing'].includes(subscription.status)) {
-			try {
-				const deletedSubscription = await stripe.subscriptions.del(subscriptionId);
-				console.log(`Cancelled subscription: ${deletedSubscription.id}`);
-			  } catch (error) {
-				console.error('Error cancelling subscription:', error.message);
-			  }
-		}
-	  }
-  
-	  console.log(`All active and trialing subscriptions for customer ${customerId} have been cancelled.`);
-	  return true;
-	} catch (error) {
-	  console.error('Error cancelling subscriptions:', error.message);
-	  return false;
+		const subscriptions = await stripe.subscriptions.list({
+			customer: customerID,
+			status: 'all', 
+		  });
+		  console.log(subscriptions.data.length);
+		  for(let i=0;i<subscriptions.data.length;i++) {
+			  let subscription = subscriptions.data[i];
+			  if(subscription.cancel_at_period_end) continue;
+			  let subscriptionID = subscription.id;
+			  const updatedSubscription = await stripe.subscriptions.update(subscriptionID, {
+				  cancel_at_period_end: true,
+			  });
+			  console.log(`Subscription ${subscriptionID} will not renew: ${updatedSubscription}`);
+		  }
+		  return true;
+	} catch(err) {
+		console.error(err);
+		return false;
 	}
 }
 
@@ -460,18 +459,47 @@ router.post('/cancel-subscription', async (req, res) => {
 				message: 'No user found under user ID'
 			})
 		}
-		const customerID = user.subscription.customer;
-		if(await cancelActiveAndTrialingSubscriptions(customerID)) {
-			return res.send({
-				status: true,
-				message: "Customer's subscription was canceled."
-			});
-		} else {
-			return res.send({
-				status: false,
-				message: 'Something went wrong! Could not cancel subscription.'
-			})
+		
+		cancelCustomersSubscriptions(req.user.subscription.customer)
+			.then((res)=>console.log('Subscriptions canceled:',res))
+			.catch((err)=>console.error('Error:',err));
+		
+
+		/*
+		ONLY TO CANCEL SUBS ON MULTIPLE CUSTOMERS W/ SAME NAME
+
+		const customers = await stripe.customers.list({ limit: 1000 });
+		const matchingCustomers = customers.data.filter((customer) => {
+		return customer.name && customer.name.toLowerCase() === `${req.user.meta.firstName.toLowerCase()} ${req.user.meta.lastName.toLowerCase()}`;
+		});
+
+		if (matchingCustomers.length === 0) {
+		console.log(`No customers found with the name: ${firstName} ${lastName}`);
 		}
+
+		console.log(matchingCustomers);
+		for(const customer of matchingCustomers) {
+			let customerID = customer.id;
+			const subscriptions = await stripe.subscriptions.list({
+				customer: customerID,
+				status: 'all', // Fetch all statuses, we'll filter manually
+			});
+			console.log(subscriptions.data.length);
+			for(let i=0;i<subscriptions.data.length;i++) {
+				let subscription = subscriptions.data[i];
+				if(subscription.cancel_at_period_end) continue;
+				let subscriptionID = subscription.id;
+				const updatedSubscription = await stripe.subscriptions.update(subscriptionID, {
+					cancel_at_period_end: true,
+				});
+    			console.log(`Subscription ${subscriptionID} will not renew: ${updatedSubscription}`);
+			}
+		}*/
+		
+		res.send({
+			status: true,
+			message: 'Canceled all.'
+		})
 	} catch(err) {
 		console.log(err);
 		res.send({
