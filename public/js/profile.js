@@ -223,24 +223,25 @@ function createProfile(profile) {
 	console.log(profile);
 	document.title = `${profile.username} | Long X Ranch Cowboys`;
 	let div = document.createElement('div');
+	let profilePic = '../images/default-pfp.jpeg';
+	if (profile.pfp) profilePic = profile.pfp;
+	let bio = '';
+	if (profile.bio) bio = profile.bio;
 	div.innerHTML = `<div class="profile" id="profile">
 		<div class="profileInformation"> 
 			<div style="display: flex; flex-direction: column; color: #333; margin-bottom: 20px; width: 40%;">
-				<img style="order: 1; width: 10vw; height: 10vw; border-radius: 50%; object-fit: cover; object-position: center; margin-inline: auto;" id="pfp" src="/image/${profile.pfp}">
+				<img style="order: 1; width: 10vw; height: 10vw; border-radius: 50%; object-fit: cover; object-position: center; margin-inline: auto;" id="pfp" src="/image/${profilePic}">
 				<h1 class="profileUsername" style="order: 2; line-height: 15px; margin-left: 10px; font-size: 2.4vw; text-align: center;">${profile.username}</h1>
 				<h1 class="profileLocation" style="order: 3; line-height: 15px; margin-left: 10px; font-size: 1.7vw; text-align: center;">${profile.city}, ${profile.state}</h1>
 			</div>
 			<div style="width: 40%;">
 				<h1 class="biographyHeader" style="margin-top: 0px; color: #333;">Biography</h1>
-				<p class="profileBiography">${profile.bio}</p>
+				<p class="profileBiography">${bio}</p>
 			</div>
 		</div>
 		<div class="buttonRack">
 			<button data-target="posts" class="highlighted-border" id="profileSwitchViewBtn">Posts</button>
 			<button data-target="comments" id="profileSwitchViewBtn">Comments</button>
-			<button data-target="annotations" id="profileSwitchViewBtn">Annotations</button>
-			<button data-target="favorites" id="profileSwitchViewBtn">Favorites</button>
-			<button data-target="followers" id="profileSwitchViewBtn">Followers</button>
 		</div>
 		<div style="width: 80%; margin-inline: auto;" id="posts" class="profileBox"></div>
 		<div style="width: 80%; margin-inline: auto;" id="comments" class="profileBox"></div>
