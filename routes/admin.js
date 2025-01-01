@@ -1,3 +1,4 @@
+require('dotenv').config();
 const router = require('express').Router();
 const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
@@ -14,7 +15,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const path = require('path');
-require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 require('../controllers/local');
 const storage = new GridFsStorage({
 	url: process.env.MONGODB_URI,
@@ -402,6 +403,9 @@ router.post('/delete-user', async (req, res) => {
 	try {
 		const { uid } = req.body;
 		let user = await User.findByIdAndDelete(uid);
+		cancelCustomersSubscriptions(user.subscription.customer)
+			.then((res)=>console.log('Subscriptions canceled:',res))
+			.catch((err)=>console.error('Error:',err));
 		if (user) {
 			res.send({
 				status: true,
@@ -414,6 +418,90 @@ router.post('/delete-user', async (req, res) => {
 			});
 		}
 	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: err.message
+		});
+	}
+});
+
+async function cancelCustomersSubscriptions(customerID) {
+	try {
+		const subscriptions = await stripe.subscriptions.list({
+			customer: customerID,
+			status: 'all', 
+		  });
+		  console.log(subscriptions.data.length);
+		  for(let i=0;i<subscriptions.data.length;i++) {
+			  let subscription = subscriptions.data[i];
+			  if(subscription.cancel_at_period_end) continue;
+			  let subscriptionID = subscription.id;
+			  const updatedSubscription = await stripe.subscriptions.update(subscriptionID, {
+				  cancel_at_period_end: true,
+			  });
+			  console.log(`Subscription ${subscriptionID} will not renew: ${updatedSubscription}`);
+		  }
+		  return true;
+	} catch(err) {
+		console.error(err);
+		return false;
+	}
+}
+
+router.post('/cancel-subscription', async (req, res) => {
+	try {
+		const { uid } = req.body;
+		
+		let user = await User.findById(uid);
+		if(!user) {
+			return res.send({
+				status: false,
+				message: 'No user found under user ID'
+			})
+		}
+		
+		cancelCustomersSubscriptions(req.user.subscription.customer)
+			.then((res)=>console.log('Subscriptions canceled:',res))
+			.catch((err)=>console.error('Error:',err));
+		
+
+		/*
+		ONLY TO CANCEL SUBS ON MULTIPLE CUSTOMERS W/ SAME NAME
+
+		const customers = await stripe.customers.list({ limit: 1000 });
+		const matchingCustomers = customers.data.filter((customer) => {
+		return customer.name && customer.name.toLowerCase() === `${req.user.meta.firstName.toLowerCase()} ${req.user.meta.lastName.toLowerCase()}`;
+		});
+
+		if (matchingCustomers.length === 0) {
+		console.log(`No customers found with the name: ${firstName} ${lastName}`);
+		}
+
+		console.log(matchingCustomers);
+		for(const customer of matchingCustomers) {
+			let customerID = customer.id;
+			const subscriptions = await stripe.subscriptions.list({
+				customer: customerID,
+				status: 'all', // Fetch all statuses, we'll filter manually
+			});
+			console.log(subscriptions.data.length);
+			for(let i=0;i<subscriptions.data.length;i++) {
+				let subscription = subscriptions.data[i];
+				if(subscription.cancel_at_period_end) continue;
+				let subscriptionID = subscription.id;
+				const updatedSubscription = await stripe.subscriptions.update(subscriptionID, {
+					cancel_at_period_end: true,
+				});
+    			console.log(`Subscription ${subscriptionID} will not renew: ${updatedSubscription}`);
+			}
+		}*/
+		
+		res.send({
+			status: true,
+			message: 'Canceled all.'
+		})
+	} catch(err) {
 		console.log(err);
 		res.send({
 			status: false,

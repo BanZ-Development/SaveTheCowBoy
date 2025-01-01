@@ -60,8 +60,6 @@ router.post('/loadPosts', async function (req, res) {
 				posts = posts.sort((firstItem, secondItem) => {
 					const firstItemPopularity = ((firstItem.likesCount + firstItem.commentsCount) * 1e8) / (new Date() - new Date(firstItem.postDate).valueOf());
 					const secondItemPopularity = ((secondItem.likesCount + secondItem.commentsCount) * 1e8) / (new Date() - new Date(secondItem.postDate).valueOf());
-					console.log('Post:', firstItem, '\nFirst popularity:', firstItemPopularity);
-					console.log('Post:', secondItem, '\nSecond popularity:', secondItemPopularity);
 					return secondItemPopularity - firstItemPopularity; // Sort in descending order
 				});
 				posts = posts.slice(loadedPosts, loadedPosts + 10);

@@ -211,6 +211,25 @@ router.post('/create-annotation', async (req, res) => {
 	}
 });
 
+router.post('/delete-annotation', async (req, res) => {
+	try {
+		let { planID, annotationID } = req.body;
+		let uid = req.user.id;
+		let user = await User.findById(uid);
+		let biblePlan = user.biblePlans.filter((plan) => plan.id === planID);
+		biblePlan = biblePlan.length > 0 ? biblePlan[0] : null;
+		res.send({
+			status: true
+		});
+	} catch (err) {
+		console.log(err.message);
+		res.send({
+			status: false,
+			message: err.message
+		});
+	}
+});
+
 router.post('/get-annotations', async (req, res) => {
 	try {
 		let { id } = req.body;
