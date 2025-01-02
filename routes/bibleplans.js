@@ -9,7 +9,12 @@ router.get('/get-bible-plans', async (req, res) => {
 	try {
 		let biblePlans = await BiblePlan.find();
 		let user = await User.findById(req.user.id);
-		let userPlans = user.biblePlans;
+		let userPlans = [];
+		user.biblePlans.forEach((plan) => {
+			let found = biblePlans.filter((bp) => bp.id == plan.id);
+			if (found.length >= 1) userPlans.push(plan);
+		});
+
 		res.send({
 			status: true,
 			message: `${biblePlans.length} Bible Plans loaded!`,
