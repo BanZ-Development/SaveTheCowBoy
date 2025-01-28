@@ -606,6 +606,30 @@ const deleteUserClick = () => {
 		});
 };
 
+const cancelSubscription = () => {
+	let button = event.target;
+	console.log(button);
+	let uid = button.closest('.tableRow').id;
+	let data = new FormData();
+	data.append('uid', uid);
+	fetch('api/admin/cancel-subscription', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		},
+		body: new URLSearchParams(data)
+	})
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+			if (data.status) {
+				alert('Success! Subscription has been canceled!');
+			} else {
+				alert('Failed! Subscription was not canceled.');
+			}
+		});
+}
+
 const createMemberElement = (user) => {
 	let { address, admin, city, customer, email, firstName, lastName, pfp, phoneNumber, state, uid, username, zip } = user;
 	let formattedPhoneNumber = formatPhoneNumber(phoneNumber);
@@ -640,6 +664,7 @@ const createMemberElement = (user) => {
 		<button style="font-size: 17px;height: 40px;line-height: 10px; display:none;" id="confirmEditBtn" class="btnLink">Confirm Edit</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px; display:none;" id="cancelEditBtn" class="btnLink">Cancel Edit</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="profileBtn" class="btnLink">View Profile</button>
+		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="cancelSubBtn" class="btnLink">Cancel Subscription</button>
 		<button style="font-size: 17px;height: 40px;line-height: 10px;" id="deleteMemberBtn" class="btnLink deleteBtn">Delete</button>
 		</div>
 		</div>
@@ -651,6 +676,7 @@ const createMemberElement = (user) => {
 	div.querySelector('#editBtn').addEventListener('click', editUserClick);
 	div.querySelector('#profileBtn').addEventListener('click', viewUserProfileClick);
 	div.querySelector('#deleteMemberBtn').addEventListener('click', deleteUserClick);
+	div.querySelector('#cancelSubBtn').addEventListener('click', cancelSubscription);
 	div.querySelector('#confirmEditBtn').addEventListener('click', updateUser);
 	div.querySelector('#cancelEditBtn').addEventListener('click', cancelEdit);
 	document.querySelector('.membersTable').appendChild(div);
