@@ -513,12 +513,24 @@ function returnBookNumberToName(bookNum) {
 
 function returnResumeVerse(plans, dbPlans) {
 	let result = [];
+	console.log('Your Plans:', plans);
+	console.log('DB Plans:', dbPlans);
 	plans.forEach((plan) => {
 		result.push({
 			id: plan.id,
 			verse: plan.chaptersFinished[plan.chaptersFinished.length - 1]
 		});
 	});
+	dbPlans.forEach((dbPlan) => {
+		let filter = result.filter((p) => p.id == dbPlan._id);
+		console.log('Filter:', filter);
+		if (filter.length === 0) {
+			result.push({
+				id: dbPlan._id
+			});
+		}
+	});
+	console.log('Result:', result);
 	if (result.length > 0) {
 		result.forEach((plan) => {
 			let escapedId = CSS.escape(plan.id);
@@ -529,9 +541,7 @@ function returnResumeVerse(plans, dbPlans) {
 				let chapterNum = plan.verse.split(':')[1];
 				resumeText.innerHTML = `${returnBookNumberToName(bookNum)} ${chapterNum}`;
 			} else {
-				let yourPlan = dbPlans.filter((p) => p._id == plan.id);
-				let num = parseInt(yourPlan[0].books[0].book);
-				resumeText.innerHTML = `${returnBookNumberToName(num)} 1`;
+				resumeText.innerHTML = `Start`;
 			}
 		});
 	}
@@ -647,10 +657,28 @@ function createPlanLink(plan) {
 	document.querySelector('.tableContents').appendChild(div);
 }
 
+function viewVerseClick() {
+	let location = event.target.closest('div').querySelector('#location').innerHTML;
+	let bookName = location.split(' ')[0];
+	let chapterAndVerse = location.split(' ')[1];
+	let chapter = chapterAndVerse.split(':')[0];
+	let verse = chapterAndVerse.split(':')[1];
+	let bookNum = booksOfTheBible.indexOf(bookName) + 1;
+	let planID = returnID();
+	window.location.assign(`/biblePlans?id=${planID}&b=${bookNum}&c=${chapter}`);
+}
+
+function deleteAnnotation() {
+	//still needs work
+}
+
 function planLinkClick() {
 	let planID = event.target.closest('.tableContentsPlan').id;
 	let bookID = booksOfTheBible.indexOf(event.target.closest('.tableContentsPlan').querySelector('#resumeText').innerHTML.split(' ')[0]) + 1;
 	let chapterID = event.target.closest('.tableContentsPlan').querySelector('#resumeText').innerHTML.split(' ')[1];
+	if (bookID == undefined || bookID == null || chapterID == undefined || chapterID == null) {
+		return window.location.assign(`/biblePlans?id=${planID}`);
+	}
 	window.location.assign(`/biblePlans?id=${planID}&b=${bookID}&c=${chapterID}`);
 }
 
@@ -1148,15 +1176,17 @@ function createAnnotationElements(annotations) {
 		<div class="annotation">
 			<div class="inlineAnnotationTitle"> 
 				<label class="annotationTitle" id="location"for="comment">${location}</label>
-				<button class="viewVerseBtn">View Verse</button>
+				<button class="viewVerseBtn" id="viewVerseBtn">View Verse</button>
 			</div>
 			<p class="annotationText" id="comment">${SafeHTML(annotation)}</p>
 			<div style="display:flex;flex-direction:row;">
-				<button style="height: 45px; line-height:0px;" class="btnLink deleteBtn"><i class="fa-solid fa-trash"></i> Delete</button>
+				<button style="height: 45px; line-height:0px;" class="btnLink deleteBtn" id="deleteAnnotationBtn"><i class="fa-solid fa-trash"></i> Delete</button>
 				<button class="annotationDrop"><i class="fa-solid fa-chevron-down"></i></button>
 			</div>
 		</div>
 		`;
+		div.querySelector('#deleteAnnotationBtn').addEventListener('click', deleteAnnotation);
+		div.querySelector('#viewVerseBtn').addEventListener('click', viewVerseClick);
 		document.querySelector('#annotationsHolder').appendChild(div);
 	});
 }

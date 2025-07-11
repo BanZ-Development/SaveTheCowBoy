@@ -9,7 +9,12 @@ router.get('/get-bible-plans', async (req, res) => {
 	try {
 		let biblePlans = await BiblePlan.find();
 		let user = await User.findById(req.user.id);
-		let userPlans = user.biblePlans;
+		let userPlans = [];
+		user.biblePlans.forEach((plan) => {
+			let found = biblePlans.filter((bp) => bp.id == plan.id);
+			if (found.length >= 1) userPlans.push(plan);
+		});
+
 		res.send({
 			status: true,
 			message: `${biblePlans.length} Bible Plans loaded!`,
@@ -204,6 +209,25 @@ router.post('/create-annotation', async (req, res) => {
 		});
 	} catch (err) {
 		console.log(err);
+		res.send({
+			status: false,
+			message: err.message
+		});
+	}
+});
+
+router.post('/delete-annotation', async (req, res) => {
+	try {
+		let { planID, annotationID } = req.body;
+		let uid = req.user.id;
+		let user = await User.findById(uid);
+		let biblePlan = user.biblePlans.filter((plan) => plan.id === planID);
+		biblePlan = biblePlan.length > 0 ? biblePlan[0] : null;
+		res.send({
+			status: true
+		});
+	} catch (err) {
+		console.log(err.message);
 		res.send({
 			status: false,
 			message: err.message
