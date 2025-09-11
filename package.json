@@ -49,7 +49,6 @@
   "keywords": [],
   "devDependencies": {
     "terser-webpack-plugin": "^5.3.14",
-    "webpack": "^5.101.3",
     "webpack-cli": "^5.1.4"
   },
   "repository": {

@@ -283,4 +283,12 @@ router.post('/get-completed-chapters', async (req, res) => {
 	}
 });
 
+router.post('/get-languages', async (req, res) => {
+	console.log('get langugaes');
+	const response = await fetch('https://bolls.life/static/bolls/app/views/languages.json');
+	const data = await response.json();
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.json(data);
+});
+
 module.exports = router;

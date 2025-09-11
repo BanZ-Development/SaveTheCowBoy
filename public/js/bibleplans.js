@@ -1,3 +1,5 @@
+
+
 loadMainOrPlan();
 const SafeHTML = (html) => {
 	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
@@ -933,8 +935,8 @@ function viewCurrentLanguage(languageName) {
 }
 
 function createTranslations() {
-	fetch('https://bolls.life/static/bolls/app/views/languages.json', {
-		method: 'get',
+	fetch('api/biblePlans/get-languages', {
+		method: 'post',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded'
 		}
