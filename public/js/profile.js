@@ -538,6 +538,8 @@ function loadComments() {
 	const urlParams = new URLSearchParams(window.location.search);
 	let data = new FormData();
 	data.append('uid', urlParams.get('uid').split('?')[0]);
+	document.querySelector('#posts').innerHTML = '';
+	document.querySelector('#comments').innerHTML = '';
 	fetch('api/profile/return-comments', {
 		method: 'post',
 		headers: {
@@ -549,6 +551,7 @@ function loadComments() {
 		.then((data) => {
 			console.log(data);
 			if (data.status) {
+				data.comments.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
 				data.comments.forEach((comment) => createCommentElement(comment, data.currentUserID));
 			}
 		})
@@ -561,6 +564,8 @@ function loadPosts() {
 	const urlParams = new URLSearchParams(window.location.search);
 	let data = new FormData();
 	data.append('uid', urlParams.get('uid').split('?')[0]);
+	document.querySelector('#posts').innerHTML = '';
+	document.querySelector('#comments').innerHTML = '';
 	fetch('api/profile/return-posts', {
 		method: 'post',
 		headers: {
@@ -572,6 +577,7 @@ function loadPosts() {
 		.then((data) => {
 			console.log(data);
 			if (data.status) {
+				data.posts.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
 				data.posts.forEach((post) => createPostElement(post, data.currentUserID));
 			}
 		})

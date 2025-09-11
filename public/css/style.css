@@ -2175,6 +2175,10 @@ button {
         margin-inline: auto;
     }
 
+    .profileBox {
+        flex-direction: column;
+    }
+
     .cowboyStoryDescription {
         display: flex;
         flex-direction: row;
