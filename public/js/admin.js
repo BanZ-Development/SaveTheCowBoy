@@ -331,8 +331,15 @@ const LoadTotalUsers = (totalUsers, usersCalendar) => {
 };
 
 const SetPreview = (data, title) => {
-	let first = data[0];
-	let last = data[data.length - 1];
+	let first = 0;
+	let last = 0;
+	data.forEach((num) => {
+		if(num != 0) first = num;
+	});
+	let dataReversed = [...data].reverse();
+	dataReversed.forEach((num) => {
+		if(num != 0) last = num;
+	});
 	console.log('First / Last: ', first, last);
 	let ratio = last / first;
 	console.log('Ratio:', ratio);
