@@ -61,7 +61,7 @@ router.post('/isLoggedIn', async (req, res) => {
 				uid: req.user.id,
 				admin: req.user.admin,
 				subscribed: subscribed,
-				isVerified: req.user.meta.verify.isVerified
+				isVerified: true // changed so verification is not required (not needed)
 			};
 			if (req.user.meta.pfp) params['pfp'] = req.user.meta.pfp.name;
 			let date = new Date();
