@@ -53,7 +53,11 @@ async function isSubscribed(customerID) {
 router.post('/isLoggedIn', async (req, res) => {
 	try {
 		if (req.user) {
-			let subscribed = await isSubscribed(req.user.subscription.customer);
+			let subscribed = false;
+			console.log('Subscription:',req.user.subscription);
+			if(req.user.subscription?.customer){ 
+				subscribed = await isSubscribed(req.user.subscription.customer);
+			}
 			let params = {
 				status: true,
 				message: 'User is logged in',

@@ -98,15 +98,15 @@ function checkLogin() {
 		.then((res) => res.json())
 		.then(async (data) => {
 			if (data.status) {
+				document.querySelector('#username').innerHTML = SafeHTML(data.username);
+				document.querySelector('.navDrop').style = 'right: -35px;';
+				document.querySelector('#signupNav').style = 'display: none; !important';
+				document.querySelector('#navProfile').style = 'display: flex;';
+				document.querySelector('#logoutBtn1').style = 'display: flex; !important';
+				document.querySelector('.navLinkDrop').style.display = 'flex';
+				document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
 				if (data.subscribed || data.admin) {
 					// || data.admin
-					document.querySelector('#username').innerHTML = SafeHTML(data.username);
-					document.querySelector('.navDrop').style = 'right: -35px;';
-					document.querySelector('#signupNav').style = 'display: none; !important';
-					document.querySelector('#navProfile').style = 'display: flex;';
-					document.querySelector('#logoutBtn1').style = 'display: flex; !important';
-					document.querySelector('.navLinkDrop').style.display = 'flex';
-					document.querySelector('#profile').setAttribute('href', `profile?uid=${data.uid}`);
 					if (data.pfp) {
 						document.querySelector('#pfp').src = `/image/${data.pfp}`;
 					}
@@ -122,7 +122,8 @@ function checkLogin() {
 						location.replace('/');
 					}
 				} else if (!isNonSubscriberPage()) {
-					location.replace('/login');
+					alert('You cannot access subscriber content until you subscribe to a tier!');
+					location.replace('/settings');
 				}
 			} else {
 				document.querySelector('#signupNav').innerHTML = '<i id="responsiveNavIcon" class="fa-solid fa-right-to-bracket"></i> Login';
