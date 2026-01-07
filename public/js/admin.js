@@ -989,8 +989,12 @@ function createPlanObject(plan) {
                     <h3 class="biblePlanHeader">${title}</h3>
                     <p class="biblePlanDescriptor">${description}</p>
                     <p class="biblePlanDescriptor">${booksCount} books, ${chaptersCount} chapters</p>
-                    <a class="biblePlanBtn" href="/biblePlans?id=${_id}">Open</a>
+					<div class="planButtons">
+						<a class="biblePlanBtn" href="/biblePlans?id=${_id}">Open</a>
+						<button class="biblePlanBtn">Delete</button>
+					</div>
                 </div>`;
+	obj.querySelector('.biblePlanBtn:last-child').addEventListener('click', showBiblePlanDeletePopup);
 	document.querySelector('#bpHolder').appendChild(obj);
 }
 
@@ -1026,6 +1030,55 @@ function showBiblePlansPopup() {
 function hideBiblePlansPopup() {
 	const popupOverlay = document.getElementById('bpPopupOverlay');
 	popupOverlay.style.display = 'none';
+}
+
+function showBiblePlanDeletePopup() {
+	let button = event.target;
+	let plan = button.closest('.biblePlan');
+	let planID = plan.id;
+	let planTitle = plan.querySelector('.biblePlanHeader').innerHTML;
+	document.querySelector('#bpDeletePlanTitle').innerHTML = `Are you sure you want to delete the bible plan "<b>${planTitle}</b>"?<br>This action cannot be undone.`;
+	const oldElement = document.getElementById('bpDeleteConfirmBtn');
+	const newElement = oldElement.cloneNode(true); // clone without event listeners
+	oldElement.replaceWith(newElement);
+	document.querySelector('#bpDeleteConfirmBtn').addEventListener('click', ()=>{
+		deleteBiblePlan(planID);
+	});
+	document.querySelector('#bpDeleteCancelBtn').addEventListener('click', hideBiblePlansDeletePopup);
+	const popupOverlay = document.getElementById('bpDeletePopupOverlay');
+	popupOverlay.style.display = 'flex';
+}
+
+function hideBiblePlansDeletePopup() {
+	const popupOverlay = document.getElementById('bpDeletePopupOverlay');
+	popupOverlay.style.display = 'none';
+}
+
+function deleteBiblePlan(biblePlanID) {
+  const data = new FormData();
+  data.append('biblePlanID', biblePlanID);
+
+  fetch('/api/admin/delete-bible-plan', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams(data)
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status) {
+        // Remove the element from DOM
+        document.querySelector(`#bpHolder > div[id="${biblePlanID}"]`)?.remove();
+      } else {
+        alert(data.message); // optional: show error message
+      }
+    })
+    .catch((err) => {
+      console.error('Error deleting bible plan:', err);
+      alert('Failed to delete bible plan. Check console for details.');
+    });
 }
 
 function createBibleList(data) {

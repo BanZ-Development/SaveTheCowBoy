@@ -273,44 +273,65 @@ async function setChapter(bookID, chapterID) {
 }
 
 function setCompletionText(completion) {
-	for (let i = 0; i < Object.keys(completion).length; i++) {
-		let key = parseInt(Object.keys(completion)[i]) - 1;
-		let value = Object.values(completion)[i];
-		let title = document.querySelector('#tableOfContents').querySelector(`[id='${key}']`);
-		let before = title.innerHTML.split('(')[0];
-		let after = title.innerHTML.split('/')[1];
-		let string = `${before}(${value}/${after}`;
-		title.innerHTML = string;
-	}
+  const toc = document.getElementById("tableOfContents");
+  if (!toc) return;
+
+  for (const [rawKey, value] of Object.entries(completion)) {
+    const key = Number(rawKey) - 1;
+
+    const title = toc.querySelector(
+      `#${CSS.escape(String(key))}`
+    );
+
+    if (!title) {
+      console.warn("Missing TOC title for key:", key);
+      continue;
+    }
+
+    const text = title.textContent;
+    if (!text.includes("(") || !text.includes("/")) continue;
+
+    const before = text.split("(")[0];
+    const after = text.split("/")[1];
+
+    title.textContent = `${before}(${value}/${after}`;
+  }
 }
 
-function setFinishedChapters() {
-	let data = new FormData();
-	let id = returnID();
-	data.append('id', id);
-	fetch('api/biblePlans/get-completed-chapters', {
-		method: 'post',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: new URLSearchParams(data)
-	})
-		.then((res) => res.json())
-		.then((data) => {
-			if (data.status) {
-				data.chaptersFinished.forEach((chapter) => {
-					let split = chapter.split(':');
-					let adjustedChapter = `${parseInt(split[0]) - 1}:${split[1]}`;
-					let element = document.getElementById(adjustedChapter);
-					//add icon here lucky
-					if (!element.innerHTML.includes('<i class="fa-solid fa-square-check"></i>')) {
-						element.innerHTML = '<i class="fa-solid fa-square-check"></i> ' + element.innerHTML;
-						element.style = 'background-color: #3dd598; color: #fff; border-radius: 8px;';
-					}
-				});
-			}
-		});
-	document.addEventListener('DOMContentLoaded', () => {});
+async function setFinishedChapters() {
+  const id = returnID();
+
+  const res = await fetch('api/biblePlans/get-completed-chapters', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({ id })
+  });
+
+  const data = await res.json();
+  if (!data.status) return;
+
+  for (const chapter of data.chaptersFinished) {
+    const [book, verse] = chapter.split(':');
+    const adjustedChapter = `${Number(book) - 1}:${verse}`;
+
+    const element = document.getElementById(adjustedChapter);
+    if (!element) {
+      console.warn('Chapter element not found:', adjustedChapter);
+      continue;
+    }
+
+    if (element.querySelector('.fa-square-check')) continue;
+
+    const icon = document.createElement('i');
+    icon.className = 'fa-solid fa-square-check';
+
+    element.prepend(icon, ' ');
+    element.style.backgroundColor = '#3dd598';
+    element.style.color = '#fff';
+    element.style.borderRadius = '8px';
+  }
 }
 
 function checkForCompletion() {
@@ -328,10 +349,10 @@ function checkForCompletion() {
 		body: new URLSearchParams(data)
 	})
 		.then((res) => res.json())
-		.then((data) => {
+		.then(async (data) => {
 			if (data.status) {
 				setCompletionText(data.completion);
-				setFinishedChapters();
+				await setFinishedChapters();
 			}
 		});
 }

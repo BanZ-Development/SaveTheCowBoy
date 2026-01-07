@@ -534,4 +534,22 @@ router.post('/delete-devotion', async (req, res) => {
 	}
 });
 
+router.post('/delete-bible-plan', async (req, res) => {
+	try {
+		const { biblePlanID } = req.body;
+		await BiblePlan.findByIdAndDelete(biblePlanID);
+		res.send({
+			status: true,
+			message: 'Bible plan found and deleted'
+		});
+	} catch (err) {
+		console.log(err);
+		res.send({
+			status: false,
+			message: 'Termination failed. Bible plan not found!',
+			error: err.message
+		});
+	}
+});
+
 module.exports = router;

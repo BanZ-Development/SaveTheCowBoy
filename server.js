@@ -23,7 +23,7 @@ const Post = require('./model/Post');
 
 require('dotenv').config();
 const app = express();
-const port = 5000;
+const port = 3000;
 const host = '0.0.0.0';
 const limiter = rateLimit({
 	windowMs: 1 * 60 * 1000,

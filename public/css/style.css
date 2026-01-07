@@ -1455,22 +1455,30 @@ button {
 }
 
 .biblePlanBtn {
-    position: absolute;
+    display: inline-flex;
     text-align: center;
-    display: block;
     background-color: #fff;
     border: solid 1px #ccc;
-    padding: 10px;
+    padding: .5rem 1rem;
     border-radius: 10px;
-    width: 140px;
-    margin-inline: auto;
+    height:max-content;
     text-decoration: none;
     color: #333;
-    bottom: 15px;
-    left: 0;
-    right: 0;
     transition: ease all 0.3s;
+    font-family: 'montserrat';
+    font-size: 16px;
+    cursor: pointer;
+    width: max-content; /* or a fixed width like 120px */
 }
+
+.planButtons {
+        display: flex;
+        gap: 10px;               /* space between buttons */
+        position: relative;       /* so if needed you can still position things inside */
+        flex-direction: row;
+        justify-content: center;
+        margin-top: 15%;
+    }
 
 .biblePlanBtn:hover {
     background-color: #ccc;
@@ -2774,12 +2782,6 @@ button {
         font-size: 2vw !important;
     }
 
-    .biblePlanBtn {
-        height: 2vw;
-        width: 15vw;
-        font-size: 2vw;
-    }
-
     .biblePlanProg {
         height: 2vw;
     }
@@ -3185,6 +3187,14 @@ button {
     .bibleTranslation > div > h3 {
         font-size: 2vw !important;
     }
+
+    .planButtons {
+        flex-direction: column;
+        justify-content: center;
+        display: flex;
+        height: fit-content;
+        align-items: center;
+    }
   }
 
   @media only screen and (max-width: 500px) {
@@ -3280,12 +3290,6 @@ button {
     .biblePlanInformation {
         width: 100% !important;
         padding-left: 0px !important;
-    }
-
-    .biblePlanBtn {
-        height: 3vw;
-        width: 30vw;
-        font-size: 3vw;
     }
 
     .buttonRack > button {
