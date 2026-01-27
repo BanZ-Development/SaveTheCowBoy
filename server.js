@@ -119,6 +119,8 @@ mongoose.connection.once('open', () => {
 	console.log('Connected to MongoDB');
 });
 
+
+
 app.use('/api/auth', authRoute);
 app.use('/api/index', indexRoute);
 app.use('/api/admin', adminRoute);

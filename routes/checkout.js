@@ -22,59 +22,73 @@ const tierToPriceID = (tier) => {
 };
 
 router.post('/create-checkout-session', async (req, res) => {
-	try {
-		console.log(req.body);
-		let uid;
-		try {
-			uid = req.user.id;
-		} catch (e) {
-			uid = req.body.uid;
-		}
-		if (uid == null || uid == '' || uid == 'undefined') {
-			res.send({
-				status: false,
-				message: 'Could not create checkout session'
-			});
-		}
-		const { tier } = req.body;
-		const priceID = tierToPriceID(tier);
-		console.log('Price: ' + priceID);
-		const session = await stripe.checkout.sessions.create({
-			success_url: `${process.env.URL}/success?uid=${uid}`,
-			cancel_url: `${process.env.URL}/signup`,
-			line_items: [
-				{
-					price: priceID,
-					quantity: 1
-				}
-			],
-			mode: 'subscription',
-			subscription_data: {
-				trial_period_days: 14
-			}
-		});
-		console.log('User ID: ' + uid);
-		console.log('Session ID: ' + session.id);
-		//save session id to user in db
-		const update = {
-			subscription: {
-				sessionID: session.id
-			}
-		};
-		User.findByIdAndUpdate(uid, update).then((user) => {
-			res.send({
-				status: true,
-				url: session.url
-			});
-		});
-	} catch (error) {
-		console.log(error);
-		res.send({
-			status: false,
-			error: error.message
-		});
-	}
+  try {
+    // Get uid safely
+    const uid = req.user?.id || req.body?.uid;
+    if (!uid) {
+      return res.status(400).send({
+        status: false,
+        message: 'User ID not provided'
+      });
+    }
+
+    // Get tier and price ID
+    const { tier } = req.body;
+    const priceID = tierToPriceID(tier);
+    if (!priceID) {
+      return res.status(400).send({
+        status: false,
+        message: 'Invalid tier selected'
+      });
+    }
+
+    // Fetch user from DB if not in req.user
+    const user = req.user || await User.findById(uid);
+    if (!user) {
+      return res.status(404).send({
+        status: false,
+        message: 'User not found'
+      });
+    }
+
+    // Use existing customer if available
+    const customerId = user.subscription?.customer || null;
+
+    // Stripe session data
+    const sessionData = {
+      success_url: `${process.env.URL}/success?uid=${uid}`,
+      cancel_url: `${process.env.URL}/signup`,
+      line_items: [{ price: priceID, quantity: 1 }],
+      mode: 'subscription', // still subscription mode
+      subscription_data: { trial_period_days: 14 }
+    };
+
+    // Attach existing customer if present
+    if (customerId) {
+      sessionData.customer = customerId;
+    } 
+    // NOTE: We can't use `customer_creation: 'always'` in subscription mode
+
+    // Create the checkout session
+    const session = await stripe.checkout.sessions.create(sessionData);
+
+    // Save session ID to user
+    user.subscription = { ...user.subscription, sessionID: session.id };
+    await user.save();
+
+    return res.send({
+      status: true,
+      url: session.url
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      status: false,
+      error: error.message
+    });
+  }
 });
+
 
 router.post('/start', function (req, res) {
 	const { tier, username, email, password } = req.body;

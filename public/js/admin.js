@@ -1,4 +1,5 @@
 const SafeHTML = (html) => {
+	if(html == null) return '';
 	return html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 };
 
@@ -761,6 +762,7 @@ async function openMembers() {
 	removeAllMembers();
 	enableView('members');
 	let members = await returnMembers();
+	console.log(members);
 	members.forEach((member) => createMemberElement(member));
 	document.querySelector('#applyFilterBtn').addEventListener('click', applyFilterClick);
 	document.querySelector('#clearFilterBtn').addEventListener('click', clearFilter);
